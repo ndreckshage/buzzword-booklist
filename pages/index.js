@@ -1,3 +1,10 @@
+import { Alert, AlertIcon } from "@chakra-ui/react";
+
 export default function Home() {
-  return <div>Home</div>;
+  return (
+    <Alert status="info">
+      <AlertIcon />
+      Coming soon!
+    </Alert>
+  );
 }
