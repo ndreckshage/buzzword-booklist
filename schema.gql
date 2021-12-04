@@ -11,6 +11,17 @@ type Book {
   bookshopLink: String!
 }
 
+type BlogBlockA {
+  foo: String
+}
+
+type BlogBlockB {
+  bar: String
+}
+
+union BlogBlocks = BlogBlockA | BlogBlockB
+
 type Query {
   authors: [Author!]
+  blogExperience: [BlogBlocks!]
 }
