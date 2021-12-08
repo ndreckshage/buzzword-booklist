@@ -136,6 +136,48 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     getLayout: async (parent, { id }, ctx) => {
+      try {
+        const results = await ctx.faunaClient.query(
+          Q.Let(
+            {
+              listDoc: Q.Get(
+                Q.Ref(Q.Collection("Lists"), "317304652777390146")
+              ),
+            },
+            {
+              id: Q.Select(["ref", "id"], Q.Var("listDoc")),
+              name: Q.Select(["data", "name"], Q.Var("listDoc")),
+              books: Q.Map(
+                Q.Paginate(
+                  Q.Match(
+                    Q.Index("list_items_by_list_ref"),
+                    Q.Select(["ref"], Q.Var("listDoc"))
+                  )
+                ),
+                Q.Lambda(
+                  "listItem",
+                  Q.Let(
+                    {
+                      bookDoc: Q.Get(
+                        Q.Select(["data", "bookRef"], Q.Get(Q.Var("listItem")))
+                      ),
+                    },
+                    {
+                      id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
+                      title: Q.Select(["data", "title"], Q.Var("bookDoc")),
+                    }
+                  )
+                )
+              ),
+            }
+          )
+        );
+
+        console.log("results", results);
+      } catch (e) {
+        console.error(e);
+      }
+
       // try {
       //   const results = await ctx.faunaClient.query(
       //     Q.Let(
