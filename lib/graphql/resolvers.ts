@@ -9,16 +9,36 @@ import { Resolvers } from "./__generated__/resolvers-types";
 
 const resolvers: Resolvers = {
   Query: {
-    // layout(obj, args, context, info) {
-    //   return {
-    //     // id: globalIdField(),
-    //     id: toGlobalId("Layout", args.layoutId),
-    //   };
-    // },
+    async layout(obj, args, context, info) {
+      return context.db.getLayout(args.layoutKey);
+    },
 
     async node(obj, args, context, info) {
-      console.log(context.db.getComponents);
       return null;
+    },
+  },
+
+  Component: {
+    __resolveType(component) {
+      return component.componentType;
+    },
+  },
+
+  BookCarouselComponent: {
+    id: globalIdField(),
+    async title(obj, args, context, info) {
+      const { title } = await context.db.getBookCarousel(obj.id);
+      return title;
+    },
+  },
+
+  SingleColumnLayout: {
+    id: globalIdField(),
+  },
+
+  Layout: {
+    __resolveType(layout) {
+      return layout.layoutType;
     },
   },
 };

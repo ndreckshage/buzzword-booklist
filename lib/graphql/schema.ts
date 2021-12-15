@@ -131,6 +131,7 @@ export default /* GraphQL */ `
 
   type TwoColumnLayout implements Node {
     id: ID!
+    layoutType: String!
     topComponents: [Component!]!
     leftComponents: [Component!]!
     rightComponents: [Component!]!
@@ -139,15 +140,16 @@ export default /* GraphQL */ `
 
   type SingleColumnLayout implements Node {
     id: ID!
+    layoutType: String!
     components: [Component!]!
   }
 
   union Layout = SingleColumnLayout | TwoColumnLayout
 
   type Query {
-    bookPageLayout(isbn: Int!): Layout
-    collectionPageLayout(collectionType: String!, collectionId: String!): Layout
     layout(layoutKey: String!): Layout
+    collectionPageLayout(collectionType: String!, collectionId: String!): Layout
+    bookPageLayout(isbn: Int!): Layout
     node(id: ID!): Node
   }
 `;

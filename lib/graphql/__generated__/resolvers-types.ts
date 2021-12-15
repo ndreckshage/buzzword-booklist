@@ -191,12 +191,14 @@ export type SingleColumnLayout = Node & {
   __typename?: 'SingleColumnLayout';
   components: Array<Component>;
   id: Scalars['ID'];
+  layoutType: Scalars['String'];
 };
 
 export type TwoColumnLayout = Node & {
   __typename?: 'TwoColumnLayout';
   bottomComponents: Array<Component>;
   id: Scalars['ID'];
+  layoutType: Scalars['String'];
   leftComponents: Array<Component>;
   rightComponents: Array<Component>;
   topComponents: Array<Component>;
@@ -476,12 +478,14 @@ export type QueryResolvers<ContextType = ResolverContext, ParentType extends Res
 export type SingleColumnLayoutResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['SingleColumnLayout'] = ResolversParentTypes['SingleColumnLayout']> = {
   components?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  layoutType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TwoColumnLayoutResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['TwoColumnLayout'] = ResolversParentTypes['TwoColumnLayout']> = {
   bottomComponents?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  layoutType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   leftComponents?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   rightComponents?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   topComponents?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
