@@ -31,8 +31,7 @@ export default /* GraphQL */ `
     CALL_TO_ACTION
   }
 
-  type LinkComponent implements Node {
-    id: ID!
+  type LinkComponent {
     text: String!
     href: String!
     variant: LinkVariant!
@@ -50,6 +49,7 @@ export default /* GraphQL */ `
   }
 
   type BookCarouselItemComponentConnection {
+    totalCount: Int!
     edges: [BookCarouselItemComponentEdge]
     pageInfo: PageInfo!
   }

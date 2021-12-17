@@ -2,7 +2,11 @@ schema: ./lib/graphql/schema.ts
 generates:
   ./lib/graphql/__generated__/resolvers-types.ts:
     config:
-      contextType: ../createContext#ResolverContext
+      contextType: ../context#ResolverContext
+      mappers:
+        BookCarouselComponent: ../repo/Component#ComponentQuery
+        Component: ../repo/Component#ComponentQuery
+        Layout: ../repo/Layout#LayoutQuery
     plugins:
       - typescript
       - typescript-resolvers

@@ -5,7 +5,7 @@ import Cors from "cors";
 
 import typeDefs from "../../lib/graphql/schema";
 import resolvers from "../../lib/graphql/resolvers";
-import createContext from "../../lib/graphql/createContext";
+import { createContext } from "../../lib/graphql/context";
 
 // @NOTE not sure
 interface Request extends NextApiRequest {

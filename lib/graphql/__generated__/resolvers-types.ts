@@ -1,5 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { ResolverContext } from '../createContext';
+import { ComponentQuery } from '../repo/Component';
+import { LayoutQuery } from '../repo/Layout';
+import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -61,6 +63,7 @@ export type BookCarouselItemComponentConnection = {
   __typename?: 'BookCarouselItemComponentConnection';
   edges?: Maybe<Array<Maybe<BookCarouselItemComponentEdge>>>;
   pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
 };
 
 export type BookCarouselItemComponentEdge = {
@@ -133,10 +136,9 @@ export type HeroComponent = Node & {
 
 export type Layout = SingleColumnLayout | TwoColumnLayout;
 
-export type LinkComponent = Node & {
+export type LinkComponent = {
   __typename?: 'LinkComponent';
   href: Scalars['String'];
-  id: Scalars['ID'];
   text: Scalars['String'];
   variant: LinkVariant;
 };
@@ -276,7 +278,7 @@ export type ResolversTypes = {
   AlertComponent: ResolverTypeWrapper<AlertComponent>;
   AlertVariant: AlertVariant;
   BannerComponent: ResolverTypeWrapper<BannerComponent>;
-  BookCarouselComponent: ResolverTypeWrapper<BookCarouselComponent>;
+  BookCarouselComponent: ResolverTypeWrapper<ComponentQuery>;
   BookCarouselItemComponent: ResolverTypeWrapper<BookCarouselItemComponent>;
   BookCarouselItemComponentConnection: ResolverTypeWrapper<BookCarouselItemComponentConnection>;
   BookCarouselItemComponentEdge: ResolverTypeWrapper<BookCarouselItemComponentEdge>;
@@ -292,14 +294,14 @@ export type ResolversTypes = {
   BookPageImageComponent: ResolverTypeWrapper<BookPageImageComponent>;
   BookPagePriceComponent: ResolverTypeWrapper<BookPagePriceComponent>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Component: ResolversTypes['AlertComponent'] | ResolversTypes['BannerComponent'] | ResolversTypes['BookCarouselComponent'] | ResolversTypes['BookGridComponent'] | ResolversTypes['BookListComponent'] | ResolversTypes['BookPageActionComponent'] | ResolversTypes['BookPageAuthorComponent'] | ResolversTypes['BookPageDescriptionComponent'] | ResolversTypes['BookPageDetailsComponent'] | ResolversTypes['BookPageGenreComponent'] | ResolversTypes['BookPageImageComponent'] | ResolversTypes['BookPagePriceComponent'] | ResolversTypes['HeroComponent'];
+  Component: ResolverTypeWrapper<ComponentQuery>;
   HeroComponent: ResolverTypeWrapper<HeroComponent>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Layout: ResolversTypes['SingleColumnLayout'] | ResolversTypes['TwoColumnLayout'];
+  Layout: ResolverTypeWrapper<LayoutQuery>;
   LinkComponent: ResolverTypeWrapper<LinkComponent>;
   LinkVariant: LinkVariant;
-  Node: ResolversTypes['AlertComponent'] | ResolversTypes['BannerComponent'] | ResolversTypes['BookCarouselComponent'] | ResolversTypes['BookCarouselItemComponent'] | ResolversTypes['BookGridComponent'] | ResolversTypes['BookGridItemComponent'] | ResolversTypes['BookListComponent'] | ResolversTypes['BookListItemComponent'] | ResolversTypes['BookPageActionComponent'] | ResolversTypes['BookPageAuthorComponent'] | ResolversTypes['BookPageDescriptionComponent'] | ResolversTypes['BookPageDetailsComponent'] | ResolversTypes['BookPageGenreComponent'] | ResolversTypes['BookPageImageComponent'] | ResolversTypes['BookPagePriceComponent'] | ResolversTypes['HeroComponent'] | ResolversTypes['LinkComponent'] | ResolversTypes['SingleColumnLayout'] | ResolversTypes['TwoColumnLayout'];
+  Node: ResolversTypes['AlertComponent'] | ResolversTypes['BannerComponent'] | ResolversTypes['BookCarouselComponent'] | ResolversTypes['BookCarouselItemComponent'] | ResolversTypes['BookGridComponent'] | ResolversTypes['BookGridItemComponent'] | ResolversTypes['BookListComponent'] | ResolversTypes['BookListItemComponent'] | ResolversTypes['BookPageActionComponent'] | ResolversTypes['BookPageAuthorComponent'] | ResolversTypes['BookPageDescriptionComponent'] | ResolversTypes['BookPageDetailsComponent'] | ResolversTypes['BookPageGenreComponent'] | ResolversTypes['BookPageImageComponent'] | ResolversTypes['BookPagePriceComponent'] | ResolversTypes['HeroComponent'] | ResolversTypes['SingleColumnLayout'] | ResolversTypes['TwoColumnLayout'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   SingleColumnLayout: ResolverTypeWrapper<Omit<SingleColumnLayout, 'components'> & { components: Array<ResolversTypes['Component']> }>;
@@ -311,7 +313,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AlertComponent: AlertComponent;
   BannerComponent: BannerComponent;
-  BookCarouselComponent: BookCarouselComponent;
+  BookCarouselComponent: ComponentQuery;
   BookCarouselItemComponent: BookCarouselItemComponent;
   BookCarouselItemComponentConnection: BookCarouselItemComponentConnection;
   BookCarouselItemComponentEdge: BookCarouselItemComponentEdge;
@@ -327,13 +329,13 @@ export type ResolversParentTypes = {
   BookPageImageComponent: BookPageImageComponent;
   BookPagePriceComponent: BookPagePriceComponent;
   Boolean: Scalars['Boolean'];
-  Component: ResolversParentTypes['AlertComponent'] | ResolversParentTypes['BannerComponent'] | ResolversParentTypes['BookCarouselComponent'] | ResolversParentTypes['BookGridComponent'] | ResolversParentTypes['BookListComponent'] | ResolversParentTypes['BookPageActionComponent'] | ResolversParentTypes['BookPageAuthorComponent'] | ResolversParentTypes['BookPageDescriptionComponent'] | ResolversParentTypes['BookPageDetailsComponent'] | ResolversParentTypes['BookPageGenreComponent'] | ResolversParentTypes['BookPageImageComponent'] | ResolversParentTypes['BookPagePriceComponent'] | ResolversParentTypes['HeroComponent'];
+  Component: ComponentQuery;
   HeroComponent: HeroComponent;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
-  Layout: ResolversParentTypes['SingleColumnLayout'] | ResolversParentTypes['TwoColumnLayout'];
+  Layout: LayoutQuery;
   LinkComponent: LinkComponent;
-  Node: ResolversParentTypes['AlertComponent'] | ResolversParentTypes['BannerComponent'] | ResolversParentTypes['BookCarouselComponent'] | ResolversParentTypes['BookCarouselItemComponent'] | ResolversParentTypes['BookGridComponent'] | ResolversParentTypes['BookGridItemComponent'] | ResolversParentTypes['BookListComponent'] | ResolversParentTypes['BookListItemComponent'] | ResolversParentTypes['BookPageActionComponent'] | ResolversParentTypes['BookPageAuthorComponent'] | ResolversParentTypes['BookPageDescriptionComponent'] | ResolversParentTypes['BookPageDetailsComponent'] | ResolversParentTypes['BookPageGenreComponent'] | ResolversParentTypes['BookPageImageComponent'] | ResolversParentTypes['BookPagePriceComponent'] | ResolversParentTypes['HeroComponent'] | ResolversParentTypes['LinkComponent'] | ResolversParentTypes['SingleColumnLayout'] | ResolversParentTypes['TwoColumnLayout'];
+  Node: ResolversParentTypes['AlertComponent'] | ResolversParentTypes['BannerComponent'] | ResolversParentTypes['BookCarouselComponent'] | ResolversParentTypes['BookCarouselItemComponent'] | ResolversParentTypes['BookGridComponent'] | ResolversParentTypes['BookGridItemComponent'] | ResolversParentTypes['BookListComponent'] | ResolversParentTypes['BookListItemComponent'] | ResolversParentTypes['BookPageActionComponent'] | ResolversParentTypes['BookPageAuthorComponent'] | ResolversParentTypes['BookPageDescriptionComponent'] | ResolversParentTypes['BookPageDetailsComponent'] | ResolversParentTypes['BookPageGenreComponent'] | ResolversParentTypes['BookPageImageComponent'] | ResolversParentTypes['BookPagePriceComponent'] | ResolversParentTypes['HeroComponent'] | ResolversParentTypes['SingleColumnLayout'] | ResolversParentTypes['TwoColumnLayout'];
   PageInfo: PageInfo;
   Query: {};
   SingleColumnLayout: Omit<SingleColumnLayout, 'components'> & { components: Array<ResolversParentTypes['Component']> };
@@ -370,6 +372,7 @@ export type BookCarouselItemComponentResolvers<ContextType = ResolverContext, Pa
 export type BookCarouselItemComponentConnectionResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselItemComponentConnection'] = ResolversParentTypes['BookCarouselItemComponentConnection']> = {
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['BookCarouselItemComponentEdge']>>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -449,14 +452,13 @@ export type LayoutResolvers<ContextType = ResolverContext, ParentType extends Re
 
 export type LinkComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LinkComponent'] = ResolversParentTypes['LinkComponent']> = {
   href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   variant?: Resolver<ResolversTypes['LinkVariant'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NodeResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'AlertComponent' | 'BannerComponent' | 'BookCarouselComponent' | 'BookCarouselItemComponent' | 'BookGridComponent' | 'BookGridItemComponent' | 'BookListComponent' | 'BookListItemComponent' | 'BookPageActionComponent' | 'BookPageAuthorComponent' | 'BookPageDescriptionComponent' | 'BookPageDetailsComponent' | 'BookPageGenreComponent' | 'BookPageImageComponent' | 'BookPagePriceComponent' | 'HeroComponent' | 'LinkComponent' | 'SingleColumnLayout' | 'TwoColumnLayout', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AlertComponent' | 'BannerComponent' | 'BookCarouselComponent' | 'BookCarouselItemComponent' | 'BookGridComponent' | 'BookGridItemComponent' | 'BookListComponent' | 'BookListItemComponent' | 'BookPageActionComponent' | 'BookPageAuthorComponent' | 'BookPageDescriptionComponent' | 'BookPageDetailsComponent' | 'BookPageGenreComponent' | 'BookPageImageComponent' | 'BookPagePriceComponent' | 'HeroComponent' | 'SingleColumnLayout' | 'TwoColumnLayout', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
