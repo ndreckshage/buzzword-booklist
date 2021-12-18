@@ -48,7 +48,9 @@ const B = ({ sleepMs, cacheKey }: { sleepMs: number; cacheKey: string }) => {
       }
     `,
         {}
-      ).then((response) => response.data)
+      )
+        .then((response) => response.data)
+        .catch(console.error)
     )
   );
 
