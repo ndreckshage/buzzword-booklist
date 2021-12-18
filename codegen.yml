@@ -1,6 +1,6 @@
-schema: ./src/lib/graphql/schema.ts
+schema: ./src/graphql-api/schema.ts
 generates:
-  ./lib/graphql/__generated__/resolvers-types.ts:
+  ./src/graphql-api/__generated__/resolvers-types.ts:
     config:
       contextType: ../context#ResolverContext
       mappers:

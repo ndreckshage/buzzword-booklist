@@ -4,7 +4,7 @@ module.exports = {
     domains: ["images-us.bookshop.org"],
   },
   experimental: {
-    // concurrentFeatures: true,
-    // serverComponents: true,
+    concurrentFeatures: true,
+    serverComponents: true,
   },
 };
