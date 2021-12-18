@@ -3,4 +3,8 @@ module.exports = {
   images: {
     domains: ["images-us.bookshop.org"],
   },
+  experimental: {
+    concurrentFeatures: true,
+    serverComponents: true,
+  },
 };
