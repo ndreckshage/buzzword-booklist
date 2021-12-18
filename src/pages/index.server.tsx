@@ -7,7 +7,7 @@ export default function Index() {
   return (
     <>
       <h1 className="text-3xl font-bold text-emerald-400 p-10">
-        Buzzword Bookshop
+        Buzzword Bookshop!
       </h1>
       {/* <Suspense fallback={"Loading A..."}>
         <A />
