@@ -56,8 +56,9 @@ const B = ({ sleepMs, cacheKey }: { sleepMs: number; cacheKey: string }) => {
 
   return (
     <>
+      <p>Cache Key: {cacheKey}</p>
       {data.layout.components.map((component) => (
-        <div key={component.id}>
+        <div key={component.id} className="p-5 m-5 border border-blue-500">
           <p>Type: {component.__typename}</p>
           <p>ID: {component.id}</p>
           <p>Title: {component.title}</p>
