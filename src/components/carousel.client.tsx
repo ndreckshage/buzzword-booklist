@@ -16,7 +16,7 @@ const Carousel = () => {
   return (
     <div className="container px-10">
       <div
-        className="relative w-full flex gap-6 snap-x overflow-x-auto pb-14 scroll-smooth snap-always"
+        className="relative w-full flex gap-6 overflow-x-auto pb-14 scroll-smooth snap-x snap-always snap-mandatory"
         ref={containerRef}
       >
         {[
