@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 
 import RscExample from "../components/rsc-example.server";
+import Carousel from "../components/carousel.client";
 
 export default function Index() {
   return (
     <>
-      <h2 className="text-xl m-5 p-5 text-purple-500">Homepage...</h2>
+      <Carousel />
+      {/* <h2 className="text-xl m-5 p-5 text-purple-500">Homepage...</h2>
       {[
         { cacheKey: "B1", sleepMs: 200 },
         { cacheKey: "B2", sleepMs: 500 },
@@ -16,7 +18,7 @@ export default function Index() {
             <RscExample sleepMs={sleepMs} cacheKey={cacheKey} />
           </Suspense>
         </div>
-      ))}
+      ))} */}
     </>
   );
 }
