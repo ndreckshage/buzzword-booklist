@@ -1,14 +1,16 @@
 import { useRef } from "react";
 
 const Carousel = () => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const advance = (forward: boolean) => () => {
-    const x = forward
-      ? containerRef.current.scrollLeft + containerRef.current.offsetWidth
-      : containerRef.current.scrollLeft - containerRef.current.offsetWidth;
+    if (containerRef.current) {
+      const x = forward
+        ? containerRef.current.scrollLeft + containerRef.current.offsetWidth
+        : containerRef.current.scrollLeft - containerRef.current.offsetWidth;
 
-    containerRef.current.scrollTo(x, 0);
+      containerRef.current.scrollTo(x, 0);
+    }
   };
 
   return (
