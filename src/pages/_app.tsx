@@ -20,7 +20,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <Link href="/">
           <a className={linkClass}>Homepage</a>
         </Link>
-        <Link href="/book/234234">
+        <Link href="/books/234234">
           <a className={linkClass}>Book</a>
         </Link>
         <Link href="/collections/lists/2345">
@@ -32,11 +32,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <Link href="/collections/authors/24456">
           <a className={linkClass}>Author</a>
         </Link>
-        <Link href="/manage/import-book">
-          <a className={linkClass}>Import Book</a>
+        <Link href="/manage/layouts">
+          <a className={linkClass}>Manage Layouts</a>
         </Link>
-        <Link href="/manage/create-list">
-          <a className={linkClass}>Create List</a>
+        <Link href="/manage/lists">
+          <a className={linkClass}>Manage Lists</a>
         </Link>
       </div>
       <Component {...pageProps} />

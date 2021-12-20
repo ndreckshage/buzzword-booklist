@@ -65,4 +65,20 @@ feature toggles:
 - maintenance mode
 - creating / editing lists
 
-NOTES:
+NOTES / TODOS:
+
+- look at what indexes im using and adjust import script
+- for image, cut the ? and generate that dynamically with next/image
+- update to openlibrary api. on list create page .. create list by isbn. search / import from open library.
+- slugify books on import
+
+BLOG POST IMPLEMENTATION:
+
+- Setup Nextjs
+- Setup Graphql
+- Look at bookshop, design schema
+- Scrape Data
+- Import into Fauna
+- Initial Graphql schema
+- Server components, loading the data onto the screen
+- Creating our carousel

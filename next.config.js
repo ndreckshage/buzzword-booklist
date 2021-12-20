@@ -1,8 +1,6 @@
 module.exports = {
   reactStrictMode: true,
-  images: {
-    domains: ["images-us.bookshop.org"],
-  },
+  images: {},
   experimental: {
     concurrentFeatures: true,
     serverComponents: true,
