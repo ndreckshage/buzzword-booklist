@@ -71,6 +71,7 @@ NOTES / TODOS:
 - for image, cut the ? and generate that dynamically with next/image
 - update to openlibrary api. on list create page .. create list by isbn. search / import from open library.
 - slugify books on import
+- google books api ... create list just use typeahead google books... then find by google id or create.
 
 BLOG POST IMPLEMENTATION:
 

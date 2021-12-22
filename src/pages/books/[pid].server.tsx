@@ -1,5 +1,5 @@
 import { useEffect, Suspense } from "react";
-import RscExample from "../../components/rsc-example.server";
+import RscExample from "components/rsc-example.server";
 
 type Props = {
   router: { asPath: string };

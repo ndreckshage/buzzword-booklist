@@ -3,9 +3,9 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphqlHTTP } from "express-graphql";
 import Cors from "cors";
 
-import typeDefs from "../../graphql-api/schema";
-import resolvers from "../../graphql-api/resolvers";
-import { createContext } from "../../graphql-api/context";
+import typeDefs from "graphql-api/schema";
+import resolvers from "graphql-api/resolvers";
+import { createContext } from "graphql-api/context";
 
 // @NOTE not sure
 interface Request extends NextApiRequest {

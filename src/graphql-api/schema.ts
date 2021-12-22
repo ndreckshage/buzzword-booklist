@@ -112,10 +112,12 @@ export default /* GraphQL */ `
 
   type HeroComponent implements Node {
     id: ID!
+    title: String!
   }
 
   union Component =
-      AlertComponent
+      Layout
+    | AlertComponent
     | BannerComponent
     | BookCarouselComponent
     | BookGridComponent
@@ -129,27 +131,27 @@ export default /* GraphQL */ `
     | BookPagePriceComponent
     | HeroComponent
 
-  type TwoColumnLayout implements Node {
+  type Layout implements Node {
     id: ID!
-    layoutType: String!
-    topComponents: [Component!]!
-    leftComponents: [Component!]!
-    rightComponents: [Component!]!
-    bottomComponents: [Component!]!
-  }
-
-  type SingleColumnLayout implements Node {
-    id: ID!
-    layoutType: String!
     components: [Component!]!
   }
-
-  union Layout = SingleColumnLayout | TwoColumnLayout
 
   type Query {
     layout(layoutKey: String!): Layout
     collectionPageLayout(collectionType: String!, collectionId: String!): Layout
     bookPageLayout(isbn: Int!): Layout
     node(id: ID!): Node
+  }
+
+  type List {
+    id: ID!
+  }
+
+  type Mutation {
+    importBook(isbn: String!): Boolean!
+    createList(title: String!, isbns: [String!]!): List
+    # updateList: List
+    # createLayout: Layout
+    # updateLayout: Layout
   }
 `;

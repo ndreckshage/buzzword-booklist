@@ -1,4 +1,4 @@
-import fetchGraphQL from "../lib/fetchGraphQL";
+import fetchGraphQL from "../lib/fetch-graphql";
 
 const cache: any = {};
 
@@ -34,14 +34,12 @@ const B = ({ sleepMs, cacheKey }: { sleepMs: number; cacheKey: string }) => {
       query Example {
         layout(layoutKey: "home-page") {
           __typename
-          ... on SingleColumnLayout {
-            id
-            components {
-              __typename
-              ... on BookCarouselComponent {
-                id
-                title
-              }
+          id
+          components {
+            __typename
+            ... on BookCarouselComponent {
+              id
+              title
             }
           }
         }
