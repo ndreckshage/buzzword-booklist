@@ -2,7 +2,7 @@ import { Client, query as Q, Var, type Expr } from "faunadb";
 import fetch from "node-fetch";
 import slugify from "slugify";
 
-export type BookListQueryInput = {
+export type GetListBooksQueryInput = {
   sourceId: string;
   sourceType: string;
   size: number | null;
@@ -10,7 +10,7 @@ export type BookListQueryInput = {
   after: string | null;
 };
 
-export type BookListQuery = {
+export type GetListBooksQuery = {
   before: string | null;
   after: string | null;
   data: {
@@ -35,13 +35,17 @@ export type BookListQuery = {
   }[];
 };
 
-export const getBookList =
+export const getListBooks =
   (client: Client) =>
-  async ({ sourceId, sourceType, size, before, after }: BookListQueryInput) => {
+  async ({
+    sourceId,
+    sourceType,
+    size,
+    before,
+    after,
+  }: GetListBooksQueryInput) => {
     const sourceIndex =
-      sourceType === "Lists"
-        ? "list_items_by_list_ref"
-        : "genre_items_by_genre_ref";
+      sourceType === "Lists" ? "list_book_connections_by_listRef" : "TODO";
 
     try {
       const result = await client.query(
@@ -73,54 +77,64 @@ export const getBookList =
                   },
                   {
                     id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
-                    author: Q.Let(
-                      {
-                        authorDoc: Q.Get(
-                          Q.Select(["data", "author"], Q.Var("bookDoc"))
-                        ),
-                      },
-                      {
-                        id: Q.Select(["ref", "id"], Q.Var("authorDoc")),
-                        name: Q.Select(["data", "name"], Q.Var("authorDoc")),
-                        description: Q.Select(
-                          ["data", "description"],
-                          Q.Var("authorDoc")
-                        ),
-                      }
-                    ),
-                    image: Q.Select(["data", "image"], Q.Var("bookDoc")),
-                    description: Q.Select(
-                      ["data", "description"],
+                    googleBooksVolumeId: Q.Select(
+                      ["data", "googleBooksVolumeId"],
                       Q.Var("bookDoc")
                     ),
-                    listPrice: Q.Select(
-                      ["data", "listPrice"],
-                      Q.Var("bookDoc")
-                    ),
-                    price: Q.Select(["data", "price"], Q.Var("bookDoc")),
-                    bookshopUrl: Q.Select(
-                      ["data", "bookshopUrl"],
-                      Q.Var("bookDoc")
-                    ),
+                    title: Q.Select(["data", "title"], Q.Var("bookDoc")),
                     publisher: Q.Select(
                       ["data", "publisher"],
                       Q.Var("bookDoc")
                     ),
-                    publishDate: Q.Select(
-                      ["data", "publishDate"],
+                    publishedDate: Q.Select(
+                      ["data", "publishedDate"],
                       Q.Var("bookDoc")
                     ),
-                    dimensions: Q.Select(
-                      ["data", "dimensions"],
-                      Q.Var("bookDoc")
-                    ),
-                    language: Q.Select(["data", "language"], Q.Var("bookDoc")),
-                    coverType: Q.Select(
-                      ["data", "coverType"],
+                    description: Q.Select(
+                      ["data", "description"],
                       Q.Var("bookDoc")
                     ),
                     isbn: Q.Select(["data", "isbn"], Q.Var("bookDoc")),
-                    pages: Q.Select(["data", "pages"], Q.Var("bookDoc")),
+                    pageCount: Q.Select(
+                      ["data", "pageCount"],
+                      Q.Var("bookDoc")
+                    ),
+                    image: Q.Select(["data", "image"], Q.Var("bookDoc")),
+                    // author: Q.Let(
+                    //   {
+                    //     authorDoc: Q.Get(
+                    //       Q.Select(["data", "author"], Q.Var("bookDoc"))
+                    //     ),
+                    //   },
+                    //   {
+                    //     id: Q.Select(["ref", "id"], Q.Var("authorDoc")),
+                    //     name: Q.Select(["data", "name"], Q.Var("authorDoc")),
+                    //     description: Q.Select(
+                    //       ["data", "description"],
+                    //       Q.Var("authorDoc")
+                    //     ),
+                    //   }
+                    // ),
+
+                    // listPrice: Q.Select(
+                    //   ["data", "listPrice"],
+                    //   Q.Var("bookDoc")
+                    // ),
+                    // price: Q.Select(["data", "price"], Q.Var("bookDoc")),
+                    // bookshopUrl: Q.Select(
+                    //   ["data", "bookshopUrl"],
+                    //   Q.Var("bookDoc")
+                    // ),
+
+                    // dimensions: Q.Select(
+                    //   ["data", "dimensions"],
+                    //   Q.Var("bookDoc")
+                    // ),
+                    // language: Q.Select(["data", "language"], Q.Var("bookDoc")),
+                    // coverType: Q.Select(
+                    //   ["data", "coverType"],
+                    //   Q.Var("bookDoc")
+                    // ),
                   }
                 )
               )
@@ -142,9 +156,9 @@ export const getBookList =
         )
       );
 
-      // console.log("get-book-lists", JSON.stringify(result, null, 2));
+      console.log("get-book-list", JSON.stringify(result, null, 2));
 
-      return result as BookListQuery;
+      return result as GetListBooksQuery;
     } catch (e) {
       console.error(e);
       throw e;
@@ -165,9 +179,6 @@ type GoogleBookResponse = {
   };
 };
 
-// add book to author
-// add book to categorybookconnections
-
 type MappedBookData = {
   book: {
     googleBooksVolumeId: string;
@@ -183,34 +194,27 @@ type MappedBookData = {
   categories: { name: string; slug: string }[];
 };
 
-const upsertItem = ({
-  source,
+const maybeCreateDocument = ({
   index,
   indexTerms,
   collectionName,
+  documentData,
 }: {
-  source: Object;
   index: string;
   indexTerms: string[];
   collectionName: string;
+  documentData: Object;
 }) =>
   Q.Let(
-    {
-      sourceMatch: Q.Match(Q.Index(index), indexTerms),
-    },
-    Q.Select(
-      ["ref"],
-      Q.If(
-        Q.Exists(Q.Var("sourceMatch")),
-        Q.Update(Q.Select(["ref"], Q.Get(Q.Var("sourceMatch"))), {
-          data: source,
-        }),
-        Q.Create(collectionName, { data: source })
-      )
+    { sourceMatch: Q.Match(Q.Index(index), indexTerms) },
+    Q.If(
+      Q.Exists(Q.Var("sourceMatch")),
+      null,
+      Q.Create(collectionName, { data: documentData })
     )
   );
 
-const getOrCreateConnection = ({
+const maybeCreateConnection = ({
   edgeAName,
   edgeBName,
   edgeAIndex,
@@ -247,94 +251,18 @@ const getOrCreateConnection = ({
           Q.Var("edgeBRef"),
         ]),
       },
-      Q.Select(
-        ["ref"],
-        Q.If(
-          Q.Exists(Q.Var("connectionMatch")),
-          Q.Get(Q.Var("connectionMatch")),
-          Q.Create(connectionCollectionName, {
-            data: {
-              [edgeAName]: Q.Var("edgeARef"),
-              [edgeBName]: Q.Var("edgeBRef"),
-            },
-          })
-        )
+      Q.If(
+        Q.Exists(Q.Var("connectionMatch")),
+        null,
+        Q.Create(connectionCollectionName, {
+          data: {
+            [edgeAName]: Q.Var("edgeARef"),
+            [edgeBName]: Q.Var("edgeBRef"),
+          },
+        })
       )
     )
   );
-
-const getOrCreateBooks = async (
-  client: Client,
-  googleBooksDataArr: MappedBookData[]
-) => {
-  try {
-    const x = await client.query(
-      Q.Do(
-        ...googleBooksDataArr.reduce(
-          (acc, googleBooksData) => [
-            ...acc,
-            // upsert authors
-            ...googleBooksData.authors.map((author) =>
-              upsertItem({
-                source: author,
-                index: "unique_authors_by_slug",
-                indexTerms: [author.slug],
-                collectionName: "Authors",
-              })
-            ),
-            // upsert categories
-            ...googleBooksData.categories.map((category) =>
-              upsertItem({
-                source: category,
-                index: "unique_categories_by_slug",
-                indexTerms: [category.slug],
-                collectionName: "Categories",
-              })
-            ),
-            // upsert book
-            upsertItem({
-              source: googleBooksData.book,
-              index: "unique_books_by_google_books_volume_id",
-              indexTerms: [googleBooksData.book.googleBooksVolumeId],
-              collectionName: "Books",
-            }),
-            // upsert author book connections
-            ...googleBooksData.authors.map((author) =>
-              getOrCreateConnection({
-                edgeAName: "authorRef",
-                edgeBName: "bookRef",
-                edgeAIndex: "unique_authors_by_slug",
-                edgeAIndexTerms: [author.slug],
-                edgeBIndex: "unique_books_by_google_books_volume_id",
-                edgeBIndexTerms: [googleBooksData.book.googleBooksVolumeId],
-                connectionRefIndex: "unique_author_book_connections_by_refs",
-                connectionCollectionName: "AuthorBookConnections",
-              })
-            ),
-            // upsert category book connections
-            ...googleBooksData.categories.map((category) =>
-              getOrCreateConnection({
-                edgeAName: "categoryRef",
-                edgeBName: "bookRef",
-                edgeAIndex: "unique_categories_by_slug",
-                edgeAIndexTerms: [category.slug],
-                edgeBIndex: "unique_books_by_google_books_volume_id",
-                edgeBIndexTerms: [googleBooksData.book.googleBooksVolumeId],
-                connectionRefIndex: "unique_category_book_connections_by_refs",
-                connectionCollectionName: "CategoryBookConnections",
-              })
-            ),
-          ],
-          [] as Expr[]
-        )
-      )
-    );
-
-    console.log("x", x);
-  } catch (e) {
-    console.error(e);
-  }
-};
 
 const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
   const googleBookUri = `https://www.googleapis.com/books/v1/volumes/${googleBooksVolumeId}`;
@@ -372,87 +300,151 @@ const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
   } as MappedBookData;
 };
 
-export type UpsertBookListMutationInput = {
-  title: string;
-  googleBooksVolumeIds: string[];
-};
-
-export type UpsertBookListMutation = {
-  success: boolean;
-  list?: {
-    id: string;
-    title: string;
-    slug: string;
-  };
-};
-
-export const upsertBookList =
-  (client: Client) => async (bookList: UpsertBookListMutationInput) => {
-    const googleBooksData = await Promise.all(
-      bookList.googleBooksVolumeIds.map((googleBooksVolumeId) =>
-        fetchFromGoogleBooks(googleBooksVolumeId)
+const maybeCreateBookAuthorsAndCategories = async (
+  client: Client,
+  googleBooksVolumeId: string
+) => {
+  if (
+    await client.query(
+      Q.Exists(
+        Q.Match(
+          Q.Index("unique_books_by_google_books_volume_id"),
+          googleBooksVolumeId
+        )
       )
+    )
+  ) {
+    console.log(`Book ${googleBooksVolumeId} exists. Skip fetch & create.`);
+    return;
+  }
+
+  console.log(`Fetching ${googleBooksVolumeId} from Google Books...`);
+  const { book, authors, categories } = await fetchFromGoogleBooks(
+    googleBooksVolumeId
+  );
+
+  return await client.query(
+    Q.Do(
+      ...authors.map((author) =>
+        maybeCreateDocument({
+          index: "unique_authors_by_slug",
+          indexTerms: [author.slug],
+          collectionName: "Authors",
+          documentData: author,
+        })
+      ),
+      ...categories.map((category) =>
+        maybeCreateDocument({
+          index: "unique_categories_by_slug",
+          indexTerms: [category.slug],
+          collectionName: "Categories",
+          documentData: category,
+        })
+      ),
+      maybeCreateDocument({
+        index: "unique_books_by_google_books_volume_id",
+        indexTerms: [googleBooksVolumeId],
+        collectionName: "Books",
+        documentData: book,
+      }),
+      ...authors.map((author) =>
+        maybeCreateConnection({
+          edgeAName: "authorRef",
+          edgeBName: "bookRef",
+          edgeAIndex: "unique_authors_by_slug",
+          edgeAIndexTerms: [author.slug],
+          edgeBIndex: "unique_books_by_google_books_volume_id",
+          edgeBIndexTerms: [googleBooksVolumeId],
+          connectionRefIndex: "unique_author_book_connections_by_refs",
+          connectionCollectionName: "AuthorBookConnections",
+        })
+      ),
+      ...categories.map((category) =>
+        maybeCreateConnection({
+          edgeAName: "categoryRef",
+          edgeBName: "bookRef",
+          edgeAIndex: "unique_categories_by_slug",
+          edgeAIndexTerms: [category.slug],
+          edgeBIndex: "unique_books_by_google_books_volume_id",
+          edgeBIndexTerms: [googleBooksVolumeId],
+          connectionRefIndex: "unique_category_book_connections_by_refs",
+          connectionCollectionName: "CategoryBookConnections",
+        })
+      )
+    )
+  );
+};
+
+export type AddBookToListMutationInput = {
+  listSlug: string;
+  googleBooksVolumeId: string;
+};
+
+export type AddBookToListMutation = boolean;
+
+export const addBookToList =
+  (client: Client) =>
+  async ({ googleBooksVolumeId, listSlug }: AddBookToListMutationInput) => {
+    await maybeCreateBookAuthorsAndCategories(client, googleBooksVolumeId);
+
+    await client.query(
+      maybeCreateConnection({
+        edgeAName: "listRef",
+        edgeBName: "bookRef",
+        edgeAIndex: "unique_lists_by_slug",
+        edgeAIndexTerms: [listSlug],
+        edgeBIndex: "unique_books_by_google_books_volume_id",
+        edgeBIndexTerms: [googleBooksVolumeId],
+        connectionRefIndex: "unique_list_book_connections_by_refs",
+        connectionCollectionName: "ListBookConnections",
+      })
     );
 
-    await getOrCreateBooks(client, googleBooksData);
+    return true as AddBookToListMutation;
+  };
 
-    const listSlug = slugify(bookList.title, { lower: true, strict: true });
+export type CreateListMutationInput = string;
+export type CreateListMutation = boolean;
+
+export const createList =
+  (client: Client) => async (title: CreateListMutationInput) => {
+    const slug = slugify(title, { lower: true, strict: true });
 
     const list = await client.query(
-      Q.Do(
-        // create the list
-        upsertItem({
-          source: { title: bookList.title, slug: listSlug },
-          index: "unique_lists_by_slug",
-          indexTerms: [listSlug],
-          collectionName: "Lists",
-        }),
-        // delete existing list items
-        Q.Let(
-          {
-            listRef: Q.Select(
-              "ref",
-              Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
-            ),
-          },
-          Q.Map(
-            Q.Paginate(
-              Q.Match(
-                Q.Index("list_book_connections_by_listRef"),
-                Q.Var("listRef")
-              )
-            ),
-            Q.Lambda(
-              "listBookConnection",
-              Q.Delete(Q.Select("ref", Q.Get(Q.Var("listBookConnection"))))
-            )
-          )
-        ),
-        // create the list items
-        ...bookList.googleBooksVolumeIds.map((googleBooksVolumeId) =>
-          getOrCreateConnection({
-            edgeAName: "listRef",
-            edgeBName: "bookRef",
-            edgeAIndex: "unique_lists_by_slug",
-            edgeAIndexTerms: [listSlug],
-            edgeBIndex: "unique_books_by_google_books_volume_id",
-            edgeBIndexTerms: [googleBooksVolumeId],
-            connectionRefIndex: "unique_list_book_connections_by_refs",
-            connectionCollectionName: "ListBookConnections",
-          })
-        ),
-        Q.Let(
-          {
-            listDoc: Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug)),
-          },
-          {
-            id: Q.Select(["ref", "id"], Q.Var("listDoc")),
-            title: bookList.title,
-            slug: listSlug,
-          }
+      Q.Let(
+        {
+          listMatch: Q.Match(Q.Index("unique_lists_by_slug"), slug),
+        },
+        Q.If(
+          Q.Exists(Q.Var("listMatch")),
+          null,
+          Q.Select("ref", Q.Create("Lists", { data: { title, slug } }))
         )
       )
     );
 
-    return { success: true, list } as UpsertBookListMutation;
+    return !!list as CreateListMutation;
+  };
+
+export type GetListQueryInput = string;
+export type GetListQuery = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
+export const getList =
+  (client: Client) => async (listSlug: GetListQueryInput) => {
+    const result = await client.query(
+      Q.Let(
+        { listDoc: Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug)) },
+        {
+          id: Q.Select(["ref", "id"], Q.Var("listDoc")),
+          title: Q.Select(["data", "title"], Q.Var("listDoc")),
+          slug: Q.Select(["data", "slug"], Q.Var("listDoc")),
+        }
+      )
+    );
+
+    return result as GetListQuery;
   };

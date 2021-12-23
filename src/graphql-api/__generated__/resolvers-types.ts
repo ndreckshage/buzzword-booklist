@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { ComponentQuery } from '../repo/Component';
 import { LayoutQuery } from '../repo/Layout';
+import { GetListQuery } from '../repo/BookList';
 import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -37,7 +38,9 @@ export type BannerComponent = Node & {
 
 export type Book = Node & {
   __typename?: 'Book';
+  googleBooksVolumeId: Scalars['String'];
   id: Scalars['ID'];
+  image: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -85,14 +88,6 @@ export type BookGridComponent = Node & {
 export type BookGridItemComponent = Node & {
   __typename?: 'BookGridItemComponent';
   id: Scalars['ID'];
-};
-
-export type BookList = Node & {
-  __typename?: 'BookList';
-  books: Array<Book>;
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  title: Scalars['String'];
 };
 
 export type BookListComponent = Node & {
@@ -166,19 +161,57 @@ export enum LinkVariant {
   Default = 'DEFAULT'
 }
 
-export type ListInput = {
-  googleBooksVolumeIds: Array<Scalars['String']>;
+export type List = Node & {
+  __typename?: 'List';
+  books?: Maybe<ListBookConnection>;
+  id: Scalars['ID'];
+  slug: Scalars['String'];
   title: Scalars['String'];
+};
+
+
+export type ListBooksArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+export type ListBookConnection = {
+  __typename?: 'ListBookConnection';
+  edges?: Maybe<Array<Maybe<ListBookEdge>>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ListBookEdge = {
+  __typename?: 'ListBookEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Book>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  upsertList?: Maybe<BookList>;
+  addBookToList?: Maybe<Scalars['Boolean']>;
+  createList?: Maybe<Scalars['Boolean']>;
+  removeBookFromList?: Maybe<Scalars['Boolean']>;
 };
 
 
-export type MutationUpsertListArgs = {
-  listInput: ListInput;
+export type MutationAddBookToListArgs = {
+  googleBooksVolumeId: Scalars['String'];
+  listSlug: Scalars['String'];
+};
+
+
+export type MutationCreateListArgs = {
+  title: Scalars['String'];
+};
+
+
+export type MutationRemoveBookFromListArgs = {
+  googleBooksVolumeId: Scalars['String'];
+  listSlug: Scalars['String'];
 };
 
 export type Node = {
@@ -198,6 +231,7 @@ export type Query = {
   bookPageLayout?: Maybe<Layout>;
   collectionPageLayout?: Maybe<Layout>;
   layout?: Maybe<Layout>;
+  list?: Maybe<List>;
   node?: Maybe<Node>;
 };
 
@@ -215,6 +249,11 @@ export type QueryCollectionPageLayoutArgs = {
 
 export type QueryLayoutArgs = {
   layoutKey: Scalars['String'];
+};
+
+
+export type QueryListArgs = {
+  listSlug: Scalars['String'];
 };
 
 
@@ -301,7 +340,6 @@ export type ResolversTypes = {
   BookCarouselItemComponentEdge: ResolverTypeWrapper<BookCarouselItemComponentEdge>;
   BookGridComponent: ResolverTypeWrapper<BookGridComponent>;
   BookGridItemComponent: ResolverTypeWrapper<BookGridItemComponent>;
-  BookList: ResolverTypeWrapper<BookList>;
   BookListComponent: ResolverTypeWrapper<BookListComponent>;
   BookListItemComponent: ResolverTypeWrapper<BookListItemComponent>;
   BookPageActionComponent: ResolverTypeWrapper<BookPageActionComponent>;
@@ -319,9 +357,11 @@ export type ResolversTypes = {
   Layout: ResolverTypeWrapper<LayoutQuery>;
   LinkComponent: ResolverTypeWrapper<LinkComponent>;
   LinkVariant: LinkVariant;
-  ListInput: ListInput;
+  List: ResolverTypeWrapper<GetListQuery>;
+  ListBookConnection: ResolverTypeWrapper<ListBookConnection>;
+  ListBookEdge: ResolverTypeWrapper<ListBookEdge>;
   Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['AlertComponent'] | ResolversTypes['BannerComponent'] | ResolversTypes['Book'] | ResolversTypes['BookCarouselComponent'] | ResolversTypes['BookCarouselItemComponent'] | ResolversTypes['BookGridComponent'] | ResolversTypes['BookGridItemComponent'] | ResolversTypes['BookList'] | ResolversTypes['BookListComponent'] | ResolversTypes['BookListItemComponent'] | ResolversTypes['BookPageActionComponent'] | ResolversTypes['BookPageAuthorComponent'] | ResolversTypes['BookPageDescriptionComponent'] | ResolversTypes['BookPageDetailsComponent'] | ResolversTypes['BookPageGenreComponent'] | ResolversTypes['BookPageImageComponent'] | ResolversTypes['BookPagePriceComponent'] | ResolversTypes['HeroComponent'] | ResolversTypes['Layout'];
+  Node: ResolversTypes['AlertComponent'] | ResolversTypes['BannerComponent'] | ResolversTypes['Book'] | ResolversTypes['BookCarouselComponent'] | ResolversTypes['BookCarouselItemComponent'] | ResolversTypes['BookGridComponent'] | ResolversTypes['BookGridItemComponent'] | ResolversTypes['BookListComponent'] | ResolversTypes['BookListItemComponent'] | ResolversTypes['BookPageActionComponent'] | ResolversTypes['BookPageAuthorComponent'] | ResolversTypes['BookPageDescriptionComponent'] | ResolversTypes['BookPageDetailsComponent'] | ResolversTypes['BookPageGenreComponent'] | ResolversTypes['BookPageImageComponent'] | ResolversTypes['BookPagePriceComponent'] | ResolversTypes['HeroComponent'] | ResolversTypes['Layout'] | ResolversTypes['List'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -338,7 +378,6 @@ export type ResolversParentTypes = {
   BookCarouselItemComponentEdge: BookCarouselItemComponentEdge;
   BookGridComponent: BookGridComponent;
   BookGridItemComponent: BookGridItemComponent;
-  BookList: BookList;
   BookListComponent: BookListComponent;
   BookListItemComponent: BookListItemComponent;
   BookPageActionComponent: BookPageActionComponent;
@@ -355,9 +394,11 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   Layout: LayoutQuery;
   LinkComponent: LinkComponent;
-  ListInput: ListInput;
+  List: GetListQuery;
+  ListBookConnection: ListBookConnection;
+  ListBookEdge: ListBookEdge;
   Mutation: {};
-  Node: ResolversParentTypes['AlertComponent'] | ResolversParentTypes['BannerComponent'] | ResolversParentTypes['Book'] | ResolversParentTypes['BookCarouselComponent'] | ResolversParentTypes['BookCarouselItemComponent'] | ResolversParentTypes['BookGridComponent'] | ResolversParentTypes['BookGridItemComponent'] | ResolversParentTypes['BookList'] | ResolversParentTypes['BookListComponent'] | ResolversParentTypes['BookListItemComponent'] | ResolversParentTypes['BookPageActionComponent'] | ResolversParentTypes['BookPageAuthorComponent'] | ResolversParentTypes['BookPageDescriptionComponent'] | ResolversParentTypes['BookPageDetailsComponent'] | ResolversParentTypes['BookPageGenreComponent'] | ResolversParentTypes['BookPageImageComponent'] | ResolversParentTypes['BookPagePriceComponent'] | ResolversParentTypes['HeroComponent'] | ResolversParentTypes['Layout'];
+  Node: ResolversParentTypes['AlertComponent'] | ResolversParentTypes['BannerComponent'] | ResolversParentTypes['Book'] | ResolversParentTypes['BookCarouselComponent'] | ResolversParentTypes['BookCarouselItemComponent'] | ResolversParentTypes['BookGridComponent'] | ResolversParentTypes['BookGridItemComponent'] | ResolversParentTypes['BookListComponent'] | ResolversParentTypes['BookListItemComponent'] | ResolversParentTypes['BookPageActionComponent'] | ResolversParentTypes['BookPageAuthorComponent'] | ResolversParentTypes['BookPageDescriptionComponent'] | ResolversParentTypes['BookPageDetailsComponent'] | ResolversParentTypes['BookPageGenreComponent'] | ResolversParentTypes['BookPageImageComponent'] | ResolversParentTypes['BookPagePriceComponent'] | ResolversParentTypes['HeroComponent'] | ResolversParentTypes['Layout'] | ResolversParentTypes['List'];
   PageInfo: PageInfo;
   Query: {};
   String: Scalars['String'];
@@ -375,7 +416,9 @@ export type BannerComponentResolvers<ContextType = ResolverContext, ParentType e
 };
 
 export type BookResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
+  googleBooksVolumeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -415,14 +458,6 @@ export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType
 
 export type BookGridItemComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridItemComponent'] = ResolversParentTypes['BookGridItemComponent']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BookListResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookList'] = ResolversParentTypes['BookList']> = {
-  books?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -494,12 +529,35 @@ export type LinkComponentResolvers<ContextType = ResolverContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ListResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = {
+  books?: Resolver<Maybe<ResolversTypes['ListBookConnection']>, ParentType, ContextType, RequireFields<ListBooksArgs, never>>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ListBookConnectionResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['ListBookConnection'] = ResolversParentTypes['ListBookConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['ListBookEdge']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ListBookEdgeResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['ListBookEdge'] = ResolversParentTypes['ListBookEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  upsertList?: Resolver<Maybe<ResolversTypes['BookList']>, ParentType, ContextType, RequireFields<MutationUpsertListArgs, 'listInput'>>;
+  addBookToList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddBookToListArgs, 'googleBooksVolumeId' | 'listSlug'>>;
+  createList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateListArgs, 'title'>>;
+  removeBookFromList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listSlug'>>;
 };
 
 export type NodeResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'AlertComponent' | 'BannerComponent' | 'Book' | 'BookCarouselComponent' | 'BookCarouselItemComponent' | 'BookGridComponent' | 'BookGridItemComponent' | 'BookList' | 'BookListComponent' | 'BookListItemComponent' | 'BookPageActionComponent' | 'BookPageAuthorComponent' | 'BookPageDescriptionComponent' | 'BookPageDetailsComponent' | 'BookPageGenreComponent' | 'BookPageImageComponent' | 'BookPagePriceComponent' | 'HeroComponent' | 'Layout', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AlertComponent' | 'BannerComponent' | 'Book' | 'BookCarouselComponent' | 'BookCarouselItemComponent' | 'BookGridComponent' | 'BookGridItemComponent' | 'BookListComponent' | 'BookListItemComponent' | 'BookPageActionComponent' | 'BookPageAuthorComponent' | 'BookPageDescriptionComponent' | 'BookPageDetailsComponent' | 'BookPageGenreComponent' | 'BookPageImageComponent' | 'BookPagePriceComponent' | 'HeroComponent' | 'Layout' | 'List', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -515,6 +573,7 @@ export type QueryResolvers<ContextType = ResolverContext, ParentType extends Res
   bookPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryBookPageLayoutArgs, 'isbn'>>;
   collectionPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryCollectionPageLayoutArgs, 'collectionId' | 'collectionType'>>;
   layout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'layoutKey'>>;
+  list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 };
 
@@ -528,7 +587,6 @@ export type Resolvers<ContextType = ResolverContext> = {
   BookCarouselItemComponentEdge?: BookCarouselItemComponentEdgeResolvers<ContextType>;
   BookGridComponent?: BookGridComponentResolvers<ContextType>;
   BookGridItemComponent?: BookGridItemComponentResolvers<ContextType>;
-  BookList?: BookListResolvers<ContextType>;
   BookListComponent?: BookListComponentResolvers<ContextType>;
   BookListItemComponent?: BookListItemComponentResolvers<ContextType>;
   BookPageActionComponent?: BookPageActionComponentResolvers<ContextType>;
@@ -542,6 +600,9 @@ export type Resolvers<ContextType = ResolverContext> = {
   HeroComponent?: HeroComponentResolvers<ContextType>;
   Layout?: LayoutResolvers<ContextType>;
   LinkComponent?: LinkComponentResolvers<ContextType>;
+  List?: ListResolvers<ContextType>;
+  ListBookConnection?: ListBookConnectionResolvers<ContextType>;
+  ListBookEdge?: ListBookEdgeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;

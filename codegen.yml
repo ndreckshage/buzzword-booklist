@@ -7,6 +7,7 @@ generates:
         BookCarouselComponent: ../repo/Component#ComponentQuery
         Component: ../repo/Component#ComponentQuery
         Layout: ../repo/Layout#LayoutQuery
+        List: ../repo/BookList#GetListQuery
     plugins:
       - typescript
       - typescript-resolvers

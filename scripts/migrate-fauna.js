@@ -147,17 +147,36 @@ const createListBookConnections = () =>
     )
   );
 
+const wipeAllCollections = () =>
+  client.query(
+    Q.Do(
+      ...[
+        "AuthorBookConnections",
+        "Authors",
+        "Books",
+        "Categories",
+        "CategoryBookConnections",
+        "ListBookConnections",
+        "Lists",
+      ].map((collection) =>
+        Q.Map(
+          Q.Paginate(Q.Documents(Q.Collection(collection)), { size: 1000 }),
+          Q.Lambda("docRef", Q.Delete(Q.Var("docRef")))
+        )
+      )
+    )
+  );
+
 const main = async () => {
   // await createBooks();
-
   // await createAuthors();
   // await createAuthorBookConnections();
-
   // await createCategories();
   // await createCategoryBookConnections();
-
-  await createLists();
-  await createListBookConnections();
+  // await createLists();
+  // await createListBookConnections();
+  // For starting clean...
+  // await wipeAllCollections();
 };
 
 main().catch((err) => {

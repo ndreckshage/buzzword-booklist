@@ -136,32 +136,61 @@ export default /* GraphQL */ `
     components: [Component!]!
   }
 
+  # type Author implements Node {
+  #   id: ID!
+  #   name: String!
+  #   slug: String!
+  # }
+
+  # type Category implements Node {
+  #   id: ID!
+  #   name: String!
+  #   slug: String!
+  # }
+
+  type Book implements Node {
+    id: ID!
+    googleBooksVolumeId: String!
+    title: String!
+    image: String!
+    # authors: [Author!]!
+    # categories: [Category!]!
+  }
+
+  type ListBookEdge {
+    cursor: String
+    node: Book
+  }
+
+  type ListBookConnection {
+    totalCount: Int!
+    edges: [ListBookEdge]
+    pageInfo: PageInfo!
+  }
+
+  type List implements Node {
+    id: ID!
+    title: String!
+    slug: String!
+    books(
+      first: Int
+      after: String
+      last: Int
+      before: String
+    ): ListBookConnection
+  }
+
   type Query {
     layout(layoutKey: String!): Layout
     collectionPageLayout(collectionType: String!, collectionId: String!): Layout
     bookPageLayout(isbn: Int!): Layout
+    list(listSlug: String!): List
     node(id: ID!): Node
   }
 
-  type Book implements Node {
-    id: ID!
-    title: String!
-  }
-
-  type BookList implements Node {
-    id: ID!
-    title: String!
-    slug: String!
-    books: [Book!]!
-  }
-
-  input ListInput {
-    title: String!
-    googleBooksVolumeIds: [String!]!
-  }
-
   type Mutation {
-    upsertList(listInput: ListInput!): BookList
-    # upsertLayout: Layout
+    createList(title: String!): Boolean
+    addBookToList(listSlug: String!, googleBooksVolumeId: String!): Boolean
+    removeBookFromList(listSlug: String!, googleBooksVolumeId: String!): Boolean
   }
 `;

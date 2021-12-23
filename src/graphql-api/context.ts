@@ -3,12 +3,18 @@ import DataLoader from "dataloader";
 
 import { getLayouts, LayoutQuery } from "./repo/Layout";
 import {
-  getBookList,
-  upsertBookList,
-  BookListQuery,
-  BookListQueryInput,
-  UpsertBookListMutation,
-  UpsertBookListMutationInput,
+  getList,
+  GetListQuery,
+  GetListQueryInput,
+  getListBooks,
+  GetListBooksQuery,
+  GetListBooksQueryInput,
+  createList,
+  CreateListMutation,
+  CreateListMutationInput,
+  addBookToList,
+  AddBookToListMutation,
+  AddBookToListMutationInput,
 } from "./repo/BookList";
 import {
   getBookCarouselComponents,
@@ -38,12 +44,16 @@ export type ResolverContext = {
   };
   repo: {
     bookList: {
-      getBookList: (
-        booklistQueryInput: BookListQueryInput
-      ) => Promise<BookListQuery>;
-      upsertBookList: (
-        bookList: UpsertBookListMutationInput
-      ) => Promise<UpsertBookListMutation>;
+      getList: (listSlug: GetListQueryInput) => Promise<GetListQuery>;
+      getListBooks: (
+        input: GetListBooksQueryInput
+      ) => Promise<GetListBooksQuery>;
+      createList: (
+        title: CreateListMutationInput
+      ) => Promise<CreateListMutation>;
+      addBookToList: (
+        input: AddBookToListMutationInput
+      ) => Promise<AddBookToListMutation>;
     };
   };
 };
@@ -60,8 +70,10 @@ export function createContext() {
     },
     repo: {
       bookList: {
-        getBookList: getBookList(client),
-        upsertBookList: upsertBookList(client),
+        getList: getList(client),
+        getListBooks: getListBooks(client),
+        createList: createList(client),
+        addBookToList: addBookToList(client),
       },
     },
   };

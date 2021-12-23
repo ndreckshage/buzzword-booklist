@@ -2,11 +2,13 @@ import { QueryResolvers } from "../__generated__/resolvers-types";
 import { ResolverContext } from "../context";
 
 export default {
-  async layout(obj, { layoutKey }, { loaders }) {
-    return loaders.layoutLoader.load(layoutKey);
-  },
+  layout: (parent, { layoutKey }, { loaders }) =>
+    loaders.layoutLoader.load(layoutKey),
 
-  async node(obj, args, context, info) {
+  list: (parent, { listSlug }, context) =>
+    context.repo.bookList.getList(listSlug),
+
+  async node(parent, args, context, info) {
     return null;
   },
 } as QueryResolvers<ResolverContext>;
