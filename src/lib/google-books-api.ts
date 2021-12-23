@@ -1,15 +1,9 @@
 import suspenseWrapPromise from "./suspense-wrap-promise";
 
 export type GoogleBook = {
-  googleBooksId: string;
+  googleBooksVolumeId: string;
   title: string;
   authors: string[];
-  publisher: string;
-  publishedDate: string;
-  description: string;
-  isbn13: string;
-  pageCount: number | null;
-  categories: string[];
   image: string;
 };
 
@@ -31,26 +25,12 @@ const fetchBooks = async (value: string) => {
           volumeInfo: {
             title?: string;
             authors?: string[];
-            publisher?: string;
-            publishedDate?: string;
-            description?: string;
-            industryIdentifiers?: { type: string; identifier: string }[];
-            pageCount?: number;
-            categories?: string[];
             imageLinks?: { thumbnail?: "" };
           };
         }) => ({
-          googleBooksId: rawBook.id,
+          googleBooksVolumeId: rawBook.id,
           title: rawBook.volumeInfo.title ?? "",
           authors: rawBook.volumeInfo.authors ?? [],
-          publisher: rawBook.volumeInfo.publisher ?? "",
-          publishedDate: rawBook.volumeInfo.publishedDate ?? "",
-          description: rawBook.volumeInfo.description ?? "",
-          isbn13: (rawBook.volumeInfo.industryIdentifiers ?? []).find(
-            (i) => i.type === "ISBN_13"
-          )?.identifier,
-          pageCount: rawBook.volumeInfo.pageCount ?? null,
-          categories: rawBook.volumeInfo.categories ?? [],
           image: rawBook.volumeInfo.imageLinks?.thumbnail ?? "",
         })
       )

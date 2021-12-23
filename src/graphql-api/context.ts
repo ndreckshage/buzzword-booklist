@@ -4,8 +4,11 @@ import DataLoader from "dataloader";
 import { getLayouts, LayoutQuery } from "./repo/Layout";
 import {
   getBookList,
+  upsertBookList,
   BookListQuery,
   BookListQueryInput,
+  UpsertBookListMutation,
+  UpsertBookListMutationInput,
 } from "./repo/BookList";
 import {
   getBookCarouselComponents,
@@ -13,13 +16,13 @@ import {
 } from "./repo/BookCarouselComponent";
 
 export default function createClient() {
-  const FAUNA_SECRET = process.env.FAUNA_ADMIN_KEY;
-  if (!FAUNA_SECRET) {
-    throw new Error("MISSING FAUNA_ADMIN_KEY");
+  const FAUNA_KEY = process.env.FAUNA_KEY;
+  if (!FAUNA_KEY) {
+    throw new Error("MISSING FAUNA_KEY");
   }
 
   return new Client({
-    secret: FAUNA_SECRET,
+    secret: FAUNA_KEY,
     domain: "db.us.fauna.com",
   });
 }
@@ -33,10 +36,15 @@ export type ResolverContext = {
       string
     >;
   };
-  queries: {
-    getBookList: (
-      booklistQueryInput: BookListQueryInput
-    ) => Promise<BookListQuery>;
+  repo: {
+    bookList: {
+      getBookList: (
+        booklistQueryInput: BookListQueryInput
+      ) => Promise<BookListQuery>;
+      upsertBookList: (
+        bookList: UpsertBookListMutationInput
+      ) => Promise<UpsertBookListMutation>;
+    };
   };
 };
 
@@ -50,8 +58,11 @@ export function createContext() {
         getBookCarouselComponents(client)
       ),
     },
-    queries: {
-      getBookList: getBookList(client),
+    repo: {
+      bookList: {
+        getBookList: getBookList(client),
+        upsertBookList: upsertBookList(client),
+      },
     },
   };
 }

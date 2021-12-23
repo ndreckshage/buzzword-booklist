@@ -67,11 +67,14 @@ feature toggles:
 
 NOTES / TODOS:
 
+- now that I can insert books ok ... create layout collections and view the list i created
+
 - look at what indexes im using and adjust import script
 - for image, cut the ? and generate that dynamically with next/image
 - update to openlibrary api. on list create page .. create list by isbn. search / import from open library.
 - slugify books on import
 - google books api ... create list just use typeahead google books... then find by google id or create.
+- do vs let https://stackoverflow.com/questions/69539411/can-i-run-multiple-faunadb-transactions-in-the-one-request
 
 BLOG POST IMPLEMENTATION:
 

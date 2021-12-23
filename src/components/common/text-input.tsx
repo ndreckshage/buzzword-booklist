@@ -15,6 +15,7 @@ const TextInput = (props: InputProps) => {
         overrideClassNames
       )}
       type="text"
+      autoComplete="off"
       {...rest}
     />
   );

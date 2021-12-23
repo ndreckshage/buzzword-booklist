@@ -24,7 +24,7 @@ export default {
     };
   },
 
-  async items({ id }, { first, after, last, before }, { loaders, queries }) {
+  async items({ id }, { first, after, last, before }, { loaders, repo }) {
     if (first && last) {
       throw new Error("first and last used together");
     } else if ((first && first < 0) || (last && last < 0)) {
@@ -34,7 +34,7 @@ export default {
     const { sourceId, sourceType, count } =
       await loaders.bookCarouselComponentLoader.load(id);
 
-    const results = await queries.getBookList({
+    const results = await repo.bookList.getBookList({
       sourceId,
       sourceType,
       size: first || last || null,

@@ -143,15 +143,25 @@ export default /* GraphQL */ `
     node(id: ID!): Node
   }
 
-  type List {
+  type Book implements Node {
     id: ID!
+    title: String!
+  }
+
+  type BookList implements Node {
+    id: ID!
+    title: String!
+    slug: String!
+    books: [Book!]!
+  }
+
+  input ListInput {
+    title: String!
+    googleBooksVolumeIds: [String!]!
   }
 
   type Mutation {
-    importBook(isbn: String!): Boolean!
-    createList(title: String!, isbns: [String!]!): List
-    # updateList: List
-    # createLayout: Layout
-    # updateLayout: Layout
+    upsertList(listInput: ListInput!): BookList
+    # upsertLayout: Layout
   }
 `;
