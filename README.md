@@ -28,56 +28,31 @@ list manager (new / edit / delete)
 book manager (new / edit / delete)
 missing (author manager; genre manager)
 
-# notes
+## NOTES
 
-- bookshop.org inspired demo
-- scrape some lists for data
-- lists / carousels
-- create / add to list
-- lazy load more lists
-
-auth:
-
-- auth0 with fauna integration
-
-pages:
-
-- home page
-- list view
-- create list
-- edit list
-- book description view
-
-cms:
-
-- titles of the sections
-- books in the list
-- order of components
-- whether the sale banner shows between components
-
-ab tests:
-
-- showing the price
-- color of the button
-
-feature toggles:
-
-- maintenance mode
-- creating / editing lists
-
-NOTES / TODOS:
-
-- now that I can insert books ok ... create layout collections and view the list i created
 - dynamic routes dont work client side. useEffect for example. needed to switch to query params
-
-- look at what indexes im using and adjust import script
-- for image, cut the ? and generate that dynamically with next/image
-- update to openlibrary api. on list create page .. create list by isbn. search / import from open library.
 - slugify books on import
 - google books api ... create list just use typeahead google books... then find by google id or create.
 - do vs let https://stackoverflow.com/questions/69539411/can-i-run-multiple-faunadb-transactions-in-the-one-request
 
-BLOG POST IMPLEMENTATION:
+## TODOS
+
+- create temp layout + component collections to experiment
+- layout create
+- layout edit
+- add github oauth
+- lists view mine
+- layouts view mine
+- convert to relay / react-fetch / etc
+- protect the various lists / layouts
+- limit query depth / something. protect gql.
+- make it look a lot prettier
+- allow a list to specify between grid / list
+- get the node query working
+- rename slug to key in various places
+- begin planning blog post!
+
+## BLOG POST IMPLEMENTATION:
 
 - Setup Nextjs
 - Setup Graphql

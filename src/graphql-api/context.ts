@@ -23,6 +23,7 @@ import {
   getBookCarouselComponents,
   BookCarouselComponentQuery,
 } from "./repo/BookCarouselComponent";
+import { getComponents, ComponentQuery } from "./repo/Component";
 
 export default function createClient() {
   const FAUNA_KEY = process.env.FAUNA_KEY;
@@ -39,6 +40,7 @@ export default function createClient() {
 export type ResolverContext = {
   loaders: {
     layoutLoader: DataLoader<string, LayoutQuery, string>;
+    componentLoader: DataLoader<string, ComponentQuery, string>;
     bookCarouselComponentLoader: DataLoader<
       string,
       BookCarouselComponentQuery,
@@ -70,6 +72,7 @@ export function createContext() {
   return {
     loaders: {
       layoutLoader: new DataLoader(getLayouts(client)),
+      componentLoader: new DataLoader(getComponents(client)),
       bookCarouselComponentLoader: new DataLoader(
         getBookCarouselComponents(client)
       ),

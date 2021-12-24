@@ -140,6 +140,7 @@ export type Component = AlertComponent | BannerComponent | BookCarouselComponent
 export type HeroComponent = Node & {
   __typename?: 'HeroComponent';
   id: Scalars['ID'];
+  subTitle: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -147,6 +148,7 @@ export type Layout = Node & {
   __typename?: 'Layout';
   components: Array<Component>;
   id: Scalars['ID'];
+  key: Scalars['String'];
 };
 
 export type LinkComponent = {
@@ -237,12 +239,12 @@ export type Query = {
 
 
 export type QueryBookPageLayoutArgs = {
-  isbn: Scalars['Int'];
+  googleBooksVolumeId: Scalars['String'];
 };
 
 
 export type QueryCollectionPageLayoutArgs = {
-  collectionId: Scalars['String'];
+  collectionSlug: Scalars['String'];
   collectionType: Scalars['String'];
 };
 
@@ -512,6 +514,7 @@ export type ComponentResolvers<ContextType = ResolverContext, ParentType extends
 
 export type HeroComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['HeroComponent'] = ResolversParentTypes['HeroComponent']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  subTitle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -519,6 +522,7 @@ export type HeroComponentResolvers<ContextType = ResolverContext, ParentType ext
 export type LayoutResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Layout'] = ResolversParentTypes['Layout']> = {
   components?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -570,8 +574,8 @@ export type PageInfoResolvers<ContextType = ResolverContext, ParentType extends 
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  bookPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryBookPageLayoutArgs, 'isbn'>>;
-  collectionPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryCollectionPageLayoutArgs, 'collectionId' | 'collectionType'>>;
+  bookPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryBookPageLayoutArgs, 'googleBooksVolumeId'>>;
+  collectionPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryCollectionPageLayoutArgs, 'collectionSlug' | 'collectionType'>>;
   layout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'layoutKey'>>;
   list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;

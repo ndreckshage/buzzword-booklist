@@ -113,6 +113,7 @@ export default /* GraphQL */ `
   type HeroComponent implements Node {
     id: ID!
     title: String!
+    subTitle: String!
   }
 
   union Component =
@@ -133,6 +134,7 @@ export default /* GraphQL */ `
 
   type Layout implements Node {
     id: ID!
+    key: String!
     components: [Component!]!
   }
 
@@ -168,8 +170,11 @@ export default /* GraphQL */ `
 
   type Query {
     layout(layoutKey: String!): Layout
-    collectionPageLayout(collectionType: String!, collectionId: String!): Layout
-    bookPageLayout(isbn: Int!): Layout
+    collectionPageLayout(
+      collectionType: String!
+      collectionSlug: String!
+    ): Layout
+    bookPageLayout(googleBooksVolumeId: String!): Layout
     list(listSlug: String!): List
     node(id: ID!): Node
   }

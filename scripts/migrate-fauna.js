@@ -147,6 +147,73 @@ const createListBookConnections = () =>
     )
   );
 
+const createLayouts = () =>
+  client.query(
+    Q.Let(
+      {
+        collectionRef: Q.Select(
+          ["ref"],
+          Q.CreateCollection({ name: "Layouts" })
+        ),
+      },
+      Q.CreateIndex({
+        name: "unique_layouts_by_key",
+        source: Q.Var("collectionRef"),
+        terms: [{ field: ["data", "key"] }],
+        unique: true,
+      })
+    )
+  );
+
+const createComponents = () =>
+  client.query(
+    Q.Let(
+      {
+        collectionRef: Q.Select(
+          ["ref"],
+          Q.CreateCollection({ name: "Components" })
+        ),
+      },
+      {}
+    )
+  );
+
+const createLayoutComponentConnections = () =>
+  client.query(
+    Q.Let(
+      {
+        collectionRef: Q.Select(
+          ["ref"],
+          Q.CreateCollection({ name: "LayoutComponentConnections" })
+        ),
+      },
+      Q.CreateIndex({
+        name: "layout_component_connections_by_layout_ref",
+        source: Q.Var("collectionRef"),
+        terms: [{ field: ["data", "layoutRef"] }],
+        unique: false,
+      })
+    )
+  );
+
+const createLayoutLayoutConnections = () =>
+  client.query(
+    Q.Let(
+      {
+        collectionRef: Q.Select(
+          ["ref"],
+          Q.CreateCollection({ name: "LayoutLayoutConnections" })
+        ),
+      },
+      Q.CreateIndex({
+        name: "layout_layout_connections_by_parent_layout_ref",
+        source: Q.Var("collectionRef"),
+        terms: [{ field: ["data", "parentLayoutRef"] }],
+        unique: false,
+      })
+    )
+  );
+
 const wipeAllCollections = () =>
   client.query(
     Q.Do(
@@ -169,13 +236,22 @@ const wipeAllCollections = () =>
 
 const main = async () => {
   // await createBooks();
+  // //
   // await createAuthors();
   // await createAuthorBookConnections();
+  // //
   // await createCategories();
   // await createCategoryBookConnections();
+  // //
   // await createLists();
   // await createListBookConnections();
-  // For starting clean...
+  // //
+  // await createLayouts();
+  // await createComponents();
+  // await createLayoutComponentConnections();
+  // await createLayoutLayoutConnections();
+  // //
+  // For starting clean (rather than deleting the db / collections themselves)...
   // await wipeAllCollections();
 };
 
