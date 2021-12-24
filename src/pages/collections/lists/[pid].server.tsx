@@ -10,6 +10,8 @@ export default function ShowCollection(props: Props) {
     return <>Bad Route Match: {props.router.asPath}</>;
   }
 
+  console.log("hi there");
+
   return (
     <>
       Show Collection: {collectionType} - {pid}

@@ -15,6 +15,9 @@ import {
   addBookToList,
   AddBookToListMutation,
   AddBookToListMutationInput,
+  removeBookListConnection,
+  RemoveBookListConnectionInput,
+  RemoveBookListConnectionResult,
 } from "./repo/BookList";
 import {
   getBookCarouselComponents,
@@ -54,6 +57,9 @@ export type ResolverContext = {
       addBookToList: (
         input: AddBookToListMutationInput
       ) => Promise<AddBookToListMutation>;
+      removeBookListConnection: (
+        input: RemoveBookListConnectionInput
+      ) => Promise<RemoveBookListConnectionResult>;
     };
   };
 };
@@ -74,6 +80,7 @@ export function createContext() {
         getListBooks: getListBooks(client),
         createList: createList(client),
         addBookToList: addBookToList(client),
+        removeBookListConnection: removeBookListConnection(client),
       },
     },
   };

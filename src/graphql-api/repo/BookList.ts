@@ -1,4 +1,4 @@
-import { Client, query as Q, Var, type Expr } from "faunadb";
+import { Client, query as Q } from "faunadb";
 import fetch from "node-fetch";
 import slugify from "slugify";
 
@@ -11,62 +11,48 @@ export type GetListBooksQueryInput = {
 };
 
 export type GetListBooksQuery = {
+  totalCount: number;
   before: string | null;
   after: string | null;
   data: {
     id: string;
-    author: {
-      id: string;
-      name: string;
-      description: string;
-    };
-    image: string;
-    description: string;
-    listPrice: number;
-    price: number;
-    bookshopUrl: string;
+    googleBooksVolumeId: string;
+    title: string;
     publisher: string;
-    publishDate: string;
-    dimensions: string;
-    language: string;
-    coverType: string;
+    publishedDate: string;
+    description: string;
     isbn: string;
-    pages: number;
+    pageCount: number;
+    image: string;
   }[];
 };
 
 export const getListBooks =
   (client: Client) =>
-  async ({
-    sourceId,
-    sourceType,
-    size,
-    before,
-    after,
-  }: GetListBooksQueryInput) => {
+  ({ sourceId, sourceType, size, before, after }: GetListBooksQueryInput) => {
     const sourceIndex =
       sourceType === "Lists" ? "list_book_connections_by_listRef" : "TODO";
 
-    try {
-      const result = await client.query(
+    return client.query(
+      Q.Let(
+        {
+          sourceMatch: Q.Match(
+            Q.Index(sourceIndex),
+            Q.Ref(Q.Collection(sourceType), sourceId)
+          ),
+        },
         Q.Let(
           {
             paginationResults: Q.Map(
-              Q.Paginate(
-                Q.Match(
-                  Q.Index(sourceIndex),
-                  Q.Ref(Q.Collection(sourceType), sourceId)
-                ),
-                {
-                  size: size ? size : undefined,
-                  after: after
-                    ? Q.Ref(Q.Collection(sourceType), after)
-                    : undefined,
-                  before: before
-                    ? Q.Ref(Q.Collection(sourceType), before)
-                    : undefined,
-                }
-              ),
+              Q.Paginate(Q.Var("sourceMatch"), {
+                size: size ? size : undefined,
+                after: after
+                  ? Q.Ref(Q.Collection(sourceType), after)
+                  : undefined,
+                before: before
+                  ? Q.Ref(Q.Collection(sourceType), before)
+                  : undefined,
+              }),
               Q.Lambda(
                 "sourceRef",
                 Q.Let(
@@ -100,47 +86,13 @@ export const getListBooks =
                       Q.Var("bookDoc")
                     ),
                     image: Q.Select(["data", "image"], Q.Var("bookDoc")),
-                    // author: Q.Let(
-                    //   {
-                    //     authorDoc: Q.Get(
-                    //       Q.Select(["data", "author"], Q.Var("bookDoc"))
-                    //     ),
-                    //   },
-                    //   {
-                    //     id: Q.Select(["ref", "id"], Q.Var("authorDoc")),
-                    //     name: Q.Select(["data", "name"], Q.Var("authorDoc")),
-                    //     description: Q.Select(
-                    //       ["data", "description"],
-                    //       Q.Var("authorDoc")
-                    //     ),
-                    //   }
-                    // ),
-
-                    // listPrice: Q.Select(
-                    //   ["data", "listPrice"],
-                    //   Q.Var("bookDoc")
-                    // ),
-                    // price: Q.Select(["data", "price"], Q.Var("bookDoc")),
-                    // bookshopUrl: Q.Select(
-                    //   ["data", "bookshopUrl"],
-                    //   Q.Var("bookDoc")
-                    // ),
-
-                    // dimensions: Q.Select(
-                    //   ["data", "dimensions"],
-                    //   Q.Var("bookDoc")
-                    // ),
-                    // language: Q.Select(["data", "language"], Q.Var("bookDoc")),
-                    // coverType: Q.Select(
-                    //   ["data", "coverType"],
-                    //   Q.Var("bookDoc")
-                    // ),
                   }
                 )
               )
             ),
           },
           {
+            totalCount: Q.Count(Q.Var("sourceMatch")),
             after: Q.If(
               Q.ContainsPath(["after", 0, "id"], Q.Var("paginationResults")),
               Q.Select(["after", 0, "id"], Q.Var("paginationResults")),
@@ -154,15 +106,8 @@ export const getListBooks =
             ),
           }
         )
-      );
-
-      console.log("get-book-list", JSON.stringify(result, null, 2));
-
-      return result as GetListBooksQuery;
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+      )
+    ) as Promise<GetListBooksQuery>;
   };
 
 type GoogleBookResponse = {
@@ -401,6 +346,54 @@ export const addBookToList =
     );
 
     return true as AddBookToListMutation;
+  };
+
+export type RemoveBookListConnectionInput = {
+  listSlug: string;
+  googleBooksVolumeId: string;
+};
+
+export type RemoveBookListConnectionResult = boolean;
+
+export const removeBookListConnection =
+  (client: Client) =>
+  async ({ googleBooksVolumeId, listSlug }: RemoveBookListConnectionInput) => {
+    console.log("remove book list connection", googleBooksVolumeId, listSlug);
+    await client.query(
+      Q.Let(
+        {
+          bookRef: Q.Select(
+            "ref",
+            Q.Get(
+              Q.Match(
+                Q.Index("unique_books_by_google_books_volume_id"),
+                googleBooksVolumeId
+              )
+            )
+          ),
+          listRef: Q.Select(
+            "ref",
+            Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
+          ),
+        },
+        Q.Let(
+          {
+            connectionRef: Q.Select(
+              "ref",
+              Q.Get(
+                Q.Match(Q.Index("unique_list_book_connections_by_refs"), [
+                  Q.Var("listRef"),
+                  Q.Var("bookRef"),
+                ])
+              )
+            ),
+          },
+          Q.Delete(Q.Var("connectionRef"))
+        )
+      )
+    );
+
+    return true as RemoveBookListConnectionResult;
   };
 
 export type CreateListMutationInput = string;

@@ -136,25 +136,11 @@ export default /* GraphQL */ `
     components: [Component!]!
   }
 
-  # type Author implements Node {
-  #   id: ID!
-  #   name: String!
-  #   slug: String!
-  # }
-
-  # type Category implements Node {
-  #   id: ID!
-  #   name: String!
-  #   slug: String!
-  # }
-
   type Book implements Node {
     id: ID!
     googleBooksVolumeId: String!
     title: String!
     image: String!
-    # authors: [Author!]!
-    # categories: [Category!]!
   }
 
   type ListBookEdge {

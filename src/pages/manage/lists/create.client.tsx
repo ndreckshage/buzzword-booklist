@@ -14,8 +14,10 @@ export default function CreateList() {
   };
 
   const listSlug = slugify(listTitle, { lower: true, strict: true });
-  const expectedUrl = `/collections/lists/${listSlug}`;
-  const manageUrl = `/manage/lists/${listSlug}/edit`;
+  // const expectedUrl = `/collections/lists/${listSlug}`;
+  const expectedUrl = `/collections/lists?list=${listSlug}`;
+  // const manageUrl = `/manage/lists/${listSlug}/edit`;
+  const manageUrl = `/manage/lists/edit?list=${listSlug}`;
 
   return (
     <div className="container mx-auto px-4">

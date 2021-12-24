@@ -5,6 +5,7 @@ import BookCarouselItemComponent from "./BookCarouselItemComponent";
 import Component from "./Component";
 import Layout from "./Layout";
 import List from "./List";
+import Book from "./Book";
 
 export default {
   Query,
@@ -14,4 +15,5 @@ export default {
   Component,
   Layout,
   List,
+  Book,
 };

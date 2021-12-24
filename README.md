@@ -68,6 +68,7 @@ feature toggles:
 NOTES / TODOS:
 
 - now that I can insert books ok ... create layout collections and view the list i created
+- dynamic routes dont work client side. useEffect for example. needed to switch to query params
 
 - look at what indexes im using and adjust import script
 - for image, cut the ? and generate that dynamically with next/image

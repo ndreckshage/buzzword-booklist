@@ -5,7 +5,7 @@ import { globalIdField } from "graphql-relay";
 export default {
   id: globalIdField(),
 
-  async books({ id }, { first, after, last, before }, { loaders, repo }) {
+  async books({ id }, { first, after, last, before }, { repo }) {
     const results = await repo.bookList.getListBooks({
       sourceId: id,
       sourceType: "Lists",
@@ -15,7 +15,7 @@ export default {
     });
 
     return {
-      totalCount: 5,
+      totalCount: results.totalCount,
       edges: results.data.map((book) => ({
         cursor: book.id,
         node: book,

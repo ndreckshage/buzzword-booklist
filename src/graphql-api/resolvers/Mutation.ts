@@ -5,13 +5,9 @@ export default {
   createList: (parent, args, context) =>
     context.repo.bookList.createList(args.title),
 
-  addBookToList: (parent, args, context) =>
-    context.repo.bookList.addBookToList({
-      listSlug: args.listSlug,
-      googleBooksVolumeId: args.googleBooksVolumeId,
-    }),
+  addBookToList: (parent, { listSlug, googleBooksVolumeId }, { repo }) =>
+    repo.bookList.addBookToList({ listSlug, googleBooksVolumeId }),
 
-  async removeBookFromList(parent, args, context) {
-    return false;
-  },
+  removeBookFromList: (parent, { listSlug, googleBooksVolumeId }, { repo }) =>
+    repo.bookList.removeBookListConnection({ listSlug, googleBooksVolumeId }),
 } as MutationResolvers<ResolverContext>;
