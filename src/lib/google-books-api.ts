@@ -1,5 +1,3 @@
-import suspenseWrapPromise from "./suspense-wrap-promise";
-
 export type GoogleBook = {
   googleBooksVolumeId: string;
   title: string;
@@ -40,4 +38,4 @@ const fetchBooks = async (value: string) => {
   return results;
 };
 
-export default (value: string) => suspenseWrapPromise(fetchBooks(value));
+export default (value: string) => fetchBooks(value);

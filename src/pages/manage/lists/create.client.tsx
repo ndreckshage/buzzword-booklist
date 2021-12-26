@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Text, { TextTypes } from "components/common/text";
 import TextInput from "components/common/text-input";
-import fetchGraphQL from "lib/fetch-graphql";
+import fetchGraphQL from "lib/graphql-request";
 import slugify from "slugify";
 
 export default function CreateList() {

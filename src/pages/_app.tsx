@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { Suspense } from "react";
 import Link from "next/link";
 import cx from "classnames";
 import "../styles/global.css";
@@ -39,7 +40,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <a className={linkClass}>Manage Lists</a>
         </Link>
       </div>
-      <Component {...pageProps} />
+      <Suspense fallback="Loading...">
+        <Component {...pageProps} />
+      </Suspense>
     </>
   );
 }

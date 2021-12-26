@@ -15,8 +15,8 @@ export default function ManageLists() {
       <Link href="/manage/lists/create">
         <a className={linkClass}>Create List</a>
       </Link>
-      <Link href="/manage/lists/32442/edit">
-        <a className={linkClass}>Edit List</a>
+      <Link href="/manage/lists/edit?list=nicks-list">
+        <a className={linkClass}>Edit nicks List</a>
       </Link>
     </>
   );

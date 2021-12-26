@@ -1,4 +1,4 @@
-import fetchGraphQL from "../lib/fetch-graphql";
+import fetchGraphQL from "../lib/graphql-request";
 
 const cache: any = {};
 

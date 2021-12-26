@@ -2,16 +2,41 @@
 import React, { useState, Suspense, useTransition } from "react";
 import fetchGoogleBoooksQuery, { GoogleBook } from "lib/google-books-api";
 import TextInput from "components/common/text-input";
-import GoogleBooksList from "./google-books-list.client";
+import useQuery from "lib/use-query.client";
 import cx from "classnames";
 
 type Props = {
   addBook: (book: GoogleBook) => void;
 };
 
+const Books = ({ addBook, query }) => {
+  const { data: books, hydrateClient } = useQuery(`books::${query}`, () =>
+    fetchGoogleBoooksQuery(query)
+  );
+
+  return (
+    <div>
+      {books && books.length > 0 && (
+        <div className="flex">
+          {books.map((book, index) => (
+            <div
+              key={index}
+              className="m-5 cursor-pointer"
+              onClick={() => addBook(book)}
+            >
+              <img src={book.image} alt={book.title} />
+            </div>
+          ))}
+        </div>
+      )}
+      {hydrateClient}
+    </div>
+  );
+};
+
 const GoogleBooksTypeahead = (props: Props) => {
   const [inputValue, setInputValue] = useState("");
-  const [resource, setResource] = useState(fetchGoogleBoooksQuery(""));
+  const [inputValueForSearch, setInputValueForSearch] = useState("");
   const [isRefreshing, startTransition] = useTransition({
     timeoutMs: 5000,
   });
@@ -19,13 +44,13 @@ const GoogleBooksTypeahead = (props: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     startTransition(() => {
-      setResource(fetchGoogleBoooksQuery(e.target.value));
+      setInputValueForSearch(e.target.value);
     });
   };
 
   const addBook = (book: GoogleBook) => {
     setInputValue("");
-    setResource(fetchGoogleBoooksQuery(""));
+    setInputValueForSearch("");
     props.addBook(book);
   };
 
@@ -57,8 +82,8 @@ const GoogleBooksTypeahead = (props: Props) => {
             "opacity-50": isRefreshing,
           })}
         >
-          <GoogleBooksList resource={resource} addBook={addBook} />
-        </div>
+          <Books addBook={addBook} query={inputValueForSearch} />
+        </div>{" "}
       </Suspense>
     </>
   );
