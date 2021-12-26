@@ -2,23 +2,22 @@
 import React, { useState, Suspense, useTransition } from "react";
 import fetchGoogleBoooksQuery, { GoogleBook } from "lib/google-books-api";
 import TextInput from "components/common/text-input";
-import useQuery from "lib/use-query.client";
+import suspenseWrapPromise from "lib/suspense-wrap-promise";
+import useData from "lib/use-data.client";
 import cx from "classnames";
 
 type Props = {
   addBook: (book: GoogleBook) => void;
 };
 
-const Books = ({ addBook, query }) => {
-  const { data: books, hydrateClient } = useQuery(`books::${query}`, () =>
-    fetchGoogleBoooksQuery(query)
-  );
+const Books = ({ resource, addBook }) => {
+  const data = resource.read();
 
   return (
     <div>
-      {books && books.length > 0 && (
+      {data && data.length > 0 && (
         <div className="flex">
-          {books.map((book, index) => (
+          {data.map((book, index) => (
             <div
               key={index}
               className="m-5 cursor-pointer"
@@ -29,14 +28,16 @@ const Books = ({ addBook, query }) => {
           ))}
         </div>
       )}
-      {hydrateClient}
     </div>
   );
 };
 
 const GoogleBooksTypeahead = (props: Props) => {
   const [inputValue, setInputValue] = useState("");
-  const [inputValueForSearch, setInputValueForSearch] = useState("");
+  const [resource, setResource] = useState(
+    suspenseWrapPromise(Promise.resolve(null))
+  );
+
   const [isRefreshing, startTransition] = useTransition({
     timeoutMs: 5000,
   });
@@ -44,13 +45,16 @@ const GoogleBooksTypeahead = (props: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     startTransition(() => {
-      setInputValueForSearch(e.target.value);
+      setResource(suspenseWrapPromise(fetchGoogleBoooksQuery(e.target.value)));
     });
   };
 
   const addBook = (book: GoogleBook) => {
     setInputValue("");
-    setInputValueForSearch("");
+    startTransition(() => {
+      setResource(suspenseWrapPromise(Promise.resolve(null)));
+    });
+
     props.addBook(book);
   };
 
@@ -82,8 +86,8 @@ const GoogleBooksTypeahead = (props: Props) => {
             "opacity-50": isRefreshing,
           })}
         >
-          <Books addBook={addBook} query={inputValueForSearch} />
-        </div>{" "}
+          <Books resource={resource} addBook={addBook} />
+        </div>
       </Suspense>
     </>
   );

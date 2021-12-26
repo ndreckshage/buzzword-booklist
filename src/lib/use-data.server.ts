@@ -1,6 +1,6 @@
 const queryCache: any = {};
 
-const useQuery = (cacheKey: string, fetcher: any) => {
+const useData = (cacheKey: string, fetcher: any) => {
   if (!queryCache[cacheKey]) {
     let promise: any = null;
     let promiseData: any = undefined;
@@ -19,4 +19,4 @@ const useQuery = (cacheKey: string, fetcher: any) => {
   };
 };
 
-export default useQuery;
+export default useData;

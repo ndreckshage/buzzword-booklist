@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useTransition } from "react";
+// @ts-ignore
+import { useState, useEffect, useTransition, Suspense } from "react";
 import GoogleBooksTypeahead from "components/manage/lists/google-books-typeahead.client";
 import TextInput from "components/common/text-input";
 import Text, { TextTypes } from "components/common/text";
 import { type GoogleBook } from "lib/google-books-api";
 import { request, gql } from "lib/graphql-request";
-import useQuery from "lib/use-query.client";
+import useData from "lib/use-data.client";
 import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
@@ -48,11 +49,16 @@ const ADD_BOOK_TO_LIST_MUTATION = gql`
 
 export default function EditList() {
   const router = useRouter();
-  const [isRefreshing, startTransition] = useTransition({
-    timeoutMs: 5000,
-  });
-
   const listSlug = router.query.list;
+  // const [isRefreshing, startTransition] = useTransition({
+  //   timeoutMs: 5000,
+  // });
+
+  const { data, hydrateClient, refresh, isRefreshing } = useData(
+    `GET_LISTS::${listSlug}`,
+    () => request(GET_LISTS_QUERY, { listSlug })
+  );
+
   if (!listSlug) {
     return <p>No list to edit!</p>;
   }
@@ -64,57 +70,53 @@ export default function EditList() {
   //   return <>Bad Route Match: {router.asPath}</>;
   // }
 
-  const { data, hydrateClient, refetch } = useQuery(
-    `GET_LISTS::${listSlug}`,
-    () => request(GET_LISTS_QUERY, { listSlug })
-  );
+  console.log("is refreshing", isRefreshing);
 
   return (
     <>
-      <div
-        className={cx("transition-opacity", {
-          "opacity-100": !isRefreshing,
-          "opacity-50": isRefreshing,
-        })}
-      >
-        {data.list.books.edges.map(({ node: book }) => (
-          <div key={book.googleBooksVolumeId} className="flex">
-            <img src={book.image} alt={book.title} />
-            <div>
-              <p>{book.title}</p>
-              <p
-                onClick={() => {
-                  startTransition(async () => {
+      <Suspense fallback="fallback">
+        <div
+          className={cx("transition-opacity", {
+            "opacity-100": !isRefreshing,
+            "opacity-50": isRefreshing,
+          })}
+        >
+          {data.list.books.edges.map(({ node: book }) => (
+            <div key={book.googleBooksVolumeId} className="flex">
+              <img src={book.image} alt={book.title} />
+              <div>
+                <p>{book.title}</p>
+                <p
+                  className="cursor-pointer"
+                  onClick={async () => {
                     await request(REMOVE_BOOK_FROM_LIST_MUTATION, {
                       googleBooksVolumeId: book.googleBooksVolumeId,
                       listSlug,
                     });
 
-                    refetch();
-                  });
-                }}
-              >
-                Remove
-              </p>
+                    refresh();
+                  }}
+                >
+                  Remove
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div>
-        <GoogleBooksTypeahead
-          addBook={({ googleBooksVolumeId }) => {
-            console.log("add book", googleBooksVolumeId);
-            startTransition(async () => {
+          ))}
+        </div>
+        <div>
+          <GoogleBooksTypeahead
+            addBook={async ({ googleBooksVolumeId }) => {
+              console.log("add book", googleBooksVolumeId);
               await request(ADD_BOOK_TO_LIST_MUTATION, {
                 listSlug,
                 googleBooksVolumeId,
               });
 
-              refetch();
-            });
-          }}
-        />
-      </div>
+              refresh();
+            }}
+          />
+        </div>
+      </Suspense>
       {hydrateClient}
     </>
   );

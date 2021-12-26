@@ -1,5 +1,5 @@
 const A = (props) => {
-  const a = useQuery(
+  const a = useData(
     "something",
     () =>
       request(

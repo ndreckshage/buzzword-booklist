@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Refresher from "components/demos/rsc-refresher.client";
-import useQuery from "lib/use-query.server";
+import useData from "lib/use-data.server";
 
 const env = typeof window === "undefined" ? "server" : "browser";
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,7 +14,7 @@ const Demo = ({
   delay: number;
   refreshCount: number;
 }) => {
-  const { data } = useQuery(cacheKey, async () => {
+  const { data } = useData(cacheKey, async () => {
     await sleep(delay);
     return {
       data: {
