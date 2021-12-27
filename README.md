@@ -1,32 +1,43 @@
-# goal
+# README
 
-blog post
+## BLOG
 
-title: streaming a serverless, server driven ui with server components
+### introduction
 
-building as a way to experiment with some new technologies and buzzwords.
-
-serverless frontend/backend ... next app & graphql with vercel
-serverless db ... fauna
-graphql server driven ui (airbnb ghost)
-server components and stremaing
-relay
-github oauth
-
-part one: user facing site
+title: `Buzzword Booklist 2021 - Part 1/8`
+subtitle: `Building a Serverless, Suspense for Data, Server Components, Server Driven UIs`
+content: introduction, link to the site, link to the source code, explain goals and what we will be building. define terms.
 bookshop.org inspired site. lists of holiday / best books of 2021. link to bookshop.org pages to buy!
-carousels and grids of books that we can view by list, genre or author
-homepage with cms controlled content
-collection pages (lists; authors; genres)
-book detail pages
 
-part two: admin tooling
+### react setup; server components and suspense for data fetch; route creation
+
+todo
+
+### graphql setup; initial fauna migration
+
+todo
+
+### initial schema creation for books, books fql, displaying a list
+
+todo
+
+### manage list interface, github oauth for managing books
+
+todo
 github oauth for admin access (see: https://github.com/vercel/next-server-components)
-layouts pages (see all configured layouts)
-layout manager (new / edit / delete)
-list manager (new / edit / delete)
-book manager (new / edit / delete)
-missing (author manager; genre manager)
+
+### schema creation for server driven ui, create frontends
+
+todo
+graphql server driven ui (airbnb ghost)
+
+### server driven ui admin manager
+
+todo
+
+### wrap up / summary
+
+todo
 
 ## NOTES
 
@@ -85,8 +96,6 @@ query GetLayout {
 
 ## TODOS
 
-- create temp layout + component collections to experiment
-- fix typescript errors from recursive layout
 - get recursive layout showing up
 - add in book list into the recursive layout
 
@@ -95,7 +104,6 @@ query GetLayout {
 - add github oauth
 - lists view mine
 - layouts view mine
-- convert to relay / react-fetch / etc
 - protect the various lists / layouts
 - limit query depth / something. protect gql.
 - make it look a lot prettier
@@ -104,14 +112,3 @@ query GetLayout {
 - get the node query working
 - rename slug to key in various places
 - begin planning blog post!
-
-## BLOG POST IMPLEMENTATION:
-
-- Setup Nextjs
-- Setup Graphql
-- Look at bookshop, design schema
-- Scrape Data
-- Import into Fauna
-- Initial Graphql schema
-- Server components, loading the data onto the screen
-- Creating our carousel
