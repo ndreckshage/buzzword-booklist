@@ -1,4 +1,4 @@
-import { Client, query as Q, Var } from "faunadb";
+import { Client, query as Q } from "faunadb";
 
 export type ComponentQuery = { id: string; componentType: string };
 
