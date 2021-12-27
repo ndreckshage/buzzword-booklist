@@ -84,11 +84,7 @@ const useData = (cacheKey: string, fetcher: any) => {
 export default useData;
 
 export const useMutation = (fetcher) => {
-  const [resource, setResource] = useState(
-    // suspenseWrapPromise(Promise.resolve(null))
-    null
-  );
-
+  const [resource, setResource] = useState(null);
   const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   });

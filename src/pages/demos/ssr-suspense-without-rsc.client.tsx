@@ -1,3 +1,4 @@
+// @ts-ignore remove when react 18 types supported
 import { Suspense, useEffect, useState, useTransition } from "react";
 import useData from "lib/use-data.client";
 import suspenseWrapPromise from "lib/suspense-wrap-promise";
@@ -8,7 +9,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Demo = ({ cacheKey, delay }: { cacheKey: string; delay: number }) => {
   const [refreshCount, setRefreshCount] = useState(0);
-  const { data, hydrateClient, refresh, isRefreshing } = useData(
+  const { data, hydrateClient, refresh, isPending } = useData(
     cacheKey,
     async () => {
       await sleep(delay);
@@ -28,8 +29,8 @@ const Demo = ({ cacheKey, delay }: { cacheKey: string; delay: number }) => {
   return (
     <div
       className={cx("transition-opacity", {
-        "opacity-100": !isRefreshing,
-        "opacity-50": isRefreshing,
+        "opacity-100": !isPending,
+        "opacity-50": isPending,
       })}
     >
       <code>
@@ -60,7 +61,7 @@ const Adhoc = ({ resource }) => {
 
 const SuspenseDemo = () => {
   const [adhocResource, setAdhocResource] = useState<any>(false);
-  const [isRefreshing, startTransition] = useTransition({
+  const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   });
 
@@ -82,8 +83,8 @@ const SuspenseDemo = () => {
         </Suspense>
         <div
           className={cx("transition-opacity", {
-            "opacity-100": !isRefreshing,
-            "opacity-50": isRefreshing,
+            "opacity-100": !isPending,
+            "opacity-50": isPending,
           })}
         >
           <button

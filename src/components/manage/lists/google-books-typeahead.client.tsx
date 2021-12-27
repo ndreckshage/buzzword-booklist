@@ -10,12 +10,18 @@ type Props = {
 };
 
 const Books = ({ query, addBook }) => {
-  const { data, hydrateClient } = useData(`book-typeahead::${query}`, () =>
-    fetchGoogleBoooksQuery(query)
+  const { data, hydrateClient, isPending } = useData(
+    `book-typeahead::${query}`,
+    () => fetchGoogleBoooksQuery(query)
   );
 
   return (
-    <div>
+    <div
+      className={cx("transition-opacity", {
+        "opacity-100": !isPending,
+        "opacity-50": isPending,
+      })}
+    >
       {data && data.length > 0 && (
         <div className="flex">
           {data.map((book, index) => (
