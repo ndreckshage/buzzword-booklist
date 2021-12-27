@@ -6,7 +6,7 @@ import TextInput from "components/common/text-input";
 import Text, { TextTypes } from "components/common/text";
 import { type GoogleBook } from "lib/google-books-api";
 import { request, gql } from "lib/graphql-request";
-import useData from "lib/use-data.client";
+import useData, { useMutation } from "lib/use-data.client";
 import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
@@ -47,21 +47,75 @@ const ADD_BOOK_TO_LIST_MUTATION = gql`
   }
 `;
 
+const BookList = ({ listSlug }: { listSlug: string }) => {
+  const {
+    data,
+    hydrateClient,
+    refresh,
+    isPending: getBooksPending,
+  } = useData(`get-list::${listSlug}`, () =>
+    request(GET_LISTS_QUERY, { listSlug })
+  );
+
+  const [addBookMutation, { isPending: addBookPending }] = useMutation(
+    (variables) => request(ADD_BOOK_TO_LIST_MUTATION, variables)
+  );
+
+  const [removeBookMutation, { isPending: removeBookPending }] = useMutation(
+    (variables) => request(REMOVE_BOOK_FROM_LIST_MUTATION, variables)
+  );
+
+  const isPending = getBooksPending || addBookPending || removeBookPending;
+
+  return (
+    <>
+      <>
+        <div
+          className={cx("transition-opacity", {
+            "opacity-100": !isPending,
+            "opacity-50": isPending,
+          })}
+        >
+          {data.list.books.edges.map(
+            ({ node: { googleBooksVolumeId, image, title } }) => (
+              <div key={googleBooksVolumeId} className="flex">
+                <img src={image} alt={title} />
+                <div>
+                  <p>{title}</p>
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      removeBookMutation({
+                        googleBooksVolumeId,
+                        listSlug,
+                      }).then(refresh);
+                    }}
+                  >
+                    Remove
+                  </p>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+        {hydrateClient}
+      </>
+      <>
+        <div>
+          <GoogleBooksTypeahead
+            addBook={({ googleBooksVolumeId }) => {
+              addBookMutation({ googleBooksVolumeId, listSlug }).then(refresh);
+            }}
+          />
+        </div>
+      </>
+    </>
+  );
+};
+
 export default function EditList() {
   const router = useRouter();
   const listSlug = router.query.list;
-  // const [isRefreshing, startTransition] = useTransition({
-  //   timeoutMs: 5000,
-  // });
-
-  const { data, hydrateClient, refresh, isRefreshing } = useData(
-    `GET_LISTS::${listSlug}`,
-    () => request(GET_LISTS_QUERY, { listSlug })
-  );
-
-  if (!listSlug) {
-    return <p>No list to edit!</p>;
-  }
 
   // @NOTE next params dont work with streaming / nextjs yet
   // @NOTE AND dynamic routes dont work client side, so adjusting to query params
@@ -70,54 +124,13 @@ export default function EditList() {
   //   return <>Bad Route Match: {router.asPath}</>;
   // }
 
-  console.log("is refreshing", isRefreshing);
+  if (typeof listSlug !== "string") {
+    return <p>No list to edit!</p>;
+  }
 
   return (
-    <>
-      <Suspense fallback="fallback">
-        <div
-          className={cx("transition-opacity", {
-            "opacity-100": !isRefreshing,
-            "opacity-50": isRefreshing,
-          })}
-        >
-          {data.list.books.edges.map(({ node: book }) => (
-            <div key={book.googleBooksVolumeId} className="flex">
-              <img src={book.image} alt={book.title} />
-              <div>
-                <p>{book.title}</p>
-                <p
-                  className="cursor-pointer"
-                  onClick={async () => {
-                    await request(REMOVE_BOOK_FROM_LIST_MUTATION, {
-                      googleBooksVolumeId: book.googleBooksVolumeId,
-                      listSlug,
-                    });
-
-                    refresh();
-                  }}
-                >
-                  Remove
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          <GoogleBooksTypeahead
-            addBook={async ({ googleBooksVolumeId }) => {
-              console.log("add book", googleBooksVolumeId);
-              await request(ADD_BOOK_TO_LIST_MUTATION, {
-                listSlug,
-                googleBooksVolumeId,
-              });
-
-              refresh();
-            }}
-          />
-        </div>
-      </Suspense>
-      {hydrateClient}
-    </>
+    <Suspense fallback="Loading book list...">
+      <BookList listSlug={listSlug} />
+    </Suspense>
   );
 }

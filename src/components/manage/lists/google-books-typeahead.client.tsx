@@ -2,7 +2,6 @@
 import React, { useState, Suspense, useTransition } from "react";
 import fetchGoogleBoooksQuery, { GoogleBook } from "lib/google-books-api";
 import TextInput from "components/common/text-input";
-import suspenseWrapPromise from "lib/suspense-wrap-promise";
 import useData from "lib/use-data.client";
 import cx from "classnames";
 
@@ -10,8 +9,10 @@ type Props = {
   addBook: (book: GoogleBook) => void;
 };
 
-const Books = ({ resource, addBook }) => {
-  const data = resource.read();
+const Books = ({ query, addBook }) => {
+  const { data, hydrateClient } = useData(`book-typeahead::${query}`, () =>
+    fetchGoogleBoooksQuery(query)
+  );
 
   return (
     <div>
@@ -28,15 +29,13 @@ const Books = ({ resource, addBook }) => {
           ))}
         </div>
       )}
+      {hydrateClient}
     </div>
   );
 };
 
 const GoogleBooksTypeahead = (props: Props) => {
-  const [inputValue, setInputValue] = useState("");
-  const [resource, setResource] = useState(
-    suspenseWrapPromise(Promise.resolve(null))
-  );
+  const [inputValue, setInputValue] = useState("har");
 
   const [isRefreshing, startTransition] = useTransition({
     timeoutMs: 5000,
@@ -44,17 +43,9 @@ const GoogleBooksTypeahead = (props: Props) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    startTransition(() => {
-      setResource(suspenseWrapPromise(fetchGoogleBoooksQuery(e.target.value)));
-    });
   };
 
   const addBook = (book: GoogleBook) => {
-    setInputValue("");
-    startTransition(() => {
-      setResource(suspenseWrapPromise(Promise.resolve(null)));
-    });
-
     props.addBook(book);
   };
 
@@ -86,7 +77,7 @@ const GoogleBooksTypeahead = (props: Props) => {
             "opacity-50": isRefreshing,
           })}
         >
-          <Books resource={resource} addBook={addBook} />
+          <Books addBook={addBook} query={inputValue} />
         </div>
       </Suspense>
     </>

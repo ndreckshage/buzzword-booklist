@@ -1,5 +1,5 @@
 // @ts-ignore
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import suspenseWrapPromise from "./suspense-wrap-promise";
 
 const queryCache: any = {};
@@ -31,20 +31,32 @@ const getResource = (cacheKey: string, fetcher: any, initialLoad = false) => {
   return queryCache[cacheKey];
 };
 
+const useIsMount = () => {
+  const isMountRef = useRef(true);
+  useEffect(() => {
+    isMountRef.current = false;
+  }, []);
+
+  return isMountRef.current;
+};
+
 const useData = (cacheKey: string, fetcher: any) => {
+  const isMount = useIsMount();
   const [resource, setResource] = useState(
     getResource(cacheKey, fetcher, true)
   );
 
-  useEffect(() => {
-    startTransition(() => {
-      setResource(getResource(cacheKey, fetcher, false));
-    });
-  }, [cacheKey]);
-
-  const [isRefreshing, startTransition] = useTransition({
+  const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   });
+
+  useEffect(() => {
+    if (!isMount) {
+      startTransition(() => {
+        setResource(getResource(cacheKey, fetcher, false));
+      });
+    }
+  }, [cacheKey]);
 
   const data = resource.read();
 
@@ -56,7 +68,7 @@ const useData = (cacheKey: string, fetcher: any) => {
         setResource(getResource(cacheKey, fetcher));
       });
     },
-    isRefreshing,
+    isPending,
     hydrateClient: (
       <script
         dangerouslySetInnerHTML={{
@@ -70,3 +82,28 @@ const useData = (cacheKey: string, fetcher: any) => {
 };
 
 export default useData;
+
+export const useMutation = (fetcher) => {
+  const [resource, setResource] = useState(
+    // suspenseWrapPromise(Promise.resolve(null))
+    null
+  );
+
+  const [isPending, startTransition] = useTransition({
+    timeoutMs: 5000,
+  });
+
+  const execMutation = (variables) => {
+    const promise = fetcher(variables);
+
+    startTransition(() => {
+      setResource(suspenseWrapPromise(promise));
+    });
+
+    return promise;
+  };
+
+  const result = resource ? resource.read() : null;
+
+  return [execMutation, { isPending, result }];
+};

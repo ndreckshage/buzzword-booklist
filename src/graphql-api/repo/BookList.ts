@@ -221,9 +221,10 @@ const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
     publisher: googleBook.volumeInfo.publisher ?? "",
     publishedDate: googleBook.volumeInfo.publishedDate ?? "",
     description: googleBook.volumeInfo.description ?? "",
-    isbn: (googleBook.volumeInfo.industryIdentifiers ?? []).find(
-      (i) => i.type === "ISBN_13"
-    )?.identifier,
+    isbn:
+      (googleBook.volumeInfo.industryIdentifiers ?? []).find(
+        (i) => i.type === "ISBN_13"
+      )?.identifier ?? "",
     pageCount: googleBook.volumeInfo.pageCount || null,
     image: googleBook.volumeInfo.imageLinks?.thumbnail ?? "",
   };
