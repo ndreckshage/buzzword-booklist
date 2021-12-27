@@ -9,22 +9,24 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Demo = ({ cacheKey, delay }: { cacheKey: string; delay: number }) => {
   const [refreshCount, setRefreshCount] = useState(0);
-  const { data, hydrateClient, refresh, isPending } = useData(
-    cacheKey,
-    async () => {
-      await sleep(delay);
-      return {
-        cacheKey,
-        refreshCount,
-        delay,
-        env,
-      };
-    }
-  );
+  const { data, hydrateClient, refresh, isPending } = useData<{
+    cacheKey: string;
+    refreshCount: number;
+    delay: number;
+    env: string;
+  }>(cacheKey, async () => {
+    await sleep(delay);
+    return {
+      cacheKey,
+      refreshCount,
+      delay,
+      env,
+    };
+  });
 
   useEffect(() => {
     if (refreshCount !== data.refreshCount) refresh();
-  }, [refreshCount]);
+  }, [refreshCount, data.refreshCount, refresh]);
 
   return (
     <div
@@ -50,7 +52,7 @@ const Demo = ({ cacheKey, delay }: { cacheKey: string; delay: number }) => {
   );
 };
 
-const Adhoc = ({ resource }) => {
+const Adhoc = ({ resource }: { resource: { read: () => {} } }) => {
   const data = resource.read();
   return (
     <code>
@@ -60,7 +62,10 @@ const Adhoc = ({ resource }) => {
 };
 
 const SuspenseDemo = () => {
-  const [adhocResource, setAdhocResource] = useState<any>(false);
+  const [adhocResource, setAdhocResource] = useState<{ read: () => {} } | null>(
+    null
+  );
+
   const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   });

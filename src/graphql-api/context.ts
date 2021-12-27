@@ -2,6 +2,8 @@ import { Client } from "faunadb";
 import DataLoader from "dataloader";
 
 import { getLayouts, LayoutQuery } from "./repo/Layout";
+import { getComponents, ComponentQuery } from "./repo/Component";
+
 import {
   getList,
   GetListQuery,
@@ -19,11 +21,11 @@ import {
   RemoveBookListConnectionInput,
   RemoveBookListConnectionResult,
 } from "./repo/BookList";
+
 import {
   getBookCarouselComponents,
   BookCarouselComponentQuery,
 } from "./repo/BookCarouselComponent";
-import { getComponents, ComponentQuery } from "./repo/Component";
 
 export default function createClient() {
   const FAUNA_KEY = process.env.FAUNA_KEY;

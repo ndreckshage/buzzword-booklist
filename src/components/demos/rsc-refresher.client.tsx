@@ -1,21 +1,20 @@
-import React, { useTransition, useState } from "react";
+// @ts-ignore remove when react 18 types supported
+import React, { ReactNode, useTransition, useState } from "react";
 import { unstable_useRefreshRoot as useRefreshRoot } from "next/rsc";
 import cx from "classnames";
 
-const RefreshDemoButton = ({ children }) => {
+const RefreshDemoButton = ({ children }: { children: ReactNode }) => {
   const refreshRoot = useRefreshRoot();
-
   const [refreshCount, setRefreshCount] = useState(0);
-
-  const [isRefreshing, startTransition] = useTransition({
+  const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   });
 
   return (
     <div
       className={cx("transition-opacity", {
-        "opacity-100": !isRefreshing,
-        "opacity-50": isRefreshing,
+        "opacity-100": !isPending,
+        "opacity-50": isPending,
       })}
     >
       <div className="flex">{children}</div>

@@ -7,7 +7,7 @@ export type GoogleBook = {
 
 const bookCache = new Map();
 
-const fetchBooks = async (value: string) => {
+export default async function fetchBooks(value: string) {
   const cachedResponse = bookCache.get(value);
   if (cachedResponse) return Promise.resolve(cachedResponse);
   if (value === "") return Promise.resolve([]);
@@ -36,6 +36,4 @@ const fetchBooks = async (value: string) => {
 
   bookCache.set(value, results);
   return results;
-};
-
-export default (value: string) => fetchBooks(value);
+}

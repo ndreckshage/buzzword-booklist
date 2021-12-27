@@ -2,12 +2,24 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Text, { TextTypes } from "components/common/text";
 import TextInput from "components/common/text-input";
-import fetchGraphQL from "lib/graphql-request";
+import { request, gql } from "lib/graphql-request";
+import { useMutation } from "lib/use-data.client";
+import cx from "classnames";
 import slugify from "slugify";
+
+const CREATE_LIST_MUTATION = gql`
+  mutation CreateList($title: String!) {
+    createList(title: $title)
+  }
+`;
 
 export default function CreateList() {
   const router = useRouter();
   const [listTitle, setListTitle] = useState("");
+  const [createListMutation, { isPending }] = useMutation<
+    { createList: boolean },
+    { title: string }
+  >((v) => request(CREATE_LIST_MUTATION, v));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setListTitle(e.target.value);
@@ -36,22 +48,18 @@ export default function CreateList() {
       </label>
       {listSlug && <Text as={TextTypes.p}>List URL: {expectedUrl}</Text>}
       <button
-        className="block bg-blue-500 text-white p-5 rounded-md"
-        onClick={async (e) => {
-          e.preventDefault();
-
-          const response = await fetchGraphQL(
-            `
-              mutation CreateList($title: String!) {
-                createList(title: $title)
-              }
-            `,
-            { title: listTitle }
-          );
-
-          if (response.data.createList) {
-            router.push(manageUrl);
+        className={cx(
+          "block bg-blue-500 text-white p-5 rounded-md transition-opacity",
+          {
+            "opacity-100": !isPending,
+            "opacity-50": isPending,
           }
+        )}
+        onClick={(e) => {
+          e.preventDefault();
+          createListMutation({ title: listTitle }).then((data) => {
+            if (data.createList) router.push(manageUrl);
+          });
         }}
       >
         Create list and get started adding books...

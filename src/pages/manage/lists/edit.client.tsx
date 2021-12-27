@@ -1,11 +1,8 @@
 import { useRouter } from "next/router";
-// @ts-ignore
-import { useState, useEffect, useTransition, Suspense } from "react";
+import { Suspense } from "react";
 import GoogleBooksTypeahead from "components/manage/lists/google-books-typeahead.client";
-import TextInput from "components/common/text-input";
-import Text, { TextTypes } from "components/common/text";
-import { type GoogleBook } from "lib/google-books-api";
 import { request, gql } from "lib/graphql-request";
+import Image from "next/image";
 import useData, { useMutation } from "lib/use-data.client";
 import cx from "classnames";
 
@@ -53,13 +50,25 @@ const BookList = ({ listSlug }: { listSlug: string }) => {
     hydrateClient,
     refresh,
     isPending: getBooksPending,
-  } = useData(`get-list::${listSlug}`, () =>
-    request(GET_LISTS_QUERY, { listSlug })
-  );
+  } = useData<{
+    list: {
+      title: string;
+      books: {
+        edges: {
+          node: {
+            title: string;
+            googleBooksVolumeId: string;
+            image: string;
+          };
+        }[];
+      };
+    };
+  }>(`get-list::${listSlug}`, () => request(GET_LISTS_QUERY, { listSlug }));
 
-  const [addBookMutation, { isPending: addBookPending }] = useMutation(
-    (variables) => request(ADD_BOOK_TO_LIST_MUTATION, variables)
-  );
+  const [addBookMutation, { isPending: addBookPending }] = useMutation<
+    boolean,
+    { googleBooksVolumeId: string; listSlug: string }
+  >((variables) => request(ADD_BOOK_TO_LIST_MUTATION, variables));
 
   const [removeBookMutation, { isPending: removeBookPending }] = useMutation(
     (variables) => request(REMOVE_BOOK_FROM_LIST_MUTATION, variables)
@@ -79,7 +88,7 @@ const BookList = ({ listSlug }: { listSlug: string }) => {
           {data.list.books.edges.map(
             ({ node: { googleBooksVolumeId, image, title } }) => (
               <div key={googleBooksVolumeId} className="flex">
-                <img src={image} alt={title} />
+                <Image src={image} alt={title} width={100} height={150} />
                 <div>
                   <p>{title}</p>
                   <p

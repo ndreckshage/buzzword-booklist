@@ -1,16 +1,18 @@
-// @ts-ignore useTransition not available
+// @ts-ignore remove when react 18 types supported
 import React, { useState, Suspense, useTransition } from "react";
 import fetchGoogleBoooksQuery, { GoogleBook } from "lib/google-books-api";
 import TextInput from "components/common/text-input";
+import Image from "next/image";
 import useData from "lib/use-data.client";
 import cx from "classnames";
 
-type Props = {
+type BooksProps = {
+  query: string;
   addBook: (book: GoogleBook) => void;
 };
 
-const Books = ({ query, addBook }) => {
-  const { data, hydrateClient, isPending } = useData(
+const Books = ({ query, addBook }: BooksProps) => {
+  const { data, hydrateClient, isPending } = useData<GoogleBook[]>(
     `book-typeahead::${query}`,
     () => fetchGoogleBoooksQuery(query)
   );
@@ -30,7 +32,16 @@ const Books = ({ query, addBook }) => {
               className="m-5 cursor-pointer"
               onClick={() => addBook(book)}
             >
-              <img src={book.image} alt={book.title} />
+              {book.image ? (
+                <Image
+                  src={book.image}
+                  alt={book.title}
+                  width={100}
+                  height={150}
+                />
+              ) : (
+                "Missing Image"
+              )}
             </div>
           ))}
         </div>
@@ -40,13 +51,12 @@ const Books = ({ query, addBook }) => {
   );
 };
 
-const GoogleBooksTypeahead = (props: Props) => {
-  const [inputValue, setInputValue] = useState("har");
+type GoogleBooksTypeaheadProps = {
+  addBook: (book: GoogleBook) => void;
+};
 
-  const [isRefreshing, startTransition] = useTransition({
-    timeoutMs: 5000,
-  });
-
+const GoogleBooksTypeahead = (props: GoogleBooksTypeaheadProps) => {
+  const [inputValue, setInputValue] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -77,14 +87,7 @@ const GoogleBooksTypeahead = (props: Props) => {
         />
       </label>
       <Suspense fallback={"Loading books (slowly)..."}>
-        <div
-          className={cx("transition-opacity", {
-            "opacity-100": !isRefreshing,
-            "opacity-50": isRefreshing,
-          })}
-        >
-          <Books addBook={addBook} query={inputValue} />
-        </div>
+        <Books addBook={addBook} query={inputValue} />
       </Suspense>
     </>
   );

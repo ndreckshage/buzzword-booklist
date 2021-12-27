@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import Image from "next/image";
 
 const Carousel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,9 +77,12 @@ const Carousel = () => {
           },
         ].map((o, i) => (
           <div key={o.src + i} className="snap-start shrink-0">
-            <img
+            <Image
+              alt="demo image"
               src={o.src}
               className="shrink-0 w-80 h-40 rounded-lg shadow-xl bg-white"
+              width={320}
+              height={160}
             />
           </div>
         ))}

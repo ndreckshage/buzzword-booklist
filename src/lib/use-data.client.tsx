@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-ignore remove when react 18 types supported
 import { useEffect, useState, useTransition, useRef } from "react";
 import suspenseWrapPromise from "./suspense-wrap-promise";
 
@@ -35,12 +35,15 @@ const useIsMount = () => {
   const isMountRef = useRef(true);
   useEffect(() => {
     isMountRef.current = false;
-  }, []);
+  }, [isMountRef]);
 
   return isMountRef.current;
 };
 
-const useData = (cacheKey: string, fetcher: any) => {
+export default function useData<T>(
+  cacheKey: string,
+  fetcher: () => Promise<T>
+) {
   const isMount = useIsMount();
   const [resource, setResource] = useState(
     getResource(cacheKey, fetcher, true)
@@ -48,7 +51,7 @@ const useData = (cacheKey: string, fetcher: any) => {
 
   const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
-  });
+  }) as [boolean, any];
 
   useEffect(() => {
     if (!isMount) {
@@ -56,9 +59,10 @@ const useData = (cacheKey: string, fetcher: any) => {
         setResource(getResource(cacheKey, fetcher, false));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey]);
 
-  const data = resource.read();
+  const data: T = resource.read();
 
   return {
     data,
@@ -79,27 +83,24 @@ const useData = (cacheKey: string, fetcher: any) => {
       />
     ),
   };
-};
+}
 
-export default useData;
-
-export const useMutation = (fetcher) => {
-  const [resource, setResource] = useState(null);
+export function useMutation<T, V>(fetcher: (variables: V) => Promise<T>) {
+  const [resource, setResource] = useState<{ read: () => T } | null>(null);
   const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
-  });
+  }) as [boolean, any];
 
-  const execMutation = (variables) => {
-    const promise = fetcher(variables);
+  return [
+    (variables: V) => {
+      const promise = fetcher(variables);
 
-    startTransition(() => {
-      setResource(suspenseWrapPromise(promise));
-    });
+      startTransition(() => {
+        setResource(suspenseWrapPromise(promise));
+      });
 
-    return promise;
-  };
-
-  const result = resource ? resource.read() : null;
-
-  return [execMutation, { isPending, result }];
-};
+      return promise;
+    },
+    { data: resource ? resource.read() : null, isPending },
+  ] as [(variables: V) => Promise<T>, { data: null | T; isPending: boolean }];
+}
