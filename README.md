@@ -67,6 +67,7 @@ todo
 - rsc double render on the client; client always
 - dynamic routes dont work client side. useEffect for example. needed to switch to query params
 - but then with query params ... no ability to refresh
+- wish fauna you could click through to documents in the viewer. and could click through to prefiltered indexes that match a single ref
 
 ```graphql
 # could do something like this. HOWEVER. since using streaming and server components, we are going to try out a more streaming forward approach
@@ -113,7 +114,6 @@ query GetLayout {
 
 ## TODOS
 
-- add github oauth
 - get recursive layout showing up
 - add in book list into the recursive layout
 
