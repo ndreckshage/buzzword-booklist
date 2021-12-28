@@ -2,6 +2,8 @@ import { QueryResolvers } from "../__generated__/resolvers-types";
 import { ResolverContext } from "../context";
 
 export default {
+  currentUser: (parent, args, { currentUser }) => currentUser,
+
   layout: (parent, { layoutKey }, { loaders }) =>
     loaders.layoutLoader.load(layoutKey),
 

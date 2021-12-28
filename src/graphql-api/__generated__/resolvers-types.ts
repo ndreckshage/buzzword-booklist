@@ -166,6 +166,7 @@ export enum LinkVariant {
 export type List = Node & {
   __typename?: 'List';
   books?: Maybe<ListBookConnection>;
+  createdBy: Scalars['String'];
   id: Scalars['ID'];
   slug: Scalars['String'];
   title: Scalars['String'];
@@ -232,6 +233,7 @@ export type Query = {
   __typename?: 'Query';
   bookPageLayout?: Maybe<Layout>;
   collectionPageLayout?: Maybe<Layout>;
+  currentUser?: Maybe<Scalars['String']>;
   layout?: Maybe<Layout>;
   list?: Maybe<List>;
   node?: Maybe<Node>;
@@ -535,6 +537,7 @@ export type LinkComponentResolvers<ContextType = ResolverContext, ParentType ext
 
 export type ListResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = {
   books?: Resolver<Maybe<ResolversTypes['ListBookConnection']>, ParentType, ContextType, RequireFields<ListBooksArgs, never>>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -576,6 +579,7 @@ export type PageInfoResolvers<ContextType = ResolverContext, ParentType extends 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   bookPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryBookPageLayoutArgs, 'googleBooksVolumeId'>>;
   collectionPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryCollectionPageLayoutArgs, 'collectionSlug' | 'collectionType'>>;
+  currentUser?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   layout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'layoutKey'>>;
   list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;

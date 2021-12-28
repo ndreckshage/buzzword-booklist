@@ -40,6 +40,7 @@ export default function createClient() {
 }
 
 export type ResolverContext = {
+  currentUser: string | null;
   loaders: {
     layoutLoader: DataLoader<string, LayoutQuery, string>;
     componentLoader: DataLoader<string, ComponentQuery, string>;
@@ -68,10 +69,11 @@ export type ResolverContext = {
   };
 };
 
-export function createContext() {
+export function createContext({ currentUser }: { currentUser: string | null }) {
   const client = createClient();
 
   return {
+    currentUser,
     loaders: {
       layoutLoader: new DataLoader(getLayouts(client)),
       componentLoader: new DataLoader(getComponents(client)),

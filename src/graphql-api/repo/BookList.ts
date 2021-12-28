@@ -1,5 +1,5 @@
-import { Client, query as Q } from "faunadb";
-import fetch from "node-fetch";
+import e from "cors";
+import { Client, query as Q, type Expr } from "faunadb";
 import slugify from "slugify";
 
 export type GetListBooksQueryInput = {
@@ -209,6 +209,27 @@ const maybeCreateConnection = ({
     )
   );
 
+const ifListOwner = ({
+  listSlug,
+  currentUser,
+  execExpr,
+}: {
+  listSlug: string;
+  currentUser: string;
+  execExpr: Expr;
+}) =>
+  Q.If(
+    Q.Equals(
+      Q.Select(
+        ["data", "createdBy"],
+        Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
+      ),
+      currentUser
+    ),
+    execExpr,
+    Q.Abort("Not Authorized")
+  );
+
 const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
   const googleBookUri = `https://www.googleapis.com/books/v1/volumes/${googleBooksVolumeId}`;
   const googleBook = (await fetch(googleBookUri).then((r) =>
@@ -324,27 +345,50 @@ const maybeCreateBookAuthorsAndCategories = async (
 export type AddBookToListMutationInput = {
   listSlug: string;
   googleBooksVolumeId: string;
+  currentUser: string;
 };
 
 export type AddBookToListMutation = boolean;
 
 export const addBookToList =
   (client: Client) =>
-  async ({ googleBooksVolumeId, listSlug }: AddBookToListMutationInput) => {
-    await maybeCreateBookAuthorsAndCategories(client, googleBooksVolumeId);
+  async ({
+    googleBooksVolumeId,
+    listSlug,
+    currentUser,
+  }: AddBookToListMutationInput) => {
+    console.log("addBookToList", {
+      googleBooksVolumeId,
+      listSlug,
+      currentUser,
+    });
 
-    await client.query(
-      maybeCreateConnection({
-        edgeAName: "listRef",
-        edgeBName: "bookRef",
-        edgeAIndex: "unique_lists_by_slug",
-        edgeAIndexTerms: [listSlug],
-        edgeBIndex: "unique_books_by_google_books_volume_id",
-        edgeBIndexTerms: [googleBooksVolumeId],
-        connectionRefIndex: "unique_list_book_connections_by_refs",
-        connectionCollectionName: "ListBookConnections",
-      })
-    );
+    await maybeCreateBookAuthorsAndCategories(client, googleBooksVolumeId);
+    try {
+      await client.query(
+        ifListOwner({
+          listSlug,
+          currentUser,
+          execExpr: maybeCreateConnection({
+            edgeAName: "listRef",
+            edgeBName: "bookRef",
+            edgeAIndex: "unique_lists_by_slug",
+            edgeAIndexTerms: [listSlug],
+            edgeBIndex: "unique_books_by_google_books_volume_id",
+            edgeBIndexTerms: [googleBooksVolumeId],
+            connectionRefIndex: "unique_list_book_connections_by_refs",
+            connectionCollectionName: "ListBookConnections",
+          }),
+        })
+      );
+    } catch (e) {
+      if (e instanceof Error) {
+        // @ts-ignore
+        throw new Error(e.description || e.message);
+      }
+
+      throw e;
+    }
 
     return true as AddBookToListMutation;
   };
@@ -352,56 +396,75 @@ export const addBookToList =
 export type RemoveBookListConnectionInput = {
   listSlug: string;
   googleBooksVolumeId: string;
+  currentUser: string;
 };
 
 export type RemoveBookListConnectionResult = boolean;
 
 export const removeBookListConnection =
   (client: Client) =>
-  async ({ googleBooksVolumeId, listSlug }: RemoveBookListConnectionInput) => {
-    console.log("remove book list connection", googleBooksVolumeId, listSlug);
-    await client.query(
-      Q.Let(
-        {
-          bookRef: Q.Select(
-            "ref",
-            Q.Get(
-              Q.Match(
-                Q.Index("unique_books_by_google_books_volume_id"),
-                googleBooksVolumeId
-              )
+  async ({
+    googleBooksVolumeId,
+    listSlug,
+    currentUser,
+  }: RemoveBookListConnectionInput) => {
+    console.log("removeBookListConnection", { googleBooksVolumeId, listSlug });
+    try {
+      await client.query(
+        ifListOwner({
+          listSlug,
+          currentUser,
+          execExpr: Q.Let(
+            {
+              bookRef: Q.Select(
+                "ref",
+                Q.Get(
+                  Q.Match(
+                    Q.Index("unique_books_by_google_books_volume_id"),
+                    googleBooksVolumeId
+                  )
+                )
+              ),
+              listRef: Q.Select(
+                "ref",
+                Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
+              ),
+            },
+            Q.Let(
+              {
+                connectionRef: Q.Select(
+                  "ref",
+                  Q.Get(
+                    Q.Match(Q.Index("unique_list_book_connections_by_refs"), [
+                      Q.Var("listRef"),
+                      Q.Var("bookRef"),
+                    ])
+                  )
+                ),
+              },
+              Q.Delete(Q.Var("connectionRef"))
             )
           ),
-          listRef: Q.Select(
-            "ref",
-            Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
-          ),
-        },
-        Q.Let(
-          {
-            connectionRef: Q.Select(
-              "ref",
-              Q.Get(
-                Q.Match(Q.Index("unique_list_book_connections_by_refs"), [
-                  Q.Var("listRef"),
-                  Q.Var("bookRef"),
-                ])
-              )
-            ),
-          },
-          Q.Delete(Q.Var("connectionRef"))
-        )
-      )
-    );
+        })
+      );
+    } catch (e) {
+      if (e instanceof Error) {
+        // @ts-ignore
+        throw new Error(e.description || e.message);
+      }
+
+      throw e;
+    }
 
     return true as RemoveBookListConnectionResult;
   };
 
-export type CreateListMutationInput = string;
+export type CreateListMutationInput = { title: string; currentUser: string };
 export type CreateListMutation = boolean;
 
 export const createList =
-  (client: Client) => async (title: CreateListMutationInput) => {
+  (client: Client) =>
+  async ({ title, currentUser }: CreateListMutationInput) => {
     const slug = slugify(title, { lower: true, strict: true });
 
     const list = await client.query(
@@ -412,7 +475,10 @@ export const createList =
         Q.If(
           Q.Exists(Q.Var("listMatch")),
           null,
-          Q.Select("ref", Q.Create("Lists", { data: { title, slug } }))
+          Q.Select(
+            "ref",
+            Q.Create("Lists", { data: { title, slug, createdBy: currentUser } })
+          )
         )
       )
     );
@@ -425,6 +491,7 @@ export type GetListQuery = {
   id: string;
   title: string;
   slug: string;
+  createdBy: string;
 };
 
 export const getList =
@@ -436,6 +503,7 @@ export const getList =
           id: Q.Select(["ref", "id"], Q.Var("listDoc")),
           title: Q.Select(["data", "title"], Q.Var("listDoc")),
           slug: Q.Select(["data", "slug"], Q.Var("listDoc")),
+          createdBy: Q.Select(["data", "createdBy"], Q.Var("listDoc")),
         }
       )
     );

@@ -14,7 +14,7 @@ const Demo = ({
   delay: number;
   refreshCount: number;
 }) => {
-  const { data } = useData(cacheKey, async () => {
+  const data = useData(cacheKey, async () => {
     await sleep(delay);
     return {
       data: {

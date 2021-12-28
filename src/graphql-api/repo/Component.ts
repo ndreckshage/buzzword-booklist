@@ -4,8 +4,6 @@ export type ComponentQuery = { id: string; componentType: string };
 
 export const getComponents =
   (client: Client) => async (ids: readonly string[]) => {
-    console.log("get components", ids);
-
     const result = await client.query(
       Q.Map(
         ids,

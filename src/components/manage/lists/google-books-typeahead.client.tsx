@@ -2,7 +2,7 @@ import React, { useState, Suspense } from "react";
 import fetchGoogleBoooksQuery, { GoogleBook } from "lib/google-books-api";
 import TextInput from "components/common/text-input";
 import Image from "next/image";
-import useData from "lib/use-data.client";
+import { useData } from "lib/use-data.client";
 import cx from "classnames";
 
 type BooksProps = {

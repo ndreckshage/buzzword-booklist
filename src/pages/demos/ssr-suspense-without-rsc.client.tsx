@@ -1,6 +1,6 @@
 // @ts-ignore remove when react 18 types supported
 import { Suspense, useEffect, useState, useTransition } from "react";
-import useData from "lib/use-data.client";
+import { useData } from "lib/use-data.client";
 import suspenseWrapPromise from "lib/suspense-wrap-promise";
 import cx from "classnames";
 

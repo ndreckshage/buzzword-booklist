@@ -1,6 +1,9 @@
+import { request, gql } from "./graphql-request";
+import { DocumentNode } from "graphql";
+
 const queryCache: any = {};
 
-const useData = (cacheKey: string, fetcher: any) => {
+const useData = <T>(cacheKey: string, fetcher: () => Promise<T>) => {
   if (!queryCache[cacheKey]) {
     let promise: any = null;
     let promiseData: any = undefined;
@@ -12,11 +15,16 @@ const useData = (cacheKey: string, fetcher: any) => {
     };
   }
 
-  const data = queryCache[cacheKey]();
-
-  return {
-    data,
-  };
+  return queryCache[cacheKey]() as T;
 };
 
-export default useData;
+function useQuery<T>(
+  cacheKey: string,
+  document: DocumentNode,
+  variables?: object
+) {
+  // @NOTE NO CONTEXT ACCESS!!!! NO ABILITY TO GET PERSONALIZED RESULTS
+  return useData<T>(cacheKey, () => request<T>(document, variables));
+}
+
+export { useData, useQuery };

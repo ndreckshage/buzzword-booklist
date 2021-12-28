@@ -1,15 +1,16 @@
 import { useRouter } from "next/router";
 import { Suspense } from "react";
 import GoogleBooksTypeahead from "components/manage/lists/google-books-typeahead.client";
-import { request, gql } from "lib/graphql-request";
 import Image from "next/image";
-import useData, { useMutation } from "lib/use-data.client";
+import { useQuery, useMutation, gql } from "lib/use-data.client";
 import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
   query GetList($listSlug: String!) {
+    currentUser
     list(listSlug: $listSlug) {
       title
+      createdBy
       books {
         edges {
           node {
@@ -22,6 +23,23 @@ const GET_LISTS_QUERY = gql`
     }
   }
 `;
+
+type GetListsResponse = {
+  currentUser: string | null;
+  list: {
+    title: string;
+    createdBy: string;
+    books: {
+      edges: {
+        node: {
+          title: string;
+          googleBooksVolumeId: string;
+          image: string;
+        };
+      }[];
+    };
+  };
+};
 
 const REMOVE_BOOK_FROM_LIST_MUTATION = gql`
   mutation RemoveBookFromList(
@@ -50,31 +68,23 @@ const BookList = ({ listSlug }: { listSlug: string }) => {
     hydrateClient,
     refresh,
     isPending: getBooksPending,
-  } = useData<{
-    list: {
-      title: string;
-      books: {
-        edges: {
-          node: {
-            title: string;
-            googleBooksVolumeId: string;
-            image: string;
-          };
-        }[];
-      };
-    };
-  }>(`get-list::${listSlug}`, () => request(GET_LISTS_QUERY, { listSlug }));
+  } = useQuery<GetListsResponse>(`get-list::${listSlug}`, GET_LISTS_QUERY, {
+    listSlug,
+  });
 
-  const [addBookMutation, { isPending: addBookPending }] = useMutation<
-    boolean,
-    { googleBooksVolumeId: string; listSlug: string }
-  >((variables) => request(ADD_BOOK_TO_LIST_MUTATION, variables));
+  const [addBookMutation, { isPending: addBookPending }] = useMutation<{
+    addBookToList: boolean;
+  }>(ADD_BOOK_TO_LIST_MUTATION);
 
-  const [removeBookMutation, { isPending: removeBookPending }] = useMutation(
-    (variables) => request(REMOVE_BOOK_FROM_LIST_MUTATION, variables)
-  );
+  const [removeBookMutation, { isPending: removeBookPending }] = useMutation<{
+    removeBookFromList: boolean;
+  }>(REMOVE_BOOK_FROM_LIST_MUTATION);
 
   const isPending = getBooksPending || addBookPending || removeBookPending;
+
+  if (data.list.createdBy !== data.currentUser) {
+    return <p>Not Authorized</p>;
+  }
 
   return (
     <>

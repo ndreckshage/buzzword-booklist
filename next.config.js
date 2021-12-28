@@ -1,7 +1,11 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ["books.google.com", "images.unsplash.com"],
+    domains: [
+      "books.google.com",
+      "images.unsplash.com",
+      "avatars.githubusercontent.com",
+    ],
   },
   experimental: {
     concurrentFeatures: true,

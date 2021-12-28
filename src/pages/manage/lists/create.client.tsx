@@ -16,10 +16,8 @@ const CREATE_LIST_MUTATION = gql`
 export default function CreateList() {
   const router = useRouter();
   const [listTitle, setListTitle] = useState("");
-  const [createListMutation, { isPending }] = useMutation<
-    { createList: boolean },
-    { title: string }
-  >((v) => request(CREATE_LIST_MUTATION, v));
+  const [createListMutation, { isPending }] =
+    useMutation<{ createList: boolean }>(CREATE_LIST_MUTATION);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setListTitle(e.target.value);

@@ -4,34 +4,51 @@
 
 ### introduction
 
-title: `Buzzword Booklist 2021 - Part 1/8`
+title: `Buzzword Booklist 2021 - Tutorial Series 1/10`
 subtitle: `Building a Serverless, Suspense for Data, Server Components, Server Driven UIs`
 content: introduction, link to the site, link to the source code, explain goals and what we will be building. define terms.
 bookshop.org inspired site. lists of holiday / best books of 2021. link to bookshop.org pages to buy!
 
-### react setup; server components and suspense for data fetch; route creation
+### next setup; server components and suspense for data fetch
+
+todo
+focus on suspense for data fetching, suspense.
+
+### tailwind setup; carousel & grid layout testing
 
 todo
 
-### graphql setup; initial fauna migration
+### graphql setup; core entity schema design; initial resolvers
+
+todo
+focus on fauna overview
+
+### fauna setup + initial migration; list query, list edit interface + remove mutation
 
 todo
 
-### initial schema creation for books, books fql, displaying a list
-
-todo
-
-### manage list interface, github oauth for managing books
+### adding github oauth, protecting remove list item
 
 todo
 github oauth for admin access (see: https://github.com/vercel/next-server-components)
+https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
 
-### schema creation for server driven ui, create frontends
+all we need is the username
+https://avatars.githubusercontent.com/ndreckshage?s=100
+https://github.com/ndreckshage
+
+server components do not have access to request context as of current next version. cant use user personalized data in rsc.
+
+### creating a list + adding a book interface
+
+todo
+
+### schema design + queries for server driven ui, create frontends
 
 todo
 graphql server driven ui (airbnb ghost)
 
-### server driven ui admin manager
+### server driven ui manager
 
 todo
 
@@ -96,12 +113,13 @@ query GetLayout {
 
 ## TODOS
 
+- add github oauth
 - get recursive layout showing up
 - add in book list into the recursive layout
 
+- CHANGE AUTHORS AND LAYOUTS BACK TO NESTING
 - layout create
 - layout edit
-- add github oauth
 - lists view mine
 - layouts view mine
 - protect the various lists / layouts
@@ -111,4 +129,5 @@ query GetLayout {
 - allow a list to specify between grid / list
 - get the node query working
 - rename slug to key in various places
+- REMOVE TYPESCRIPT FROM THE CLEANED VERSION FOR SIMPLICITY
 - begin planning blog post!

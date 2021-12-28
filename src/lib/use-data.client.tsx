@@ -1,9 +1,11 @@
 // @ts-ignore remove when react 18 types supported
-import { useEffect, useState, useTransition, useRef } from "react";
+import { useContext, useEffect, useState, useTransition, useRef } from "react";
 import suspenseWrapPromise from "./suspense-wrap-promise";
+import { DocumentNode } from "graphql/language/ast";
+import { request, gql } from "./graphql-request";
+import { AppContext } from "pages/_app";
 
 const queryCache: any = {};
-
 const getResource = (cacheKey: string, fetcher: any, initialLoad = false) => {
   if (!queryCache[cacheKey]) {
     let fetcherPromise: any = null;
@@ -40,10 +42,7 @@ const useIsMount = () => {
   return isMountRef.current;
 };
 
-export default function useData<T>(
-  cacheKey: string,
-  fetcher: () => Promise<T>
-) {
+function useData<T>(cacheKey: string, fetcher: () => Promise<T>) {
   const isMount = useIsMount();
   const [resource, setResource] = useState(
     getResource(cacheKey, fetcher, true)
@@ -85,22 +84,40 @@ export default function useData<T>(
   };
 }
 
-export function useMutation<T, V>(fetcher: (variables: V) => Promise<T>) {
+function useQuery<T>(
+  cacheKey: string,
+  document: DocumentNode,
+  variables?: object
+) {
+  const { cookieHeader } = useContext(AppContext);
+  return useData<T>(cacheKey, () =>
+    request<T>(document, variables, { cookie: cookieHeader })
+  );
+}
+
+function useMutation<T>(document: DocumentNode) {
   const [resource, setResource] = useState<{ read: () => T } | null>(null);
   const [isPending, startTransition] = useTransition({
     timeoutMs: 5000,
   }) as [boolean, any];
 
+  const execMutation = (variables: object) => {
+    const promise = request<T>(document, variables);
+
+    startTransition(() => {
+      setResource(suspenseWrapPromise(promise));
+    });
+
+    return promise;
+  };
+
   return [
-    (variables: V) => {
-      const promise = fetcher(variables);
-
-      startTransition(() => {
-        setResource(suspenseWrapPromise(promise));
-      });
-
-      return promise;
-    },
+    execMutation,
     { data: resource ? resource.read() : null, isPending },
-  ] as [(variables: V) => Promise<T>, { data: null | T; isPending: boolean }];
+  ] as [
+    (variables: object) => Promise<T>,
+    { data: null | T; isPending: boolean }
+  ];
 }
+
+export { useData, useQuery, useMutation, gql };

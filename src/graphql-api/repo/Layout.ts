@@ -113,9 +113,5 @@ export const getLayouts =
       )
     );
 
-    console.log("x", JSON.stringify(x, null, 2));
-
-    // console.log('get-layouts', JSON.stringify(result, null, 2));
-
     return x as Promise<LayoutQuery[]>;
   };

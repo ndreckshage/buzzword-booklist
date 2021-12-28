@@ -52,11 +52,6 @@ export const getBookCarouselComponents =
         )
       );
 
-      // console.log(
-      //   "get-book-carousel-components",
-      //   JSON.stringify(result, null, 2)
-      // );
-
       return result as Promise<BookCarouselComponentQuery[]>;
     } catch (e) {
       console.error(e);

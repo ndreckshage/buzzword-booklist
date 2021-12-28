@@ -160,6 +160,7 @@ export default /* GraphQL */ `
     id: ID!
     title: String!
     slug: String!
+    createdBy: String!
     books(
       first: Int
       after: String
@@ -169,6 +170,7 @@ export default /* GraphQL */ `
   }
 
   type Query {
+    currentUser: String
     layout(layoutKey: String!): Layout
     collectionPageLayout(
       collectionType: String!
