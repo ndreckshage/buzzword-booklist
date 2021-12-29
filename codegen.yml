@@ -1,13 +1,13 @@
-schema: ./src/graphql-api/schema.ts
+schema: ./src/api/schema.ts
 generates:
-  ./src/graphql-api/__generated__/resolvers-types.ts:
+  ./src/api/__generated__/resolvers-types.ts:
     config:
       contextType: ../context#ResolverContext
       mappers:
         BookCarouselComponent: ../repo/Component#ComponentQuery
         Component: ../repo/Component#ComponentQuery
-        Layout: ../repo/Layout#LayoutQuery
-        List: ../repo/BookList#GetListQuery
+        List: ../repo/lists#ListModel
+        Book: ../repo/books#BookModel
     plugins:
       - typescript
       - typescript-resolvers

@@ -1,7 +1,7 @@
 // @ts-ignore remove when react 18 types supported
 import { Suspense, useEffect, useState, useTransition } from "react";
-import { useData } from "lib/use-data.client";
-import suspenseWrapPromise from "lib/suspense-wrap-promise";
+import { useData } from "ui/lib/use-data.client";
+import suspenseWrapPromise from "ui/lib/suspense-wrap-promise";
 import cx from "classnames";
 
 const env = typeof window === "undefined" ? "server" : "browser";

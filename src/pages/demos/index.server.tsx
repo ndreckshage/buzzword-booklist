@@ -1,4 +1,4 @@
-import Link from "components/common/link.client";
+import Link from "ui/components/common/link.client";
 
 export default function Demos() {
   return (

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import Refresher from "components/demos/rsc-refresher.client";
-import useData from "lib/use-data.server";
+import Refresher from "ui/components/demos/rsc-refresher.client";
+import { useData } from "ui/lib/use-data.server";
 
 const env = typeof window === "undefined" ? "server" : "browser";
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

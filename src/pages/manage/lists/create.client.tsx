@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Text, { TextTypes } from "components/common/text";
-import TextInput from "components/common/text-input";
-import { request, gql } from "lib/graphql-request";
-import { useMutation } from "lib/use-data.client";
+import Text, { TextTypes } from "ui/components/common/text";
+import TextInput from "ui/components/common/text-input";
+import { useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 import slugify from "slugify";
 

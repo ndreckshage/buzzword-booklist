@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { Suspense } from "react";
-import GoogleBooksTypeahead from "components/manage/lists/google-books-typeahead.client";
+import GoogleBooksTypeahead from "ui/components/manage/lists/google-books-typeahead.client";
 import Image from "next/image";
-import { useQuery, useMutation, gql } from "lib/use-data.client";
+import { useQuery, useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
@@ -12,13 +12,9 @@ const GET_LISTS_QUERY = gql`
       title
       createdBy
       books {
-        edges {
-          node {
-            title
-            googleBooksVolumeId
-            image
-          }
-        }
+        title
+        googleBooksVolumeId
+        image
       }
     }
   }
@@ -30,14 +26,10 @@ type GetListsResponse = {
     title: string;
     createdBy: string;
     books: {
-      edges: {
-        node: {
-          title: string;
-          googleBooksVolumeId: string;
-          image: string;
-        };
-      }[];
-    };
+      title: string;
+      googleBooksVolumeId: string;
+      image: string;
+    }[];
   };
 };
 
@@ -95,27 +87,25 @@ const BookList = ({ listSlug }: { listSlug: string }) => {
             "opacity-50": isPending,
           })}
         >
-          {data.list.books.edges.map(
-            ({ node: { googleBooksVolumeId, image, title } }) => (
-              <div key={googleBooksVolumeId} className="flex">
-                <Image src={image} alt={title} width={100} height={150} />
-                <div>
-                  <p>{title}</p>
-                  <p
-                    className="cursor-pointer"
-                    onClick={() => {
-                      removeBookMutation({
-                        googleBooksVolumeId,
-                        listSlug,
-                      }).then(refresh);
-                    }}
-                  >
-                    Remove
-                  </p>
-                </div>
+          {data.list.books.map(({ googleBooksVolumeId, image, title }) => (
+            <div key={googleBooksVolumeId} className="flex">
+              <Image src={image} alt={title} width={100} height={150} />
+              <div>
+                <p>{title}</p>
+                <p
+                  className="cursor-pointer"
+                  onClick={() => {
+                    removeBookMutation({
+                      googleBooksVolumeId,
+                      listSlug,
+                    }).then(refresh);
+                  }}
+                >
+                  Remove
+                </p>
               </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
         {hydrateClient}
       </>

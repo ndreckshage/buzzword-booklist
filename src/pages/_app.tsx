@@ -4,10 +4,10 @@ import NextApp, {
 } from "next/app";
 
 import { Suspense, createContext, type ReactNode } from "react";
-import Link from "components/common/link.client";
-import AuthButton from "components/app/auth-button.client";
-import { useQuery, gql } from "lib/use-data.client";
-import "../styles/global.css";
+import Link from "ui/components/common/link.client";
+import AuthButton from "ui/components/app/auth-button.client";
+import { useQuery, gql } from "ui/lib/use-data.client";
+import "ui/styles/global.css";
 
 export const AppContext = createContext({ cookieHeader: "" });
 

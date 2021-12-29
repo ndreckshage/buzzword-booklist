@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphqlHTTP } from "express-graphql";
-import session from "graphql-api/session";
+import session from "api/session";
 import Cors from "cors";
 
-import typeDefs from "graphql-api/schema";
-import resolvers from "graphql-api/resolvers";
-import { createContext } from "graphql-api/context";
+import typeDefs from "api/schema";
+import resolvers from "api/resolvers";
+import { createContext } from "api/context";
 
 interface Request extends NextApiRequest {
   session: {

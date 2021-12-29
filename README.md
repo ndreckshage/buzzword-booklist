@@ -114,10 +114,10 @@ query GetLayout {
 
 ## TODOS
 
+- REMOVE PAGINATION ... max list 64
+- CHANGE AUTHORS AND LAYOUTS BACK TO NESTING
 - get recursive layout showing up
 - add in book list into the recursive layout
-
-- CHANGE AUTHORS AND LAYOUTS BACK TO NESTING
 - layout create
 - layout edit
 - lists view mine
