@@ -5,13 +5,13 @@ generates:
       contextType: ../context#ResolverContext
       mappers:
         Book: ../repo/books#BookModel
-        BookCardComponent: ../repo/components#ComponentModel
-        BookCarouselComponent: ../repo/components#ComponentModel
-        BookGridComponent: ../repo/components#ComponentModel
-        BookListComponent: ../repo/components#ComponentModel
-        Component: ../repo/components#ComponentModel
-        HeroComponent: ../repo/components#ComponentModel
-        LayoutComponent: ../repo/components#LayoutModel
+        BookCardComponent: ../repo/components#RootComponentModel
+        BookCarouselComponent: ../repo/components#RootBookCarouselComponentModel
+        BookGridComponent: ../repo/components#RootComponentModel
+        BookListComponent: ../repo/components#RootComponentModel
+        Component: ../repo/components#RootComponentModel
+        HeroComponent: ../repo/components#RootComponentModel
+        LayoutComponent: ../repo/components#RootLayoutComponentModel
         List: ../repo/lists#ListModel
     plugins:
       - typescript

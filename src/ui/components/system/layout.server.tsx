@@ -1,55 +1,59 @@
 import { useQuery, gql } from "ui/lib/use-data.server";
 
-import Hero from "./hero.server";
+import Hero, { HeroComponentFragment } from "./hero.server";
+import BookCarousel, {
+  BookCarouselComponentFragment,
+} from "./book-carousel.server";
 
 const LAYOUT_QUERY = gql`
-  query GetLayout($layoutRef: String!) {
-    layout(layoutRef: $layoutRef) {
+  query GetLayout($id: ID!) {
+    layout(id: $id) {
       id
       components {
         __typename
 
         ... on LayoutComponent {
           id
-          components {
-            __typename
-
-            ... on HeroComponent {
-              id
-              title
-              subTitle
-            }
-          }
         }
 
-        ... on HeroComponent {
-          id
-          title
-          subTitle
-        }
+        ...HeroComponentFragment
+        ...BookCarouselComponentFragment
       }
     }
   }
+  ${HeroComponentFragment}
+  ${BookCarouselComponentFragment}
 `;
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
+  BookCarouselComponent: BookCarousel,
   HeroComponent: Hero,
 };
 
-export default function Layout({ layoutRef }: { layoutRef: string }) {
-  const data = useQuery(layoutRef, LAYOUT_QUERY, { layoutRef });
-  console.log("d", data.layout.components);
+export default function Layout({ id }: { id: string }) {
+  const data = useQuery<{
+    layout: {
+      id: string;
+      components: {
+        __typename: string;
+        id: string;
+      }[];
+    };
+  }>(`Layout::${id}`, LAYOUT_QUERY, { id });
 
-  // return data.layout.components.map((component) => {
-  //   // const Component = COMPONENT_MAP[component.__typename];
+  return (
+    <div>
+      <p>Layout: {data.layout.id}</p>
+      {data.layout.components.map((component) => {
+        // @ts-ignore
+        const Component = COMPONENT_MAP[component.__typename];
+        if (!Component) {
+          return null;
+        }
 
-  //   // if (component.__typename === "LayoutComponent") {
-  //   //   return <p>todo -recursive layout</p>;
-  //   // }
-
-  //   // return <Component {...component} />;
-  // });
-
-  return <p>hi</p>;
+        return <Component key={component.id} {...component} />;
+      })}
+    </div>
+  );
 }

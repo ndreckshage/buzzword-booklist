@@ -1,5 +1,5 @@
-import { Client, query as Q } from "faunadb";
-import { type ComponentModel } from ".";
+import { Client, ExprArg, query as Q } from "faunadb";
+import { type RootComponentModel } from ".";
 
 export const selectLayoutModelData = ({
   componentDocVar,
@@ -13,6 +13,22 @@ export const selectLayoutModelData = ({
     Q.Lambda("componentRef", Q.Select("id", Q.Var("componentRef")))
   ),
 });
+
+const selectBookCarouselModelData = {
+  id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
+  componentType: Q.Select(["data", "componentType"], Q.Var("componentDoc")),
+  sourceType: Q.Select(
+    ["data", "sourceRef", "collection", "id"],
+    Q.Var("componentDoc")
+  ),
+  sourceId: Q.Select(["data", "sourceRef", "id"], Q.Var("componentDoc")),
+};
+
+const ifComponentType = (
+  componentType: string,
+  doIf: ExprArg,
+  elseIf: ExprArg
+) => Q.If(Q.Equals(Q.Var("componentType"), componentType), doIf, elseIf);
 
 export default function getComponentsByIds(client: Client) {
   return async (ids: readonly string[]) => {
@@ -40,10 +56,14 @@ export default function getComponentsByIds(client: Client) {
                     id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
                     componentType: Q.Var("componentType"),
                   },
-                  Q.If(
-                    Q.Equals(Q.Var("componentType"), "LayoutComponent"),
+                  ifComponentType(
+                    "LayoutComponent",
                     selectLayoutModelData({ componentDocVar: "componentDoc" }),
-                    Q.Select("data", Q.Var("componentDoc"))
+                    ifComponentType(
+                      "BookCarouselComponent",
+                      selectBookCarouselModelData,
+                      Q.Select("data", Q.Var("componentDoc"))
+                    )
                   )
                 )
               )
@@ -52,7 +72,9 @@ export default function getComponentsByIds(client: Client) {
         )
       );
 
-      return result as ComponentModel[];
+      console.log("result", result);
+
+      return result as RootComponentModel[];
     } catch (e) {
       console.error(e);
 

@@ -2,7 +2,7 @@ import { type Resolvers } from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
 import { type GraphQLResolveInfo } from "graphql";
 
-import { globalIdField } from "graphql-relay";
+import { globalIdField, fromGlobalId } from "graphql-relay";
 
 const authenticated =
   <T, R>(
@@ -31,6 +31,27 @@ export default {
   },
   BookCarouselComponent: {
     id: globalIdField(),
+    title: async ({ sourceId, sourceType }, args, { loaders }) => {
+      const { title } = await loaders.bookCarouselComponentsByJsonRefs.load(
+        JSON.stringify({ sourceId, sourceType })
+      );
+
+      return title;
+    },
+    href: async ({ sourceId, sourceType }, args, { loaders }) => {
+      const { slug } = await loaders.bookCarouselComponentsByJsonRefs.load(
+        JSON.stringify({ sourceId, sourceType })
+      );
+
+      return slug;
+    },
+    bookCards: async ({ sourceId, sourceType }, args, { loaders }) => {
+      const { bookCards } = await loaders.bookCarouselComponentsByJsonRefs.load(
+        JSON.stringify({ sourceId, sourceType })
+      );
+
+      return bookCards;
+    },
   },
   Component: {
     __resolveType: (obj) => obj.componentType,
@@ -73,10 +94,8 @@ export default {
   Query: {
     currentUser: (parent, args, { currentUser }) => currentUser,
 
-    layout: (parent, { layoutRef }, { loaders }) =>
-      loaders.layoutComponentsByIdsLoader.load(layoutRef),
-
-    // component: (parent, {}, {loaders}) =>
+    layout: (parent, { id }, { loaders }) =>
+      loaders.layoutComponentsByIdsLoader.load(fromGlobalId(id).id),
 
     layoutWithCollectionContext: (parent, args, context) => null,
     layoutWithBookContext: (parent, args, context) => null,

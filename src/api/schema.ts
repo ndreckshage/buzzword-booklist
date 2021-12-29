@@ -9,7 +9,7 @@ export default /* GraphQL */ `
     id: ID!
     title: String!
     href: String!
-    items: [BookCardComponent!]!
+    bookCards: [BookCardComponent!]!
   }
 
   type BookGridComponent {
@@ -56,14 +56,14 @@ export default /* GraphQL */ `
 
   type Query {
     currentUser: String
-    layout(layoutRef: String!): LayoutComponent
+    layout(id: ID!): LayoutComponent
     layoutWithCollectionContext(
-      layoutRef: String!
+      id: ID!
       collectionType: String!
       collectionSlug: String!
     ): LayoutComponent
     layoutWithBookContext(
-      layoutRef: String!
+      id: ID!
       googleBooksVolumeId: String!
     ): LayoutComponent
     list(listSlug: String!): List

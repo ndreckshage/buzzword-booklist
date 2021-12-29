@@ -1,5 +1,5 @@
 import { Client, query as Q } from "faunadb";
-import { type ComponentModel } from ".";
+import { type RootComponentModel } from ".";
 import { selectLayoutModelData } from "./get-components-by-ids";
 
 export default function getLayoutComponentsByIds(client: Client) {
@@ -34,7 +34,7 @@ export default function getLayoutComponentsByIds(client: Client) {
         )
       );
 
-      return result as ComponentModel[];
+      return result as RootComponentModel[];
     } catch (e) {
       console.error(e);
 

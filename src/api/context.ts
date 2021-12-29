@@ -18,16 +18,12 @@ import {
 import { type BookModel, getBooksByListIds } from "api/repo/books";
 
 import {
-  type ComponentModel,
-  type LayoutModel,
+  type RootComponentModel,
+  type RootLayoutComponentModel,
   getLayoutComponentsByIds,
   getComponentsByIds,
+  getBookCarouselComponentsByJsonRefs,
 } from "api/repo/components";
-
-// import {
-//   getBookCarouselComponents,
-//   BookCarouselComponentQuery,
-// } from "./repo/BookCarouselComponent";
 
 export default function createClient() {
   const FAUNA_KEY = process.env.FAUNA_KEY;
@@ -45,14 +41,14 @@ export type ResolverContext = {
   currentUser: string | null;
   loaders: {
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
-    componentsByIdsLoader: DataLoader<string, ComponentModel, string>;
-    layoutComponentsByIdsLoader: DataLoader<string, LayoutModel, string>;
+    componentsByIdsLoader: DataLoader<string, RootComponentModel, string>;
+    layoutComponentsByIdsLoader: DataLoader<
+      string,
+      RootLayoutComponentModel,
+      string
+    >;
     listsBySlugsLoader: DataLoader<string, ListModel, string>;
-    // bookCarouselComponentLoader: DataLoader<
-    //   string,
-    //   BookCarouselComponentQuery,
-    //   string
-    // >;
+    bookCarouselComponentsByJsonRefs: DataLoader<string, [], string>;
   };
   mutations: {
     addBookToList: (input: AddBookToListInput) => Promise<AddBookToListOutput>;
@@ -75,9 +71,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
         getLayoutComponentsByIds(client)
       ),
       listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
-      // bookCarouselComponentLoader: new DataLoader(
-      //   getBookCarouselComponents(client)
-      // ),
+      bookCarouselComponentsByJsonRefs: new DataLoader(
+        getBookCarouselComponentsByJsonRefs(client)
+      ),
     },
     mutations: {
       addBookToList: addBookToList(client),
