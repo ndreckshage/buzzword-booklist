@@ -27,4 +27,4 @@ function useQuery<T>(
   return useData<T>(cacheKey, () => request<T>(document, variables));
 }
 
-export { useData, useQuery };
+export { useData, useQuery, gql };

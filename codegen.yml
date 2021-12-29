@@ -4,10 +4,15 @@ generates:
     config:
       contextType: ../context#ResolverContext
       mappers:
-        BookCarouselComponent: ../repo/Component#ComponentQuery
-        Component: ../repo/Component#ComponentQuery
-        List: ../repo/lists#ListModel
         Book: ../repo/books#BookModel
+        BookCardComponent: ../repo/components#ComponentModel
+        BookCarouselComponent: ../repo/components#ComponentModel
+        BookGridComponent: ../repo/components#ComponentModel
+        BookListComponent: ../repo/components#ComponentModel
+        Component: ../repo/components#ComponentModel
+        HeroComponent: ../repo/components#ComponentModel
+        LayoutComponent: ../repo/components#LayoutModel
+        List: ../repo/lists#ListModel
     plugins:
       - typescript
       - typescript-resolvers

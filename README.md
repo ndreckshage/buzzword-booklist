@@ -68,6 +68,8 @@ todo
 - dynamic routes dont work client side. useEffect for example. needed to switch to query params
 - but then with query params ... no ability to refresh
 - wish fauna you could click through to documents in the viewer. and could click through to prefiltered indexes that match a single ref
+- server components with \_middleware doesnt work
+- server components dont work with graphql without going throgh an endpoint (setImmediate)
 
 ```graphql
 # could do something like this. HOWEVER. since using streaming and server components, we are going to try out a more streaming forward approach
@@ -114,10 +116,11 @@ query GetLayout {
 
 ## TODOS
 
-- REMOVE PAGINATION ... max list 64
-- CHANGE AUTHORS AND LAYOUTS BACK TO NESTING
+- add component resolver so that we can do waterfall requests
 - get recursive layout showing up
+- be able to request recursive layouts with ref/id
 - add in book list into the recursive layout
+
 - layout create
 - layout edit
 - lists view mine

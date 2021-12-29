@@ -1,14 +1,13 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { ComponentQuery } from '../repo/Component';
-import { ListModel } from '../repo/lists';
 import { BookModel } from '../repo/books';
+import { ComponentModel, LayoutModel } from '../repo/components';
+import { ListModel } from '../repo/lists';
 import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -52,12 +51,7 @@ export type BookListComponent = {
   id: Scalars['ID'];
 };
 
-export type BookListItemComponent = {
-  __typename?: 'BookListItemComponent';
-  id: Scalars['ID'];
-};
-
-export type Component = BookCardComponent | BookCarouselComponent | BookGridComponent | BookListComponent | HeroComponent | Layout;
+export type Component = BookCardComponent | BookCarouselComponent | BookGridComponent | BookListComponent | HeroComponent | LayoutComponent;
 
 export type HeroComponent = {
   __typename?: 'HeroComponent';
@@ -66,11 +60,10 @@ export type HeroComponent = {
   title: Scalars['String'];
 };
 
-export type Layout = {
-  __typename?: 'Layout';
+export type LayoutComponent = {
+  __typename?: 'LayoutComponent';
   components: Array<Component>;
   id: Scalars['ID'];
-  key: Scalars['String'];
 };
 
 export type List = {
@@ -108,27 +101,29 @@ export type MutationRemoveBookFromListArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  bookPageLayout?: Maybe<Layout>;
-  collectionPageLayout?: Maybe<Layout>;
   currentUser?: Maybe<Scalars['String']>;
-  layout?: Maybe<Layout>;
+  layout?: Maybe<LayoutComponent>;
+  layoutWithBookContext?: Maybe<LayoutComponent>;
+  layoutWithCollectionContext?: Maybe<LayoutComponent>;
   list?: Maybe<List>;
 };
 
 
-export type QueryBookPageLayoutArgs = {
-  googleBooksVolumeId: Scalars['String'];
+export type QueryLayoutArgs = {
+  layoutRef: Scalars['String'];
 };
 
 
-export type QueryCollectionPageLayoutArgs = {
+export type QueryLayoutWithBookContextArgs = {
+  googleBooksVolumeId: Scalars['String'];
+  layoutRef: Scalars['String'];
+};
+
+
+export type QueryLayoutWithCollectionContextArgs = {
   collectionSlug: Scalars['String'];
   collectionType: Scalars['String'];
-};
-
-
-export type QueryLayoutArgs = {
-  layoutKey: Scalars['String'];
+  layoutRef: Scalars['String'];
 };
 
 
@@ -206,16 +201,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Book: ResolverTypeWrapper<BookModel>;
-  BookCardComponent: ResolverTypeWrapper<BookCardComponent>;
-  BookCarouselComponent: ResolverTypeWrapper<ComponentQuery>;
-  BookGridComponent: ResolverTypeWrapper<BookGridComponent>;
-  BookListComponent: ResolverTypeWrapper<BookListComponent>;
-  BookListItemComponent: ResolverTypeWrapper<BookListItemComponent>;
+  BookCardComponent: ResolverTypeWrapper<ComponentModel>;
+  BookCarouselComponent: ResolverTypeWrapper<ComponentModel>;
+  BookGridComponent: ResolverTypeWrapper<ComponentModel>;
+  BookListComponent: ResolverTypeWrapper<ComponentModel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Component: ResolverTypeWrapper<ComponentQuery>;
-  HeroComponent: ResolverTypeWrapper<HeroComponent>;
+  Component: ResolverTypeWrapper<ComponentModel>;
+  HeroComponent: ResolverTypeWrapper<ComponentModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  Layout: ResolverTypeWrapper<Omit<Layout, 'components'> & { components: Array<ResolversTypes['Component']> }>;
+  LayoutComponent: ResolverTypeWrapper<LayoutModel>;
   List: ResolverTypeWrapper<ListModel>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -225,16 +219,15 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Book: BookModel;
-  BookCardComponent: BookCardComponent;
-  BookCarouselComponent: ComponentQuery;
-  BookGridComponent: BookGridComponent;
-  BookListComponent: BookListComponent;
-  BookListItemComponent: BookListItemComponent;
+  BookCardComponent: ComponentModel;
+  BookCarouselComponent: ComponentModel;
+  BookGridComponent: ComponentModel;
+  BookListComponent: ComponentModel;
   Boolean: Scalars['Boolean'];
-  Component: ComponentQuery;
-  HeroComponent: HeroComponent;
+  Component: ComponentModel;
+  HeroComponent: ComponentModel;
   ID: Scalars['ID'];
-  Layout: Omit<Layout, 'components'> & { components: Array<ResolversParentTypes['Component']> };
+  LayoutComponent: LayoutModel;
   List: ListModel;
   Mutation: {};
   Query: {};
@@ -274,13 +267,8 @@ export type BookListComponentResolvers<ContextType = ResolverContext, ParentType
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BookListItemComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListItemComponent'] = ResolversParentTypes['BookListItemComponent']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type ComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Component'] = ResolversParentTypes['Component']> = {
-  __resolveType: TypeResolveFn<'BookCardComponent' | 'BookCarouselComponent' | 'BookGridComponent' | 'BookListComponent' | 'HeroComponent' | 'Layout', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BookCardComponent' | 'BookCarouselComponent' | 'BookGridComponent' | 'BookListComponent' | 'HeroComponent' | 'LayoutComponent', ParentType, ContextType>;
 };
 
 export type HeroComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['HeroComponent'] = ResolversParentTypes['HeroComponent']> = {
@@ -290,10 +278,9 @@ export type HeroComponentResolvers<ContextType = ResolverContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LayoutResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Layout'] = ResolversParentTypes['Layout']> = {
+export type LayoutComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LayoutComponent'] = ResolversParentTypes['LayoutComponent']> = {
   components?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -313,10 +300,10 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  bookPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryBookPageLayoutArgs, 'googleBooksVolumeId'>>;
-  collectionPageLayout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryCollectionPageLayoutArgs, 'collectionSlug' | 'collectionType'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  layout?: Resolver<Maybe<ResolversTypes['Layout']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'layoutKey'>>;
+  layout?: Resolver<Maybe<ResolversTypes['LayoutComponent']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'layoutRef'>>;
+  layoutWithBookContext?: Resolver<Maybe<ResolversTypes['LayoutComponent']>, ParentType, ContextType, RequireFields<QueryLayoutWithBookContextArgs, 'googleBooksVolumeId' | 'layoutRef'>>;
+  layoutWithCollectionContext?: Resolver<Maybe<ResolversTypes['LayoutComponent']>, ParentType, ContextType, RequireFields<QueryLayoutWithCollectionContextArgs, 'collectionSlug' | 'collectionType' | 'layoutRef'>>;
   list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
 };
 
@@ -326,10 +313,9 @@ export type Resolvers<ContextType = ResolverContext> = {
   BookCarouselComponent?: BookCarouselComponentResolvers<ContextType>;
   BookGridComponent?: BookGridComponentResolvers<ContextType>;
   BookListComponent?: BookListComponentResolvers<ContextType>;
-  BookListItemComponent?: BookListItemComponentResolvers<ContextType>;
   Component?: ComponentResolvers<ContextType>;
   HeroComponent?: HeroComponentResolvers<ContextType>;
-  Layout?: LayoutResolvers<ContextType>;
+  LayoutComponent?: LayoutComponentResolvers<ContextType>;
   List?: ListResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

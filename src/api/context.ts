@@ -17,13 +17,17 @@ import {
 
 import { type BookModel, getBooksByListIds } from "api/repo/books";
 
-import { getLayouts, LayoutQuery } from "api/repo/Layout";
-import { getComponents, ComponentQuery } from "api/repo/Component";
-
 import {
-  getBookCarouselComponents,
-  BookCarouselComponentQuery,
-} from "./repo/BookCarouselComponent";
+  type ComponentModel,
+  type LayoutModel,
+  getLayoutComponentsByIds,
+  getComponentsByIds,
+} from "api/repo/components";
+
+// import {
+//   getBookCarouselComponents,
+//   BookCarouselComponentQuery,
+// } from "./repo/BookCarouselComponent";
 
 export default function createClient() {
   const FAUNA_KEY = process.env.FAUNA_KEY;
@@ -40,19 +44,19 @@ export default function createClient() {
 export type ResolverContext = {
   currentUser: string | null;
   loaders: {
-    layoutLoader: DataLoader<string, LayoutQuery, string>;
-    componentLoader: DataLoader<string, ComponentQuery, string>;
-    listsBySlugsLoader: DataLoader<string, ListModel, string>;
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
-    bookCarouselComponentLoader: DataLoader<
-      string,
-      BookCarouselComponentQuery,
-      string
-    >;
+    componentsByIdsLoader: DataLoader<string, ComponentModel, string>;
+    layoutComponentsByIdsLoader: DataLoader<string, LayoutModel, string>;
+    listsBySlugsLoader: DataLoader<string, ListModel, string>;
+    // bookCarouselComponentLoader: DataLoader<
+    //   string,
+    //   BookCarouselComponentQuery,
+    //   string
+    // >;
   };
   mutations: {
-    createList: (title: CreateListInput) => Promise<CreateListOutput>;
     addBookToList: (input: AddBookToListInput) => Promise<AddBookToListOutput>;
+    createList: (title: CreateListInput) => Promise<CreateListOutput>;
     removeBookFromList: (
       input: RemoveBookFromListInput
     ) => Promise<RemoveBookFromListOutput>;
@@ -65,17 +69,19 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
   return {
     currentUser,
     loaders: {
-      layoutLoader: new DataLoader(getLayouts(client)),
-      componentLoader: new DataLoader(getComponents(client)),
-      listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
       booksByListIdsLoader: new DataLoader(getBooksByListIds(client)),
-      bookCarouselComponentLoader: new DataLoader(
-        getBookCarouselComponents(client)
+      componentsByIdsLoader: new DataLoader(getComponentsByIds(client)),
+      layoutComponentsByIdsLoader: new DataLoader(
+        getLayoutComponentsByIds(client)
       ),
+      listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
+      // bookCarouselComponentLoader: new DataLoader(
+      //   getBookCarouselComponents(client)
+      // ),
     },
     mutations: {
-      createList: createList(client),
       addBookToList: addBookToList(client),
+      createList: createList(client),
       removeBookFromList: removeBookFromList(client),
     },
   };

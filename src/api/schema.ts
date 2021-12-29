@@ -16,10 +16,6 @@ export default /* GraphQL */ `
     id: ID!
   }
 
-  type BookListItemComponent {
-    id: ID!
-  }
-
   type BookListComponent {
     id: ID!
   }
@@ -30,19 +26,18 @@ export default /* GraphQL */ `
     subTitle: String!
   }
 
+  type LayoutComponent {
+    id: ID!
+    components: [Component!]!
+  }
+
   union Component =
-      Layout
+      LayoutComponent
     | BookCardComponent
     | BookCarouselComponent
     | BookGridComponent
     | BookListComponent
     | HeroComponent
-
-  type Layout {
-    id: ID!
-    key: String!
-    components: [Component!]!
-  }
 
   type Book {
     id: ID!
@@ -61,12 +56,16 @@ export default /* GraphQL */ `
 
   type Query {
     currentUser: String
-    layout(layoutKey: String!): Layout
-    collectionPageLayout(
+    layout(layoutRef: String!): LayoutComponent
+    layoutWithCollectionContext(
+      layoutRef: String!
       collectionType: String!
       collectionSlug: String!
-    ): Layout
-    bookPageLayout(googleBooksVolumeId: String!): Layout
+    ): LayoutComponent
+    layoutWithBookContext(
+      layoutRef: String!
+      googleBooksVolumeId: String!
+    ): LayoutComponent
     list(listSlug: String!): List
   }
 

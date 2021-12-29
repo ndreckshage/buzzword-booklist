@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import session from "graphql-api/session";
+import session from "api/session";
 
 const GITHUB_OAUTH_CLIENT_ID = process.env.GITHUB_OAUTH_CLIENT_ID;
 const GITHUB_OAUTH_CLIENT_SECRET = process.env.GITHUB_OAUTH_CLIENT_SECRET;
@@ -13,7 +13,7 @@ if (!GITHUB_OAUTH_CLIENT_ID || !GITHUB_OAUTH_CLIENT_SECRET) {
 interface Request extends NextApiRequest {
   session: {
     currentUser: string;
-  };
+  } | null;
 }
 
 export default async (req: Request, res: NextApiResponse) => {
@@ -22,7 +22,7 @@ export default async (req: Request, res: NextApiResponse) => {
 
   if (logout) {
     // This doesnt actually revoke the oauth token
-    req.session.currentUser = "";
+    req.session = null;
     res.writeHead(302, { Location: `/` });
     return res.end();
   }
@@ -55,7 +55,7 @@ export default async (req: Request, res: NextApiResponse) => {
       })
     ).json();
 
-    if (data.access_token) {
+    if (data.access_token && req.session) {
       const userInfo = await (
         await fetch("https://api.github.com/user", {
           method: "GET",
@@ -69,7 +69,7 @@ export default async (req: Request, res: NextApiResponse) => {
 
       req.session.currentUser = userInfo.login;
     } else {
-      req.session.currentUser = "";
+      req.session = null;
     }
   } catch (err) {
     console.error(err);

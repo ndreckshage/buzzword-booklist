@@ -38,17 +38,10 @@ export default {
   HeroComponent: {
     id: globalIdField(),
   },
-  Layout: {
+  LayoutComponent: {
     id: globalIdField(),
-
-    async components(obj, args, context) {
-      if (obj.components) {
-        return obj.components;
-      }
-
-      const layout = await context.loaders.layoutLoader.load(obj.key);
-      return layout.components;
-    },
+    components: ({ componentType, componentRefs }, args, { loaders }) =>
+      loaders.componentsByIdsLoader.loadMany(componentRefs),
   },
   List: {
     id: globalIdField(),
@@ -80,8 +73,13 @@ export default {
   Query: {
     currentUser: (parent, args, { currentUser }) => currentUser,
 
-    layout: (parent, { layoutKey }, { loaders }) =>
-      loaders.layoutLoader.load(layoutKey),
+    layout: (parent, { layoutRef }, { loaders }) =>
+      loaders.layoutComponentsByIdsLoader.load(layoutRef),
+
+    // component: (parent, {}, {loaders}) =>
+
+    layoutWithCollectionContext: (parent, args, context) => null,
+    layoutWithBookContext: (parent, args, context) => null,
 
     list: (parent, { listSlug }, { loaders }) =>
       loaders.listsBySlugsLoader.load(listSlug),

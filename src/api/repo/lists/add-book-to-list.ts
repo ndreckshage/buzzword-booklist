@@ -38,6 +38,8 @@ export default function addBookToList(client: Client) {
           }),
         })
       );
+
+      return true as AddBookToListOutput;
     } catch (e) {
       if (e instanceof Error) {
         // @ts-ignore
@@ -46,7 +48,5 @@ export default function addBookToList(client: Client) {
 
       throw e;
     }
-
-    return true as AddBookToListOutput;
   };
 }
