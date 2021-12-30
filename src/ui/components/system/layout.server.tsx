@@ -11,7 +11,7 @@ const LAYOUT_QUERY = gql`
     layout(id: $id) {
       id
       createdBy
-      cssClasses {
+      styleOptions {
         flexDirection
       }
       components {
@@ -55,7 +55,7 @@ export default function Layout({ id, root }: { id: string; root: boolean }) {
     layout: {
       id: string;
       createdBy: string;
-      cssClasses: {
+      styleOptions: {
         flexDirection: string;
       };
       components: {
@@ -71,8 +71,8 @@ export default function Layout({ id, root }: { id: string; root: boolean }) {
       {root && <CreatedBy user={data.layout.createdBy} />}
       <div
         className={cx("flex", {
-          "flex-row": data.layout.cssClasses.flexDirection === "row",
-          "flex-col": data.layout.cssClasses.flexDirection === "col",
+          "flex-row": data.layout.styleOptions.flexDirection === "row",
+          "flex-col": data.layout.styleOptions.flexDirection === "col",
         })}
       >
         {data.layout.components.map((component) => {

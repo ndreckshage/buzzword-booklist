@@ -64,12 +64,12 @@ export type LayoutComponent = {
   __typename?: 'LayoutComponent';
   components: Array<Component>;
   createdBy: Scalars['String'];
-  cssClasses: LayoutComponentCssClasses;
   id: Scalars['ID'];
+  styleOptions: LayoutComponentStyleOptions;
 };
 
-export type LayoutComponentCssClasses = {
-  __typename?: 'LayoutComponentCssClasses';
+export type LayoutComponentStyleOptions = {
+  __typename?: 'LayoutComponentStyleOptions';
   flexDirection: Scalars['String'];
 };
 
@@ -210,7 +210,7 @@ export type ResolversTypes = {
   HeroComponent: ResolverTypeWrapper<RootComponentModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   LayoutComponent: ResolverTypeWrapper<RootLayoutComponentModel>;
-  LayoutComponentCssClasses: ResolverTypeWrapper<LayoutComponentCssClasses>;
+  LayoutComponentStyleOptions: ResolverTypeWrapper<LayoutComponentStyleOptions>;
   LayoutContext: LayoutContext;
   List: ResolverTypeWrapper<ListModel>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -230,7 +230,7 @@ export type ResolversParentTypes = {
   HeroComponent: RootComponentModel;
   ID: Scalars['ID'];
   LayoutComponent: RootLayoutComponentModel;
-  LayoutComponentCssClasses: LayoutComponentCssClasses;
+  LayoutComponentStyleOptions: LayoutComponentStyleOptions;
   LayoutContext: LayoutContext;
   List: ListModel;
   Mutation: {};
@@ -285,12 +285,12 @@ export type HeroComponentResolvers<ContextType = ResolverContext, ParentType ext
 export type LayoutComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LayoutComponent'] = ResolversParentTypes['LayoutComponent']> = {
   components?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  cssClasses?: Resolver<ResolversTypes['LayoutComponentCssClasses'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  styleOptions?: Resolver<ResolversTypes['LayoutComponentStyleOptions'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LayoutComponentCssClassesResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LayoutComponentCssClasses'] = ResolversParentTypes['LayoutComponentCssClasses']> = {
+export type LayoutComponentStyleOptionsResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LayoutComponentStyleOptions'] = ResolversParentTypes['LayoutComponentStyleOptions']> = {
   flexDirection?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -325,7 +325,7 @@ export type Resolvers<ContextType = ResolverContext> = {
   Component?: ComponentResolvers<ContextType>;
   HeroComponent?: HeroComponentResolvers<ContextType>;
   LayoutComponent?: LayoutComponentResolvers<ContextType>;
-  LayoutComponentCssClasses?: LayoutComponentCssClassesResolvers<ContextType>;
+  LayoutComponentStyleOptions?: LayoutComponentStyleOptionsResolvers<ContextType>;
   List?: ListResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

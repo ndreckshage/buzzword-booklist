@@ -118,6 +118,7 @@ query GetLayout {
 
 ## TODOS
 
+- create a collection page layout
 - update schema so that it returns the actual layout types ....
 - layout create
 - layout edit
