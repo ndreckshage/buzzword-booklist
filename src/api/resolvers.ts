@@ -31,29 +31,20 @@ export default {
   },
   BookCarouselComponent: {
     id: globalIdField(),
-    title: async ({ sourceId, sourceType }, args, { loaders }) => {
-      const book = await loaders.bookCarouselComponentsByJsonRefs.load({
-        sourceId,
-        sourceType,
-      });
+    title: async ({ sourceId, sourceType }, args, { loaders }) =>
+      loaders.bookCarouselComponentsByJsonRefs
+        .load({ sourceId, sourceType })
+        .then(({ title }) => title),
 
-      return book.title;
-    },
-    href: async ({ sourceId, sourceType }, args, { loaders }) => {
-      const { slug } = await loaders.bookCarouselComponentsByJsonRefs.load({
-        sourceId,
-        sourceType,
-      });
+    link: ({ sourceId, sourceType }, args, { loaders }) =>
+      loaders.bookCarouselComponentsByJsonRefs
+        .load({ sourceId, sourceType })
+        .then(({ link }) => link),
 
-      return slug;
-    },
-    bookCards: async ({ sourceId, sourceType }, args, { loaders }) => {
-      const { bookCards } = await loaders.bookCarouselComponentsByJsonRefs.load(
-        { sourceId, sourceType }
-      );
-
-      return bookCards;
-    },
+    bookCards: async ({ sourceId, sourceType }, args, { loaders }) =>
+      loaders.bookCarouselComponentsByJsonRefs
+        .load({ sourceId, sourceType })
+        .then(({ bookCards }) => bookCards),
   },
   Component: {
     __resolveType: (obj) => obj.componentType,

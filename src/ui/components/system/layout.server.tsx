@@ -8,7 +8,7 @@ import BookCarousel, {
 
 const LAYOUT_QUERY = gql`
   query GetLayout($id: ID!) {
-    layout(id: $id) {
+    layoutComponent(id: $id, layoutContext: {}) {
       id
       createdBy
       styleOptions {
@@ -52,7 +52,7 @@ const CreatedBy = ({ user }: { user: string }) => (
 
 export default function Layout({ id, root }: { id: string; root: boolean }) {
   const data = useQuery<{
-    layout: {
+    layoutComponent: {
       id: string;
       createdBy: string;
       styleOptions: {
@@ -67,15 +67,15 @@ export default function Layout({ id, root }: { id: string; root: boolean }) {
 
   return (
     <div className="m-5 p-5 border border-violet-500">
-      <p>Layout: {data.layout.id}</p>
-      {root && <CreatedBy user={data.layout.createdBy} />}
+      <p>Layout: {data.layoutComponent.id}</p>
+      {root && <CreatedBy user={data.layoutComponent.createdBy} />}
       <div
         className={cx("flex", {
-          "flex-row": data.layout.styleOptions.flexDirection === "row",
-          "flex-col": data.layout.styleOptions.flexDirection === "col",
+          "flex-row": data.layoutComponent.styleOptions.flexDirection === "row",
+          "flex-col": data.layoutComponent.styleOptions.flexDirection === "col",
         })}
       >
-        {data.layout.components.map((component) => {
+        {data.layoutComponent.components.map((component) => {
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
           if (!Component) {

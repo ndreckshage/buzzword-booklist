@@ -36,8 +36,8 @@ export type BookCardComponent = {
 export type BookCarouselComponent = {
   __typename?: 'BookCarouselComponent';
   bookCards: Array<BookCardComponent>;
-  href: Scalars['String'];
   id: Scalars['ID'];
+  link: LinkComponent;
   title: Scalars['String'];
 };
 
@@ -79,6 +79,18 @@ export type LayoutContext = {
   googleBooksVolumeId?: InputMaybe<Scalars['String']>;
   listSlug?: InputMaybe<Scalars['String']>;
 };
+
+export type LinkComponent = {
+  __typename?: 'LinkComponent';
+  href: Scalars['String'];
+  title: Scalars['String'];
+  variant: LinkComponentVariant;
+};
+
+export enum LinkComponentVariant {
+  Button = 'BUTTON',
+  Default = 'DEFAULT'
+}
 
 export type List = {
   __typename?: 'List';
@@ -212,6 +224,8 @@ export type ResolversTypes = {
   LayoutComponent: ResolverTypeWrapper<RootLayoutComponentModel>;
   LayoutComponentStyleOptions: ResolverTypeWrapper<LayoutComponentStyleOptions>;
   LayoutContext: LayoutContext;
+  LinkComponent: ResolverTypeWrapper<LinkComponent>;
+  LinkComponentVariant: LinkComponentVariant;
   List: ResolverTypeWrapper<ListModel>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -232,6 +246,7 @@ export type ResolversParentTypes = {
   LayoutComponent: RootLayoutComponentModel;
   LayoutComponentStyleOptions: LayoutComponentStyleOptions;
   LayoutContext: LayoutContext;
+  LinkComponent: LinkComponent;
   List: ListModel;
   Mutation: {};
   Query: {};
@@ -255,8 +270,8 @@ export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType
 
 export type BookCarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselComponent'] = ResolversParentTypes['BookCarouselComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
-  href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  link?: Resolver<ResolversTypes['LinkComponent'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -295,6 +310,13 @@ export type LayoutComponentStyleOptionsResolvers<ContextType = ResolverContext, 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type LinkComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LinkComponent'] = ResolversParentTypes['LinkComponent']> = {
+  href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  variant?: Resolver<ResolversTypes['LinkComponentVariant'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ListResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = {
   books?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -326,6 +348,7 @@ export type Resolvers<ContextType = ResolverContext> = {
   HeroComponent?: HeroComponentResolvers<ContextType>;
   LayoutComponent?: LayoutComponentResolvers<ContextType>;
   LayoutComponentStyleOptions?: LayoutComponentStyleOptionsResolvers<ContextType>;
+  LinkComponent?: LinkComponentResolvers<ContextType>;
   List?: ListResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

@@ -1,14 +1,7 @@
 import gql from "graphql-tag";
+import { type HeroComponent } from "api/__generated__/resolvers-types";
 
-export default function Hero({
-  id,
-  title,
-  subTitle,
-}: {
-  id: string;
-  title: string;
-  subTitle: string;
-}) {
+export default function Hero({ id, title, subTitle }: HeroComponent) {
   return (
     <p>
       Hero!: {id} {title} {subTitle}

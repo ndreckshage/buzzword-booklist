@@ -46,10 +46,6 @@ function App({ Component, pageProps, cookieHeader, router }: AppProps) {
         </h1>
         <div className="m-5 p-5 space-x-4">
           <Link href="/">Homepage</Link>
-          <Link href="/books/234234">Book</Link>
-          <Link href="/collections/lists/2345">List</Link>
-          <Link href="/collections/genres/522">Genre</Link>
-          <Link href="/collections/authors/24456">Author</Link>
           <Link href="/demos">Demos</Link>
           <Suspense fallback={null}>
             <CurrentUserProvider>

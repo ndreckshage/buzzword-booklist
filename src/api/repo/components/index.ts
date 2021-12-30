@@ -1,4 +1,7 @@
-import { type BookCardComponent } from "api/__generated__/resolvers-types";
+import {
+  type BookCardComponent,
+  LinkComponent,
+} from "api/__generated__/resolvers-types";
 
 export type RootComponentModel = { id: string; componentType: string };
 
@@ -14,7 +17,7 @@ export type RootBookCarouselComponentModel = RootComponentModel & {
 export type BookCarouselComponentModel = {
   id: string;
   title: string;
-  slug: string;
+  link: LinkComponent;
   bookCards: BookCardComponent[];
 };
 

@@ -1,5 +1,5 @@
 import { Client, query as Q } from "faunadb";
-import { type RootBookCarouselComponentModel } from ".";
+import { LinkComponentVariant } from "api/__generated__/resolvers-types";
 
 export default function getBookCarouselComponentsByRefs(client: Client) {
   return async (
@@ -31,9 +31,8 @@ export default function getBookCarouselComponentsByRefs(client: Client) {
                         bookDoc: Q.Get(Q.Var("bookRef")),
                       },
                       {
-                        // @TODO
                         id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
-                        href: Q.Select(
+                        googleBooksVolumeId: Q.Select(
                           ["data", "googleBooksVolumeId"],
                           Q.Var("bookDoc")
                         ),
@@ -51,12 +50,23 @@ export default function getBookCarouselComponentsByRefs(client: Client) {
         slug: string;
         bookCards: {
           id: string;
-          href: string;
+          googleBooksVolumeId: string;
           image: string;
         }[];
       }[];
 
-      return result;
+      return result.map((bookCarouselComponent) => ({
+        ...bookCarouselComponent,
+        link: {
+          title: "See all",
+          href: `/collections/lists/show?listSlug=${bookCarouselComponent.slug}`,
+          variant: LinkComponentVariant.Default,
+        },
+        bookCards: bookCarouselComponent.bookCards.map((bookCard) => ({
+          ...bookCard,
+          href: `/books/show?googleBooksVolumeId=${bookCard.googleBooksVolumeId}`,
+        })),
+      }));
     } catch (e) {
       console.error(e);
 

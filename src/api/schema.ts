@@ -8,7 +8,7 @@ export default /* GraphQL */ `
   type BookCarouselComponent {
     id: ID!
     title: String!
-    href: String!
+    link: LinkComponent!
     bookCards: [BookCardComponent!]!
   }
 
@@ -28,6 +28,17 @@ export default /* GraphQL */ `
 
   type LayoutComponentStyleOptions {
     flexDirection: String!
+  }
+
+  enum LinkComponentVariant {
+    DEFAULT
+    BUTTON
+  }
+
+  type LinkComponent {
+    title: String!
+    href: String!
+    variant: LinkComponentVariant!
   }
 
   type LayoutComponent {
