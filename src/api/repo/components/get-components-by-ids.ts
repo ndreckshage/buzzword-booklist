@@ -9,11 +9,13 @@ export const selectLayoutModelData = ({
   id: Q.Select(["ref", "id"], Q.Var(componentDocVar)),
   componentType: Q.Select(["data", "componentType"], Q.Var(componentDocVar)),
   createdBy: Q.Select(["data", "createdBy"], Q.Var(componentDocVar)),
+  title: Q.Select(["data", "title"], Q.Var(componentDocVar)),
   styleOptions: Q.Select(["data", "styleOptions"], Q.Var(componentDocVar)),
   componentRefs: Q.Map(
     Q.Select(["data", "componentRefs"], Q.Var(componentDocVar)),
     Q.Lambda("componentRef", Q.Select("id", Q.Var("componentRef")))
   ),
+  // @TODO layout context
 });
 
 const selectBookCarouselModelData = {

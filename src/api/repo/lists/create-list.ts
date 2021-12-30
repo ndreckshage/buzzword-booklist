@@ -1,11 +1,11 @@
 import { type Client, query as Q } from "faunadb";
 import slugify from "slugify";
 
-export type CreateListInput = { title: string; currentUser: string };
+export type CreateListInput = { title: string; loggedInAs: string };
 export type CreateListOutput = boolean;
 
 export default function createList(client: Client) {
-  return async ({ title, currentUser }: CreateListInput) => {
+  return async ({ title, loggedInAs }: CreateListInput) => {
     const slug = slugify(title, { lower: true, strict: true });
 
     const list = await client.query(
@@ -19,7 +19,7 @@ export default function createList(client: Client) {
           Q.Select(
             "ref",
             Q.Create("Lists", {
-              data: { title, slug, createdBy: currentUser, bookRefs: [] },
+              data: { title, slug, createdBy: loggedInAs, bookRefs: [] },
             })
           )
         )

@@ -89,12 +89,19 @@ const createLists = () =>
       {
         collectionRef: Q.Select(["ref"], Q.CreateCollection({ name: "Lists" })),
       },
-      Q.CreateIndex({
-        name: "unique_lists_by_slug",
-        source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "slug"] }],
-        unique: true,
-      })
+      Q.Do(
+        Q.CreateIndex({
+          name: "unique_lists_by_slug",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "slug"] }],
+          unique: true,
+        }),
+        Q.CreateIndex({
+          name: "lists_by_createdBy",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "createdBy"] }],
+        })
+      )
     )
   );
 
@@ -107,7 +114,11 @@ const createComponents = () =>
           Q.CreateCollection({ name: "Components" })
         ),
       },
-      {}
+      Q.CreateIndex({
+        name: "components_by_createdBy",
+        source: Q.Var("collectionRef"),
+        terms: [{ field: ["data", "createdBy"] }],
+      })
     )
   );
 

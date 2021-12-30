@@ -14,10 +14,14 @@ export default /* GraphQL */ `
 
   type BookGridComponent {
     id: ID!
+    title: String!
+    bookCards: [BookCardComponent!]!
   }
 
   type BookListComponent {
     id: ID!
+    title: String!
+    bookCards: [BookCardComponent!]!
   }
 
   type HeroComponent {
@@ -43,6 +47,7 @@ export default /* GraphQL */ `
 
   type LayoutComponent {
     id: ID!
+    title: String!
     createdBy: String!
     styleOptions: LayoutComponentStyleOptions!
     components: [Component!]!
@@ -71,6 +76,12 @@ export default /* GraphQL */ `
     books: [Book!]!
   }
 
+  type CurrentUser {
+    name: String!
+    layoutComponents: [LayoutComponent!]!
+    lists: [List!]!
+  }
+
   input LayoutContext {
     authorSlug: String
     categorySlug: String
@@ -79,7 +90,7 @@ export default /* GraphQL */ `
   }
 
   type Query {
-    currentUser: String
+    currentUser: CurrentUser
     layoutComponent(id: ID!, layoutContext: LayoutContext!): LayoutComponent
     list(listSlug: String!): List
   }

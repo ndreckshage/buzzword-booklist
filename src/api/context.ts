@@ -15,6 +15,7 @@ import {
   addBookToList,
   removeBookFromList,
   getListsBySlugs,
+  getListsByCreators,
 } from "api/repo/lists";
 
 import { type BookModel, getBooksByListIds } from "api/repo/books";
@@ -23,6 +24,7 @@ import {
   type RootComponentModel,
   type RootLayoutComponentModel,
   type BookCarouselComponentModel,
+  getLayoutComponentsByCreators,
   getLayoutComponentsByIdsAndContext,
   getComponentsByIds,
   getBookCarouselComponentsByRefs,
@@ -41,16 +43,22 @@ export default function createClient() {
 }
 
 export type ResolverContext = {
-  currentUser: string | null;
+  loggedInAs: string | null;
   loaders: {
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
     componentsByIdsLoader: DataLoader<string, RootComponentModel, string>;
+    layoutComponentsByCreatorsLoader: DataLoader<
+      string,
+      RootLayoutComponentModel[],
+      string
+    >;
     layoutComponentsByIdsAndContextLoader: DataLoader<
       QueryLayoutComponentArgs,
       RootLayoutComponentModel,
       string
     >;
     listsBySlugsLoader: DataLoader<string, ListModel, string>;
+    listsByCreatorsLoader: DataLoader<string, ListModel[], string>;
     bookCarouselComponentsByJsonRefs: DataLoader<
       { sourceId: string; sourceType: string },
       BookCarouselComponentModel,
@@ -70,15 +78,19 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
   const client = createClient();
 
   return {
-    currentUser,
+    loggedInAs: currentUser,
     loaders: {
       booksByListIdsLoader: new DataLoader(getBooksByListIds(client)),
       componentsByIdsLoader: new DataLoader(getComponentsByIds(client)),
+      layoutComponentsByCreatorsLoader: new DataLoader(
+        getLayoutComponentsByCreators(client)
+      ),
       layoutComponentsByIdsAndContextLoader: new DataLoader(
         getLayoutComponentsByIdsAndContext(client),
         { cacheKeyFn: JSON.stringify }
       ),
       listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
+      listsByCreatorsLoader: new DataLoader(getListsByCreators(client)),
       bookCarouselComponentsByJsonRefs: new DataLoader(
         getBookCarouselComponentsByRefs(client),
         { cacheKeyFn: JSON.stringify }

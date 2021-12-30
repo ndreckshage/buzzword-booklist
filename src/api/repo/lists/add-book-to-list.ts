@@ -6,7 +6,7 @@ import ifListOwner from "api/repo/fql-helpers/exec-if-list-owner";
 export type AddBookToListInput = {
   listSlug: string;
   googleBooksVolumeId: string;
-  currentUser: string;
+  loggedInAs: string;
 };
 
 export type AddBookToListOutput = boolean;
@@ -15,12 +15,12 @@ export default function addBookToList(client: Client) {
   return async ({
     googleBooksVolumeId,
     listSlug,
-    currentUser,
+    loggedInAs,
   }: AddBookToListInput) => {
     console.log("addBookToList", {
       googleBooksVolumeId,
       listSlug,
-      currentUser,
+      loggedInAs,
     });
 
     try {
@@ -28,7 +28,7 @@ export default function addBookToList(client: Client) {
       await client.query(
         ifListOwner({
           listSlug,
-          currentUser,
+          loggedInAs,
           execExpr: appendConnectionToDocumentIfUnique({
             docIndex: "unique_lists_by_slug",
             docIndexTerms: [listSlug],

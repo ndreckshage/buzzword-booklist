@@ -9,12 +9,12 @@ const authenticated =
     next: (
       root: {},
       args: T,
-      context: ResolverContext & { currentUser: string },
+      context: ResolverContext & { loggedInAs: string },
       info: GraphQLResolveInfo
     ) => R
   ) =>
   (root: {}, args: T, context: ResolverContext, info: GraphQLResolveInfo) => {
-    if (!context.currentUser) {
+    if (!context.loggedInAs) {
       throw new Error(`Unauthenticated!`);
     }
 
@@ -49,6 +49,13 @@ export default {
   Component: {
     __resolveType: (obj) => obj.componentType,
   },
+  CurrentUser: {
+    layoutComponents: async ({ name }, args, { loaders }) =>
+      loaders.layoutComponentsByCreatorsLoader.load(name),
+
+    lists: async ({ name }, args, { loaders }) =>
+      loaders.listsByCreatorsLoader.load(name),
+  },
   HeroComponent: {
     id: globalIdField(),
   },
@@ -62,30 +69,31 @@ export default {
     books: ({ id }, args, { loaders }) => loaders.booksByListIdsLoader.load(id),
   },
   Mutation: {
-    createList: authenticated((parent, { title }, { mutations, currentUser }) =>
-      mutations.createList({ title, currentUser })
+    createList: authenticated((parent, { title }, { mutations, loggedInAs }) =>
+      mutations.createList({ title, loggedInAs })
     ),
 
     addBookToList: authenticated(
-      (parent, { listSlug, googleBooksVolumeId }, { mutations, currentUser }) =>
+      (parent, { listSlug, googleBooksVolumeId }, { mutations, loggedInAs }) =>
         mutations.addBookToList({
           listSlug,
           googleBooksVolumeId,
-          currentUser,
+          loggedInAs,
         })
     ),
 
     removeBookFromList: authenticated(
-      (parent, { listSlug, googleBooksVolumeId }, { mutations, currentUser }) =>
+      (parent, { listSlug, googleBooksVolumeId }, { mutations, loggedInAs }) =>
         mutations.removeBookFromList({
           listSlug,
           googleBooksVolumeId,
-          currentUser,
+          loggedInAs,
         })
     ),
   },
   Query: {
-    currentUser: (parent, args, { currentUser }) => currentUser,
+    currentUser: (parent, args, { loggedInAs }) =>
+      loggedInAs ? { name: loggedInAs } : null,
 
     layoutComponent: (parent, { id, layoutContext }, { loaders }) =>
       loaders.layoutComponentsByIdsAndContextLoader.load({

@@ -7,6 +7,7 @@ import { Suspense, createContext, type ReactNode } from "react";
 import Link from "ui/components/common/link.client";
 import AuthButton from "ui/components/app/auth-button.client";
 import { useQuery, gql } from "ui/lib/use-data.client";
+import { type Maybe } from "api/__generated__/resolvers-types";
 import "ui/styles/global.css";
 
 export const AppContext = createContext({ cookieHeader: "" });
@@ -17,21 +18,22 @@ interface AppProps extends NextAppProps {
 
 const CURRENT_USER_QUERY = gql`
   query CurrentUser {
-    currentUser
+    currentUser {
+      name
+    }
   }
 `;
 
 const CurrentUserProvider = (props: {
   children: (currentUser: string | null) => ReactNode;
 }) => {
-  const { data, hydrateClient } = useQuery<{ currentUser: string | null }>(
-    "currentUser",
-    CURRENT_USER_QUERY
-  );
+  const { data, hydrateClient } = useQuery<{
+    currentUser: Maybe<{ name: string }>;
+  }>("currentUserAppProvider", CURRENT_USER_QUERY);
 
   return (
     <>
-      {props.children(data.currentUser)}
+      {props.children(data.currentUser?.name ?? null)}
       {hydrateClient}
     </>
   );

@@ -2,11 +2,11 @@ import { query as Q, type Expr } from "faunadb";
 
 export default function execIfListOwner({
   listSlug,
-  currentUser,
+  loggedInAs,
   execExpr,
 }: {
   listSlug: string;
-  currentUser: string;
+  loggedInAs: string;
   execExpr: Expr;
 }) {
   return Q.If(
@@ -15,7 +15,7 @@ export default function execIfListOwner({
         ["data", "createdBy"],
         Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
       ),
-      currentUser
+      loggedInAs
     ),
     execExpr,
     Q.Abort("Not Authorized")
