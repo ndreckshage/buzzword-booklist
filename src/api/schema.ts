@@ -60,18 +60,16 @@ export default /* GraphQL */ `
     books: [Book!]!
   }
 
+  input LayoutContext {
+    authorSlug: String
+    categorySlug: String
+    googleBooksVolumeId: String
+    listSlug: String
+  }
+
   type Query {
     currentUser: String
-    layout(id: ID!): LayoutComponent
-    layoutWithCollectionContext(
-      id: ID!
-      collectionType: String!
-      collectionSlug: String!
-    ): LayoutComponent
-    layoutWithBookContext(
-      id: ID!
-      googleBooksVolumeId: String!
-    ): LayoutComponent
+    layoutComponent(id: ID!, layoutContext: LayoutContext!): LayoutComponent
     list(listSlug: String!): List
   }
 

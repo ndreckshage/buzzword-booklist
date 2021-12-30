@@ -19,5 +19,5 @@ export type BookCarouselComponentModel = {
 };
 
 export { default as getComponentsByIds } from "./get-components-by-ids";
-export { default as getLayoutComponentsByIds } from "./get-layout-components-by-ids";
+export { default as getLayoutComponentsByIdsAndContext } from "./get-layout-components-by-ids-and-context";
 export { default as getBookCarouselComponentsByRefs } from "./get-book-carousel-components-by-refs";

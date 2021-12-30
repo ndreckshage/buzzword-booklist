@@ -1,6 +1,8 @@
 import { Client } from "faunadb";
 import DataLoader from "dataloader";
 
+import { QueryLayoutComponentArgs } from "./__generated__/resolvers-types";
+
 import {
   type ListModel,
   type CreateListInput,
@@ -21,7 +23,7 @@ import {
   type RootComponentModel,
   type RootLayoutComponentModel,
   type BookCarouselComponentModel,
-  getLayoutComponentsByIds,
+  getLayoutComponentsByIdsAndContext,
   getComponentsByIds,
   getBookCarouselComponentsByRefs,
 } from "api/repo/components";
@@ -43,8 +45,8 @@ export type ResolverContext = {
   loaders: {
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
     componentsByIdsLoader: DataLoader<string, RootComponentModel, string>;
-    layoutComponentsByIdsLoader: DataLoader<
-      string,
+    layoutComponentsByIdsAndContextLoader: DataLoader<
+      QueryLayoutComponentArgs,
       RootLayoutComponentModel,
       string
     >;
@@ -72,8 +74,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
     loaders: {
       booksByListIdsLoader: new DataLoader(getBooksByListIds(client)),
       componentsByIdsLoader: new DataLoader(getComponentsByIds(client)),
-      layoutComponentsByIdsLoader: new DataLoader(
-        getLayoutComponentsByIds(client)
+      layoutComponentsByIdsAndContextLoader: new DataLoader(
+        getLayoutComponentsByIdsAndContext(client),
+        { cacheKeyFn: JSON.stringify }
       ),
       listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
       bookCarouselComponentsByJsonRefs: new DataLoader(

@@ -1,7 +1,4 @@
-import {
-  type Resolvers,
-  BookCardComponent,
-} from "api/__generated__/resolvers-types";
+import { type Resolvers } from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
 import { type GraphQLResolveInfo } from "graphql";
 
@@ -99,11 +96,11 @@ export default {
   Query: {
     currentUser: (parent, args, { currentUser }) => currentUser,
 
-    layout: (parent, { id }, { loaders }) =>
-      loaders.layoutComponentsByIdsLoader.load(fromGlobalId(id).id),
-
-    layoutWithCollectionContext: (parent, args, context) => null,
-    layoutWithBookContext: (parent, args, context) => null,
+    layoutComponent: (parent, { id, layoutContext }, { loaders }) =>
+      loaders.layoutComponentsByIdsAndContextLoader.load({
+        id: fromGlobalId(id).id,
+        layoutContext,
+      }),
 
     list: (parent, { listSlug }, { loaders }) =>
       loaders.listsBySlugsLoader.load(listSlug),
