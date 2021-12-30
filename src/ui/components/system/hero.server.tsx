@@ -1,4 +1,4 @@
-import { gql } from "ui/lib/use-data.server";
+import gql from "graphql-tag";
 
 export default function Hero({
   id,

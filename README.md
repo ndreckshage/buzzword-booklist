@@ -70,6 +70,8 @@ todo
 - wish fauna you could click through to documents in the viewer. and could click through to prefiltered indexes that match a single ref
 - server components with \_middleware doesnt work
 - server components dont work with graphql without going throgh an endpoint (setImmediate)
+- cant import fragments from a client component into a server component .. need fragment to be in the layout
+- cant do things like `export { default as default } from "./book-carousel.client";` .. still treated as a server component
 
 ```graphql
 # could do something like this. HOWEVER. since using streaming and server components, we are going to try out a more streaming forward approach
@@ -116,10 +118,9 @@ query GetLayout {
 
 ## TODOS
 
-- add component resolver so that we can do waterfall requests
-- get recursive layout showing up
-- be able to request recursive layouts with ref/id
-- add in book list into the recursive layout
+- add created by component on book carousels
+- add cretaed by component on layouts
+- layouts be able to control css
 
 - layout create
 - layout edit

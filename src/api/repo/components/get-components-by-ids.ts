@@ -72,8 +72,6 @@ export default function getComponentsByIds(client: Client) {
         )
       );
 
-      console.log("result", result);
-
       return result as RootComponentModel[];
     } catch (e) {
       console.error(e);

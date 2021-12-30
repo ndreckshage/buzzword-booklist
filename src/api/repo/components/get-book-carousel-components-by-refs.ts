@@ -1,20 +1,16 @@
 import { Client, query as Q } from "faunadb";
 import { type RootBookCarouselComponentModel } from ".";
 
-export default function getBookCarouselComponentsByJsonRefs(client: Client) {
-  return async (jsonRefs: readonly string[]) => {
-    const refs = jsonRefs
-      .map(
-        (json) => JSON.parse(json) as { sourceId: string; sourceType: string }
-      )
-      .map(({ sourceId, sourceType }) =>
-        Q.Ref(Q.Collection(sourceType), sourceId)
-      );
-
-    console.log(jsonRefs);
+export default function getBookCarouselComponentsByRefs(client: Client) {
+  return async (
+    source: readonly { sourceId: string; sourceType: string }[]
+  ) => {
+    const refs = source.map(({ sourceId, sourceType }) =>
+      Q.Ref(Q.Collection(sourceType), sourceId)
+    );
 
     try {
-      const result = await client.query(
+      const result = (await client.query(
         Q.Map(
           refs,
           Q.Lambda(
@@ -41,24 +37,6 @@ export default function getBookCarouselComponentsByJsonRefs(client: Client) {
                           ["data", "googleBooksVolumeId"],
                           Q.Var("bookDoc")
                         ),
-                        // title: Q.Select(["data", "title"], Q.Var("bookDoc")),
-                        // publisher: Q.Select(
-                        //   ["data", "publisher"],
-                        //   Q.Var("bookDoc")
-                        // ),
-                        // publishedDate: Q.Select(
-                        //   ["data", "publishedDate"],
-                        //   Q.Var("bookDoc")
-                        // ),
-                        // description: Q.Select(
-                        //   ["data", "description"],
-                        //   Q.Var("bookDoc")
-                        // ),
-                        // isbn: Q.Select(["data", "isbn"], Q.Var("bookDoc")),
-                        // pageCount: Q.Select(
-                        //   ["data", "pageCount"],
-                        //   Q.Var("bookDoc")
-                        // ),
                         image: Q.Select(["data", "image"], Q.Var("bookDoc")),
                       }
                     )
@@ -68,15 +46,17 @@ export default function getBookCarouselComponentsByJsonRefs(client: Client) {
             )
           )
         )
-      );
-
-      // console.log("result", result[0].bookCards);
+      )) as {
+        title: string;
+        slug: string;
+        bookCards: {
+          id: string;
+          href: string;
+          image: string;
+        }[];
+      }[];
 
       return result;
-
-      // return refs.map((ref) => []);
-
-      // return result as RootBookCarouselComponentModel[];
     } catch (e) {
       console.error(e);
 

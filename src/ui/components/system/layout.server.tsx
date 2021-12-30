@@ -43,7 +43,7 @@ export default function Layout({ id }: { id: string }) {
   }>(`Layout::${id}`, LAYOUT_QUERY, { id });
 
   return (
-    <div>
+    <div className="m-5 p-5 border border-violet-500">
       <p>Layout: {data.layout.id}</p>
       {data.layout.components.map((component) => {
         // @ts-ignore
@@ -52,7 +52,11 @@ export default function Layout({ id }: { id: string }) {
           return null;
         }
 
-        return <Component key={component.id} {...component} />;
+        return (
+          <div key={component.id} className="m-5 p-5 border border-green-500">
+            <Component key={component.id} {...component} />
+          </div>
+        );
       })}
     </div>
   );

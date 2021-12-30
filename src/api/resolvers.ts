@@ -1,4 +1,7 @@
-import { type Resolvers } from "api/__generated__/resolvers-types";
+import {
+  type Resolvers,
+  BookCardComponent,
+} from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
 import { type GraphQLResolveInfo } from "graphql";
 
@@ -32,22 +35,24 @@ export default {
   BookCarouselComponent: {
     id: globalIdField(),
     title: async ({ sourceId, sourceType }, args, { loaders }) => {
-      const { title } = await loaders.bookCarouselComponentsByJsonRefs.load(
-        JSON.stringify({ sourceId, sourceType })
-      );
+      const book = await loaders.bookCarouselComponentsByJsonRefs.load({
+        sourceId,
+        sourceType,
+      });
 
-      return title;
+      return book.title;
     },
     href: async ({ sourceId, sourceType }, args, { loaders }) => {
-      const { slug } = await loaders.bookCarouselComponentsByJsonRefs.load(
-        JSON.stringify({ sourceId, sourceType })
-      );
+      const { slug } = await loaders.bookCarouselComponentsByJsonRefs.load({
+        sourceId,
+        sourceType,
+      });
 
       return slug;
     },
     bookCards: async ({ sourceId, sourceType }, args, { loaders }) => {
       const { bookCards } = await loaders.bookCarouselComponentsByJsonRefs.load(
-        JSON.stringify({ sourceId, sourceType })
+        { sourceId, sourceType }
       );
 
       return bookCards;

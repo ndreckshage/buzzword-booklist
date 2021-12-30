@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { BookModel } from '../repo/books';
-import { RootComponentModel, RootBookCarouselComponentModel, RootLayoutComponentModel } from '../repo/components';
+import { RootBookCarouselComponentModel, RootComponentModel, RootLayoutComponentModel } from '../repo/components';
 import { ListModel } from '../repo/lists';
 import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
@@ -201,7 +201,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Book: ResolverTypeWrapper<BookModel>;
-  BookCardComponent: ResolverTypeWrapper<RootComponentModel>;
+  BookCardComponent: ResolverTypeWrapper<BookCardComponent>;
   BookCarouselComponent: ResolverTypeWrapper<RootBookCarouselComponentModel>;
   BookGridComponent: ResolverTypeWrapper<RootComponentModel>;
   BookListComponent: ResolverTypeWrapper<RootComponentModel>;
@@ -219,7 +219,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Book: BookModel;
-  BookCardComponent: RootComponentModel;
+  BookCardComponent: BookCardComponent;
   BookCarouselComponent: RootBookCarouselComponentModel;
   BookGridComponent: RootComponentModel;
   BookListComponent: RootComponentModel;
