@@ -26,8 +26,14 @@ export default /* GraphQL */ `
     subTitle: String!
   }
 
+  type LayoutComponentCssClasses {
+    flexDirection: String!
+  }
+
   type LayoutComponent {
     id: ID!
+    createdBy: String!
+    cssClasses: LayoutComponentCssClasses!
     components: [Component!]!
   }
 

@@ -118,12 +118,12 @@ query GetLayout {
 
 ## TODOS
 
-- add created by component on book carousels
-- add cretaed by component on layouts
-- layouts be able to control css
-
+- update schema so that it returns the actual layout types ....
 - layout create
 - layout edit
+- add created by component on book carousels
+- add cretaed by component on layouts
+
 - lists view mine
 - layouts view mine
 - protect the various lists / layouts

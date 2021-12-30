@@ -54,7 +54,7 @@ const ADD_BOOK_TO_LIST_MUTATION = gql`
   }
 `;
 
-const BookList = ({ listSlug }: { listSlug: string }) => {
+const EditList = ({ listSlug }: { listSlug: string }) => {
   const {
     data,
     hydrateClient,
@@ -122,7 +122,7 @@ const BookList = ({ listSlug }: { listSlug: string }) => {
   );
 };
 
-export default function EditList() {
+export default function EditListPage() {
   const router = useRouter();
   const listSlug = router.query.list;
 
@@ -139,7 +139,7 @@ export default function EditList() {
 
   return (
     <Suspense fallback="Loading book list...">
-      <BookList listSlug={listSlug} />
+      <EditList listSlug={listSlug} />
     </Suspense>
   );
 }
