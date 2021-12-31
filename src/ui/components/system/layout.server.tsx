@@ -1,4 +1,8 @@
 import { useQuery, gql } from "ui/lib/use-data.server";
+import {
+  type Component,
+  type LayoutComponent,
+} from "api/__generated__/resolvers-types";
 import cx from "classnames";
 
 import Hero, { HeroComponentFragment } from "./hero.server";
@@ -6,31 +10,56 @@ import BookCarousel, {
   BookCarouselComponentFragment,
 } from "./book-carousel.server";
 
+const LayoutComponentFragment = gql`
+  fragment LayoutComponentFragment on LayoutComponent {
+    id
+    createdBy
+    styleOptions {
+      flexDirection
+    }
+  }
+`;
+
+const ComponentFragment = gql`
+  fragment ComponentFragment on Component {
+    __typename
+    ...LayoutComponentFragment
+    ...HeroComponentFragment
+    ...BookCarouselComponentFragment
+  }
+
+  ${LayoutComponentFragment}
+  ${HeroComponentFragment}
+  ${BookCarouselComponentFragment}
+`;
+
+// SUPPORT MAX 3 LEVELS OF LAYOUT!
 const LAYOUT_QUERY = gql`
   query GetLayout($id: ID!) {
     component(id: $id) {
-      __typename
+      ...ComponentFragment
+
       ... on LayoutComponent {
-        id
-        createdBy
-        styleOptions {
-          flexDirection
-        }
         components {
-          __typename
+          ...ComponentFragment
 
           ... on LayoutComponent {
-            id
-          }
+            components {
+              ...ComponentFragment
 
-          ...HeroComponentFragment
-          ...BookCarouselComponentFragment
+              ... on LayoutComponent {
+                components {
+                  ...ComponentFragment
+                }
+              }
+            }
+          }
         }
       }
     }
   }
-  ${HeroComponentFragment}
-  ${BookCarouselComponentFragment}
+
+  ${ComponentFragment}
 `;
 
 const COMPONENT_MAP = {
@@ -53,32 +82,26 @@ const CreatedBy = ({ user }: { user: string }) => (
   </div>
 );
 
-export default function Layout({ id, root }: { id: string; root: boolean }) {
-  const data = useQuery<{
-    component: {
-      id: string;
-      createdBy: string;
-      styleOptions: {
-        flexDirection: string;
-      };
-      components: {
-        __typename: string;
-        id: string;
-      }[];
-    };
-  }>(`Layout::${id}`, LAYOUT_QUERY, { id });
+type LayoutProps = LayoutComponent & { root: boolean };
 
+function Layout({
+  id,
+  createdBy,
+  root,
+  styleOptions,
+  components,
+}: LayoutProps) {
   return (
     <div className="m-5 p-5 border border-violet-500">
-      <p>Layout: {data.component.id}</p>
-      {root && <CreatedBy user={data.component.createdBy} />}
+      <p>Layout: {id}</p>
+      {root && <CreatedBy user={createdBy} />}
       <div
         className={cx("flex", {
-          "flex-row": data.component.styleOptions.flexDirection === "row",
-          "flex-col": data.component.styleOptions.flexDirection === "col",
+          "flex-row": styleOptions.flexDirection === "row",
+          "flex-col": styleOptions.flexDirection === "col",
         })}
       >
-        {data.component.components.map((component) => {
+        {components.map((component) => {
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
           if (!Component) {
@@ -94,4 +117,18 @@ export default function Layout({ id, root }: { id: string; root: boolean }) {
       </div>
     </div>
   );
+}
+
+export default function LayoutRoot({ id }: { id: string }) {
+  const data = useQuery<{ component: Component }>(
+    `Component::${id}`,
+    LAYOUT_QUERY,
+    { id }
+  );
+
+  if (data.component.__typename !== "LayoutComponent") {
+    return null;
+  }
+
+  return <Layout {...data.component} root />;
 }
