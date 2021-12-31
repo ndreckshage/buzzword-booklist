@@ -1,21 +1,16 @@
-import { Client, ExprArg, query as Q } from "faunadb";
+import { Client, type ExprArg, type Expr, query as Q } from "faunadb";
 import { type RootComponentModel } from ".";
 
-export const selectLayoutModelData = ({
-  componentDocVar,
-}: {
-  componentDocVar: string;
-}) => ({
-  id: Q.Select(["ref", "id"], Q.Var(componentDocVar)),
-  componentType: Q.Select(["data", "componentType"], Q.Var(componentDocVar)),
-  createdBy: Q.Select(["data", "createdBy"], Q.Var(componentDocVar)),
-  title: Q.Select(["data", "title"], Q.Var(componentDocVar)),
-  styleOptions: Q.Select(["data", "styleOptions"], Q.Var(componentDocVar)),
+export const selectLayoutModelData = (componentDoc: Expr) => ({
+  id: Q.Select(["ref", "id"], componentDoc),
+  componentType: Q.Select(["data", "componentType"], componentDoc),
+  createdBy: Q.Select(["data", "createdBy"], componentDoc),
+  title: Q.Select(["data", "title"], componentDoc),
+  styleOptions: Q.Select(["data", "styleOptions"], componentDoc),
   componentRefs: Q.Map(
-    Q.Select(["data", "componentRefs"], Q.Var(componentDocVar)),
+    Q.Select(["data", "componentRefs"], componentDoc),
     Q.Lambda("componentRef", Q.Select("id", Q.Var("componentRef")))
   ),
-  // @TODO layout context
 });
 
 const selectBookCarouselModelData = {
@@ -33,6 +28,13 @@ const ifComponentType = (
   doIf: ExprArg,
   elseIf: ExprArg
 ) => Q.If(Q.Equals(Q.Var("componentType"), componentType), doIf, elseIf);
+
+const ifOneOfComponentType = (
+  componentTypes: string[],
+  doIf: ExprArg,
+  elseIf: ExprArg
+) =>
+  Q.If(Q.ContainsValue(Q.Var("componentType"), componentTypes), doIf, elseIf);
 
 export default function getComponentsByIds(client: Client) {
   return async (ids: readonly string[]) => {
@@ -62,11 +64,15 @@ export default function getComponentsByIds(client: Client) {
                   },
                   ifComponentType(
                     "LayoutComponent",
-                    selectLayoutModelData({ componentDocVar: "componentDoc" }),
+                    selectLayoutModelData(Q.Var("componentDoc")),
                     ifComponentType(
                       "BookCarouselComponent",
                       selectBookCarouselModelData,
-                      Q.Select("data", Q.Var("componentDoc"))
+                      ifOneOfComponentType(
+                        ["BookGridComponent"],
+                        Q.Select("data", Q.Var("componentDoc")),
+                        Q.Select("data", Q.Var("componentDoc"))
+                      )
                     )
                   )
                 )

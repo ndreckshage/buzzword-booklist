@@ -14,6 +14,10 @@ export type RootBookCarouselComponentModel = RootComponentModel & {
   sourceId: string;
 };
 
+export type RootBookListComponentModel = RootComponentModel & {
+  sourceType: string;
+};
+
 export type BookCarouselComponentModel = {
   id: string;
   title: string;
@@ -23,5 +27,4 @@ export type BookCarouselComponentModel = {
 
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
-export { default as getLayoutComponentsByIdsAndContext } from "./get-layout-components-by-ids-and-context";
 export { default as getBookCarouselComponentsByRefs } from "./get-book-carousel-components-by-refs";

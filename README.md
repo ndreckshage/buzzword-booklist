@@ -119,6 +119,7 @@ query GetLayout {
 ## TODOS
 
 - create a collection page layout
+- rename slug to key in various places
 - update schema so that it returns the actual layout types ....
 - layout create
 - layout edit
@@ -133,6 +134,4 @@ query GetLayout {
 - add error boundaries and stuff
 - allow a list to specify between grid / list
 - get the node query working
-- rename slug to key in various places
-- REMOVE TYPESCRIPT FROM THE CLEANED VERSION FOR SIMPLICITY
 - begin planning blog post!

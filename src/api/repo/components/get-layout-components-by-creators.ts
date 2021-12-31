@@ -37,9 +37,7 @@ export default function getLayoutComponentsByCreators(client: Client) {
                       },
                       Q.If(
                         Q.Equals(Q.Var("componentType"), "LayoutComponent"),
-                        selectLayoutModelData({
-                          componentDocVar: "componentDoc",
-                        }),
+                        selectLayoutModelData(Q.Var("componentDoc")),
                         null
                       )
                     )

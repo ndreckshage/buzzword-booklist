@@ -27,11 +27,18 @@ const Demo = ({
   });
 
   return (
-    <div>
-      <code>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </code>
-    </div>
+    <>
+      <div>
+        <code>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </code>
+      </div>
+      {cacheKey === "a2" && (
+        <Suspense fallback="suspending a5...">
+          <Demo cacheKey="a5" delay={3000} refreshCount={refreshCount} />
+        </Suspense>
+      )}
+    </>
   );
 };
 

@@ -5,6 +5,12 @@ export default /* GraphQL */ `
     image: String!
   }
 
+  enum BookListContext {
+    AUTHOR
+    CATEGORY
+    LIST
+  }
+
   type BookCarouselComponent {
     id: ID!
     title: String!
@@ -15,7 +21,10 @@ export default /* GraphQL */ `
   type BookGridComponent {
     id: ID!
     title: String!
-    bookCards: [BookCardComponent!]!
+    bookCards(
+      sourceType: BookListContext!
+      sourceSlug: String!
+    ): [BookCardComponent!]!
   }
 
   type BookListComponent {
@@ -82,16 +91,9 @@ export default /* GraphQL */ `
     lists: [List!]!
   }
 
-  input LayoutContext {
-    authorSlug: String
-    categorySlug: String
-    googleBooksVolumeId: String
-    listSlug: String
-  }
-
   type Query {
     currentUser: CurrentUser
-    layoutComponent(id: ID!, layoutContext: LayoutContext!): LayoutComponent
+    component(id: ID!): Component
     list(listSlug: String!): List
   }
 

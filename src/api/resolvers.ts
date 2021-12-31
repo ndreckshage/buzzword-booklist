@@ -31,20 +31,35 @@ export default {
   },
   BookCarouselComponent: {
     id: globalIdField(),
-    title: async ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByJsonRefs
+    title: ({ sourceId, sourceType }, args, { loaders }) =>
+      loaders.bookCarouselComponentsByRefsLoader
         .load({ sourceId, sourceType })
         .then(({ title }) => title),
 
     link: ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByJsonRefs
+      loaders.bookCarouselComponentsByRefsLoader
         .load({ sourceId, sourceType })
         .then(({ link }) => link),
 
-    bookCards: async ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByJsonRefs
+    bookCards: ({ sourceId, sourceType }, args, { loaders }) =>
+      loaders.bookCarouselComponentsByRefsLoader
         .load({ sourceId, sourceType })
         .then(({ bookCards }) => bookCards),
+  },
+  BookGridComponent: {
+    id: globalIdField(),
+
+    title: async (parent, args, { loaders }) => {
+      console.log("book grid", parent, args);
+      return "dffsf";
+    },
+
+    bookCards: async (parent, args, { loaders }) => {
+      console.log("book grid cards", args);
+      // create loader on loading by context!
+      // hmmm though .... how will the admin interface work, to know that I need to configure context for a nested selection
+      return [];
+    },
   },
   Component: {
     __resolveType: (obj) => obj.componentType,
@@ -61,7 +76,7 @@ export default {
   },
   LayoutComponent: {
     id: globalIdField(),
-    components: ({ componentType, componentRefs }, args, { loaders }) =>
+    components: ({ componentRefs }, args, { loaders }) =>
       loaders.componentsByIdsLoader.loadMany(componentRefs),
   },
   List: {
@@ -92,16 +107,19 @@ export default {
     ),
   },
   Query: {
-    currentUser: (parent, args, { loggedInAs }) =>
-      loggedInAs ? { name: loggedInAs } : null,
+    currentUser: (parent, args, { loggedInAs }) => {
+      console.log("GRAPHQL QUERY currentUser");
+      return loggedInAs ? { name: loggedInAs } : null;
+    },
 
-    layoutComponent: (parent, { id, layoutContext }, { loaders }) =>
-      loaders.layoutComponentsByIdsAndContextLoader.load({
-        id: fromGlobalId(id).id,
-        layoutContext,
-      }),
+    component: (parent, { id }, { loaders }) => {
+      console.log("GRAPHQL QUERY component", fromGlobalId(id));
+      return loaders.componentsByIdsLoader.load(fromGlobalId(id).id);
+    },
 
-    list: (parent, { listSlug }, { loaders }) =>
-      loaders.listsBySlugsLoader.load(listSlug),
+    list: (parent, { listSlug }, { loaders }) => {
+      console.log("GRAPHQL QUERY list", listSlug);
+      return loaders.listsBySlugsLoader.load(listSlug);
+    },
   },
 } as Resolvers<ResolverContext>;

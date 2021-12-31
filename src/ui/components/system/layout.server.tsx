@@ -8,21 +8,24 @@ import BookCarousel, {
 
 const LAYOUT_QUERY = gql`
   query GetLayout($id: ID!) {
-    layoutComponent(id: $id, layoutContext: {}) {
-      id
-      createdBy
-      styleOptions {
-        flexDirection
-      }
-      components {
-        __typename
-
-        ... on LayoutComponent {
-          id
+    component(id: $id) {
+      __typename
+      ... on LayoutComponent {
+        id
+        createdBy
+        styleOptions {
+          flexDirection
         }
+        components {
+          __typename
 
-        ...HeroComponentFragment
-        ...BookCarouselComponentFragment
+          ... on LayoutComponent {
+            id
+          }
+
+          ...HeroComponentFragment
+          ...BookCarouselComponentFragment
+        }
       }
     }
   }
@@ -52,7 +55,7 @@ const CreatedBy = ({ user }: { user: string }) => (
 
 export default function Layout({ id, root }: { id: string; root: boolean }) {
   const data = useQuery<{
-    layoutComponent: {
+    component: {
       id: string;
       createdBy: string;
       styleOptions: {
@@ -67,15 +70,15 @@ export default function Layout({ id, root }: { id: string; root: boolean }) {
 
   return (
     <div className="m-5 p-5 border border-violet-500">
-      <p>Layout: {data.layoutComponent.id}</p>
-      {root && <CreatedBy user={data.layoutComponent.createdBy} />}
+      <p>Layout: {data.component.id}</p>
+      {root && <CreatedBy user={data.component.createdBy} />}
       <div
         className={cx("flex", {
-          "flex-row": data.layoutComponent.styleOptions.flexDirection === "row",
-          "flex-col": data.layoutComponent.styleOptions.flexDirection === "col",
+          "flex-row": data.component.styleOptions.flexDirection === "row",
+          "flex-col": data.component.styleOptions.flexDirection === "col",
         })}
       >
-        {data.layoutComponent.components.map((component) => {
+        {data.component.components.map((component) => {
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
           if (!Component) {
