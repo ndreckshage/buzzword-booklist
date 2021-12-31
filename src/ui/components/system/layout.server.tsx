@@ -119,7 +119,7 @@ function Layout({
   );
 }
 
-export default function LayoutRoot({ id }: { id: string }) {
+export default function LayoutContainer({ id }: { id: string }) {
   const data = useQuery<{ component: Component }>(
     `Component::${id}`,
     LAYOUT_QUERY,
