@@ -49,18 +49,6 @@ export type BookGridComponent = {
   title: Scalars['String'];
 };
 
-
-export type BookGridComponentBookCardsArgs = {
-  sourceKey: Scalars['String'];
-  sourceType: BookListContext;
-};
-
-
-export type BookGridComponentTitleArgs = {
-  sourceKey: Scalars['String'];
-  sourceType: BookListContext;
-};
-
 export type BookListComponent = {
   __typename?: 'BookListComponent';
   bookCards: Array<BookCardComponent>;
@@ -68,25 +56,15 @@ export type BookListComponent = {
   title: Scalars['String'];
 };
 
-
-export type BookListComponentBookCardsArgs = {
-  sourceKey: Scalars['String'];
-  sourceType: BookListContext;
-};
-
-
-export type BookListComponentTitleArgs = {
-  sourceKey: Scalars['String'];
-  sourceType: BookListContext;
-};
-
-export enum BookListContext {
-  Author = 'AUTHOR',
-  Category = 'CATEGORY',
-  List = 'LIST'
-}
-
 export type Component = BookCardComponent | BookCarouselComponent | BookGridComponent | BookListComponent | HeroComponent | LayoutComponent;
+
+export enum ComponentContextType {
+  Author = 'AUTHOR',
+  Book = 'BOOK',
+  Category = 'CATEGORY',
+  List = 'LIST',
+  None = 'NONE'
+}
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
@@ -165,11 +143,19 @@ export type Query = {
   __typename?: 'Query';
   component?: Maybe<Component>;
   currentUser?: Maybe<CurrentUser>;
+  layout?: Maybe<LayoutComponent>;
   list?: Maybe<List>;
 };
 
 
 export type QueryComponentArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryLayoutArgs = {
+  contextKey: Scalars['String'];
+  contextType: ComponentContextType;
   id: Scalars['ID'];
 };
 
@@ -252,9 +238,9 @@ export type ResolversTypes = {
   BookCarouselComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookGridComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookListComponent: ResolverTypeWrapper<RootBookListComponentModel>;
-  BookListContext: BookListContext;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Component: ResolverTypeWrapper<RootComponentModel>;
+  ComponentContextType: ComponentContextType;
   CurrentUser: ResolverTypeWrapper<Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversTypes['LayoutComponent']>, lists: Array<ResolversTypes['List']> }>;
   HeroComponent: ResolverTypeWrapper<RootComponentModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
@@ -313,16 +299,16 @@ export type BookCarouselComponentResolvers<ContextType = ResolverContext, Parent
 };
 
 export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridComponent'] = ResolversParentTypes['BookGridComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType, RequireFields<BookGridComponentBookCardsArgs, 'sourceKey' | 'sourceType'>>;
+  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<BookGridComponentTitleArgs, 'sourceKey' | 'sourceType'>>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type BookListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListComponent'] = ResolversParentTypes['BookListComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType, RequireFields<BookListComponentBookCardsArgs, 'sourceKey' | 'sourceType'>>;
+  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<BookListComponentTitleArgs, 'sourceKey' | 'sourceType'>>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -383,6 +369,7 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   component?: Resolver<Maybe<ResolversTypes['Component']>, ParentType, ContextType, RequireFields<QueryComponentArgs, 'id'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
+  layout?: Resolver<Maybe<ResolversTypes['LayoutComponent']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'contextKey' | 'contextType' | 'id'>>;
   list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
 };
 

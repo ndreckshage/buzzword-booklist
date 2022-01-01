@@ -9,7 +9,7 @@ type Props = {
   };
 };
 
-export default function CollectionsListsShow(props: Props) {
+export default function CollectionsAuthorsShow(props: Props) {
   const sourceKey = props.router.query.sourceKey;
 
   // @NOTE next params dont work with streaming / nextjs yet
@@ -27,7 +27,7 @@ export default function CollectionsListsShow(props: Props) {
   return (
     <Layout
       id="TGF5b3V0Q29tcG9uZW50OjMxOTQyNjM4MTgyMzg2ODk5Mw=="
-      contextType={ComponentContextType.List}
+      contextType={ComponentContextType.Author}
       contextKey={sourceKey}
     />
   );

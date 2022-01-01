@@ -5,12 +5,6 @@ export default /* GraphQL */ `
     image: String!
   }
 
-  enum BookListContext {
-    AUTHOR
-    CATEGORY
-    LIST
-  }
-
   type BookCarouselComponent {
     id: ID!
     title: String!
@@ -20,20 +14,14 @@ export default /* GraphQL */ `
 
   type BookGridComponent {
     id: ID!
-    title(sourceType: BookListContext!, sourceKey: String!): String!
-    bookCards(
-      sourceType: BookListContext!
-      sourceKey: String!
-    ): [BookCardComponent!]!
+    title: String!
+    bookCards: [BookCardComponent!]!
   }
 
   type BookListComponent {
     id: ID!
-    title(sourceType: BookListContext!, sourceKey: String!): String!
-    bookCards(
-      sourceType: BookListContext!
-      sourceKey: String!
-    ): [BookCardComponent!]!
+    title: String!
+    bookCards: [BookCardComponent!]!
   }
 
   type HeroComponent {
@@ -94,8 +82,21 @@ export default /* GraphQL */ `
     lists: [List!]!
   }
 
+  enum ComponentContextType {
+    AUTHOR
+    BOOK
+    CATEGORY
+    LIST
+    NONE
+  }
+
   type Query {
     currentUser: CurrentUser
+    layout(
+      id: ID!
+      contextType: ComponentContextType!
+      contextKey: String!
+    ): LayoutComponent
     component(id: ID!): Component
     list(listSlug: String!): List
   }

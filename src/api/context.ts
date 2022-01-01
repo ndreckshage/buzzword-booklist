@@ -16,6 +16,8 @@ import {
   getListsByCreators,
 } from "api/repo/lists";
 
+import { ComponentContextType } from "./__generated__/resolvers-types";
+
 import { type BookModel, getBooksByListIds } from "api/repo/books";
 
 import {
@@ -43,7 +45,11 @@ export type ResolverContext = {
   loggedInAs: string | null;
   loaders: {
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
-    componentsByIdsLoader: DataLoader<string, RootComponentModel, string>;
+    componentsByIdsAndContextLoader: DataLoader<
+      { id: string; contextType: ComponentContextType; contextKey: string },
+      RootComponentModel,
+      string
+    >;
     layoutComponentsByCreatorsLoader: DataLoader<
       string,
       RootLayoutComponentModel[],
@@ -54,7 +60,7 @@ export type ResolverContext = {
     bookListComponentsLoader: DataLoader<
       {
         componentType: string;
-        sourceType: string | null;
+        sourceType: ComponentContextType | null;
         sourceKey: string | null;
       },
       BookListComponentModel,
@@ -77,7 +83,12 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
     loggedInAs: currentUser,
     loaders: {
       booksByListIdsLoader: new DataLoader(getBooksByListIds(client)),
-      componentsByIdsLoader: new DataLoader(getComponentsByIds(client)),
+      componentsByIdsAndContextLoader: new DataLoader(
+        getComponentsByIds(client),
+        {
+          cacheKeyFn: JSON.stringify,
+        }
+      ),
       layoutComponentsByCreatorsLoader: new DataLoader(
         getLayoutComponentsByCreators(client)
       ),

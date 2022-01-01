@@ -42,42 +42,51 @@ const ifOneOfComponentType = (
   Q.If(Q.ContainsValue(Q.Var("componentType"), componentTypes), doIf, elseIf);
 
 export default function getComponentsByIds(client: Client) {
-  return async (ids: readonly string[]) => {
+  return async (idAndContextArrs: readonly string[]) => {
     try {
       const result = await client.query(
         Q.Map(
-          ids,
+          idAndContextArrs,
           Q.Lambda(
-            "id",
+            "idAndContext",
             Q.Let(
               {
-                componentDoc: Q.Get(
-                  Q.Ref(Q.Collection("Components"), Q.Var("id"))
-                ),
+                id: Q.Select("id", Q.Var("idAndContext")),
+                contextType: Q.Select("contextType", Q.Var("idAndContext")),
+                contextKey: Q.Select("contextKey", Q.Var("idAndContext")),
               },
               Q.Let(
                 {
-                  componentType: Q.Select(
-                    ["data", "componentType"],
-                    Q.Var("componentDoc")
+                  componentDoc: Q.Get(
+                    Q.Ref(Q.Collection("Components"), Q.Var("id"))
                   ),
                 },
-                Q.Merge(
+                Q.Let(
                   {
-                    id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
-                    componentType: Q.Var("componentType"),
+                    componentType: Q.Select(
+                      ["data", "componentType"],
+                      Q.Var("componentDoc")
+                    ),
                   },
-                  ifComponentType(
-                    "LayoutComponent",
-                    selectLayoutModelData(Q.Var("componentDoc")),
-                    ifOneOfComponentType(
-                      [
-                        "BookCarouselComponent",
-                        "BookGridComponent",
-                        "BookListComponent",
-                      ],
-                      selectBookListModelData(Q.Var("componentDoc")),
-                      Q.Select("data", Q.Var("componentDoc"))
+                  Q.Merge(
+                    {
+                      id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
+                      componentType: Q.Var("componentType"),
+                      contextType: Q.Var("contextType"),
+                      contextKey: Q.Var("contextKey"),
+                    },
+                    ifComponentType(
+                      "LayoutComponent",
+                      selectLayoutModelData(Q.Var("componentDoc")),
+                      ifOneOfComponentType(
+                        [
+                          "BookCarouselComponent",
+                          "BookGridComponent",
+                          "BookListComponent",
+                        ],
+                        selectBookListModelData(Q.Var("componentDoc")),
+                        Q.Select("data", Q.Var("componentDoc"))
+                      )
                     )
                   )
                 )

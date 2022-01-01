@@ -1,16 +1,21 @@
 import {
   type BookCardComponent,
-  BookListContext,
+  ComponentContextType,
 } from "api/__generated__/resolvers-types";
 
-export type RootComponentModel = { id: string; componentType: string };
+export type RootComponentModel = {
+  id: string;
+  componentType: string;
+  contextType: ComponentContextType;
+  contextKey: string;
+};
 
 export type RootLayoutComponentModel = RootComponentModel & {
   componentRefs: string[];
 };
 
 export type RootBookListComponentModel = RootComponentModel & {
-  sourceType: BookListContext | null;
+  sourceType: ComponentContextType | null;
   sourceKey: string | null;
 };
 

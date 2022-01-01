@@ -1,9 +1,10 @@
 import {
   type Resolvers,
+  ComponentContextType,
   LinkComponentVariant,
-  BookListContext,
 } from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
+import { type RootLayoutComponentModel } from "api/repo/components";
 import { type GraphQLResolveInfo } from "graphql";
 
 import { globalIdField, fromGlobalId } from "graphql-relay";
@@ -46,10 +47,16 @@ export default {
         .then(({ totalBookCards }) => ({
           title: `See all ${totalBookCards} books`,
           href: `/collections/${(() => {
-            if (sourceType === BookListContext.List) return "lists";
-            if (sourceType === BookListContext.Category) return "categories";
-            if (sourceType === BookListContext.Author) return "authors";
-            throw new Error("Invalid Source Type");
+            switch (sourceType) {
+              case ComponentContextType.List:
+                return "lists";
+              case ComponentContextType.Category:
+                return "categories";
+              case ComponentContextType.Author:
+                return "authors";
+              default:
+                throw new Error(`Invalid type ${sourceType} requested`);
+            }
           })()}/show?sourceKey=${sourceKey}`,
           variant: LinkComponentVariant.Default,
         })),
@@ -62,14 +69,18 @@ export default {
   BookGridComponent: {
     id: globalIdField(),
 
-    title: ({ componentType }, { sourceType, sourceKey }, { loaders }) =>
+    title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType, sourceKey })
+        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
         .then(({ title }) => title),
 
-    bookCards: ({ componentType }, { sourceType, sourceKey }, { loaders }) =>
+    bookCards: (
+      { componentType, contextType, contextKey },
+      args,
+      { loaders }
+    ) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType, sourceKey })
+        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
         .then(({ bookCards }) => bookCards),
   },
   Component: {
@@ -87,8 +98,14 @@ export default {
   },
   LayoutComponent: {
     id: globalIdField(),
-    components: ({ componentRefs }, args, { loaders }) =>
-      loaders.componentsByIdsLoader.loadMany(componentRefs),
+    components: (
+      { componentRefs, contextKey, contextType },
+      args,
+      { loaders }
+    ) =>
+      loaders.componentsByIdsAndContextLoader.loadMany(
+        componentRefs.map((id) => ({ id, contextKey, contextType }))
+      ),
   },
   List: {
     id: globalIdField(),
@@ -123,9 +140,25 @@ export default {
       return loggedInAs ? { name: loggedInAs } : null;
     },
 
-    component: (parent, { id }, { loaders }) => {
-      console.log("GRAPHQL QUERY component", fromGlobalId(id));
-      return loaders.componentsByIdsLoader.load(fromGlobalId(id).id);
+    layout: async (parent, { id, contextType, contextKey }, { loaders }) => {
+      console.log(
+        "GRAPHQL QUERY layout",
+        fromGlobalId(id),
+        contextType,
+        contextKey
+      );
+
+      const component = await loaders.componentsByIdsAndContextLoader.load({
+        id: fromGlobalId(id).id,
+        contextType,
+        contextKey,
+      });
+
+      if (component.componentType !== "LayoutComponent") {
+        throw new Error("Invalid component requested");
+      }
+
+      return component as RootLayoutComponentModel;
     },
 
     list: (parent, { listSlug }, { loaders }) => {

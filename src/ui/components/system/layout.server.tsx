@@ -1,7 +1,7 @@
 import { useQuery, gql } from "ui/lib/use-data.server";
 import {
-  type Component,
   type LayoutComponent,
+  type ComponentContextType,
 } from "api/__generated__/resolvers-types";
 import cx from "classnames";
 
@@ -9,6 +9,7 @@ import Hero, { HeroComponentFragment } from "./hero.server";
 import BookCarousel, {
   BookCarouselComponentFragment,
 } from "./book-carousel.server";
+import BookGrid, { BookGridComponentFragment } from "./book-grid.server";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
@@ -26,31 +27,34 @@ const ComponentFragment = gql`
     ...LayoutComponentFragment
     ...HeroComponentFragment
     ...BookCarouselComponentFragment
+    ...BookGridComponentFragment
   }
-
-  ${LayoutComponentFragment}
-  ${HeroComponentFragment}
-  ${BookCarouselComponentFragment}
 `;
 
 // SUPPORT MAX 3 LEVELS OF LAYOUT!
 const LAYOUT_QUERY = gql`
-  query GetLayout($id: ID!) {
-    component(id: $id) {
-      ...ComponentFragment
+  query GetLayout(
+    $id: ID!
+    $contextType: ComponentContextType!
+    $contextKey: String!
+  ) {
+    layout(id: $id, contextType: $contextType, contextKey: $contextKey) {
+      __typename
+      ...LayoutComponentFragment
 
-      ... on LayoutComponent {
-        components {
-          ...ComponentFragment
+      components {
+        __typename
+        ...ComponentFragment
 
-          ... on LayoutComponent {
-            components {
-              ...ComponentFragment
+        ... on LayoutComponent {
+          components {
+            __typename
+            ...ComponentFragment
 
-              ... on LayoutComponent {
-                components {
-                  ...ComponentFragment
-                }
+            ... on LayoutComponent {
+              components {
+                __typename
+                ...ComponentFragment
               }
             }
           }
@@ -59,12 +63,17 @@ const LAYOUT_QUERY = gql`
     }
   }
 
+  ${LayoutComponentFragment}
   ${ComponentFragment}
+  ${HeroComponentFragment}
+  ${BookCarouselComponentFragment}
+  ${BookGridComponentFragment}
 `;
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
   BookCarouselComponent: BookCarousel,
+  BookGridComponent: BookGrid,
   HeroComponent: Hero,
 };
 
@@ -119,16 +128,20 @@ function Layout({
   );
 }
 
-export default function LayoutContainer({ id }: { id: string }) {
-  const data = useQuery<{ component: Component }>(
+export default function LayoutContainer({
+  id,
+  contextType,
+  contextKey,
+}: {
+  id: string;
+  contextType: ComponentContextType;
+  contextKey: string;
+}) {
+  const data = useQuery<{ layout: LayoutComponent }>(
     `Component::${id}`,
     LAYOUT_QUERY,
-    { id }
+    { id, contextType, contextKey }
   );
 
-  if (data.component.__typename !== "LayoutComponent") {
-    return null;
-  }
-
-  return <Layout {...data.component} root />;
+  return <Layout {...data.layout} root />;
 }

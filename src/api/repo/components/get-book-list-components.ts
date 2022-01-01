@@ -1,5 +1,4 @@
 import { Client, query as Q, type Expr } from "faunadb";
-import { BookListContext } from "api/__generated__/resolvers-types";
 
 const selectBookRefs = ({
   sourceDoc,
