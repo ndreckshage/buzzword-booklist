@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { BookModel } from '../repo/books';
-import { RootBookCarouselComponentModel, RootBooksListComponentModel, RootComponentModel, RootLayoutComponentModel } from '../repo/components';
+import { RootBookListComponentModel, RootComponentModel, RootLayoutComponentModel } from '../repo/components';
 import { ListModel } from '../repo/lists';
 import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
@@ -51,7 +51,13 @@ export type BookGridComponent = {
 
 
 export type BookGridComponentBookCardsArgs = {
-  sourceSlug: Scalars['String'];
+  sourceKey: Scalars['String'];
+  sourceType: BookListContext;
+};
+
+
+export type BookGridComponentTitleArgs = {
+  sourceKey: Scalars['String'];
   sourceType: BookListContext;
 };
 
@@ -60,6 +66,18 @@ export type BookListComponent = {
   bookCards: Array<BookCardComponent>;
   id: Scalars['ID'];
   title: Scalars['String'];
+};
+
+
+export type BookListComponentBookCardsArgs = {
+  sourceKey: Scalars['String'];
+  sourceType: BookListContext;
+};
+
+
+export type BookListComponentTitleArgs = {
+  sourceKey: Scalars['String'];
+  sourceType: BookListContext;
 };
 
 export enum BookListContext {
@@ -231,9 +249,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Book: ResolverTypeWrapper<BookModel>;
   BookCardComponent: ResolverTypeWrapper<BookCardComponent>;
-  BookCarouselComponent: ResolverTypeWrapper<RootBookCarouselComponentModel>;
-  BookGridComponent: ResolverTypeWrapper<RootBooksListComponentModel>;
-  BookListComponent: ResolverTypeWrapper<RootBooksListComponentModel>;
+  BookCarouselComponent: ResolverTypeWrapper<RootBookListComponentModel>;
+  BookGridComponent: ResolverTypeWrapper<RootBookListComponentModel>;
+  BookListComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookListContext: BookListContext;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Component: ResolverTypeWrapper<RootComponentModel>;
@@ -254,9 +272,9 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Book: BookModel;
   BookCardComponent: BookCardComponent;
-  BookCarouselComponent: RootBookCarouselComponentModel;
-  BookGridComponent: RootBooksListComponentModel;
-  BookListComponent: RootBooksListComponentModel;
+  BookCarouselComponent: RootBookListComponentModel;
+  BookGridComponent: RootBookListComponentModel;
+  BookListComponent: RootBookListComponentModel;
   Boolean: Scalars['Boolean'];
   Component: RootComponentModel;
   CurrentUser: Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversParentTypes['LayoutComponent']>, lists: Array<ResolversParentTypes['List']> };
@@ -295,16 +313,16 @@ export type BookCarouselComponentResolvers<ContextType = ResolverContext, Parent
 };
 
 export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridComponent'] = ResolversParentTypes['BookGridComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType, RequireFields<BookGridComponentBookCardsArgs, 'sourceSlug' | 'sourceType'>>;
+  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType, RequireFields<BookGridComponentBookCardsArgs, 'sourceKey' | 'sourceType'>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<BookGridComponentTitleArgs, 'sourceKey' | 'sourceType'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type BookListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListComponent'] = ResolversParentTypes['BookListComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
+  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType, RequireFields<BookListComponentBookCardsArgs, 'sourceKey' | 'sourceType'>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<BookListComponentTitleArgs, 'sourceKey' | 'sourceType'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

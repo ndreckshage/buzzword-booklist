@@ -1,13 +1,15 @@
 type Props = {
   router: {
     query: {
-      listSlug: string;
+      sourceKey: string;
     };
   };
 };
 
 export default function CollectionsListsShow(props: Props) {
-  const listSlug = props.router.query.listSlug;
+  const sourceKey = props.router.query.sourceKey;
+
+  // TODO! create book carousel grid + list components!
 
   // @NOTE next params dont work with streaming / nextjs yet
   // @NOTE AND dynamic routes dont work client side, so adjusting to query params
@@ -17,13 +19,13 @@ export default function CollectionsListsShow(props: Props) {
   //     return <>Bad Route Match: {props.router.asPath}</>;
   //   }
 
-  if (typeof listSlug !== "string") {
+  if (typeof sourceKey !== "string") {
     return <p>No book!</p>;
   }
 
   return (
     <>
-      <h2 className="text-xl m-5 p-5 text-purple-500">List: {listSlug}</h2>
+      <h2 className="text-xl m-5 p-5 text-purple-500">List: {sourceKey}</h2>
     </>
   );
 }

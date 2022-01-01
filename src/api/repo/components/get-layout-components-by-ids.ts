@@ -25,7 +25,7 @@ export default function getLayoutComponentsByIds(client: Client) {
                 },
                 Q.If(
                   Q.Equals(Q.Var("componentType"), "LayoutComponent"),
-                  selectLayoutModelData({ componentDocVar: "componentDoc" }),
+                  selectLayoutModelData(Q.Var("componentDoc")),
                   null
                 )
               )
@@ -36,7 +36,7 @@ export default function getLayoutComponentsByIds(client: Client) {
 
       return result as RootComponentModel[];
     } catch (e) {
-      console.error(e);
+      console.error("get-layout-components-by-ids", e);
 
       if (e instanceof Error) {
         // @ts-ignore

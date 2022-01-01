@@ -21,10 +21,10 @@ import { type BookModel, getBooksByListIds } from "api/repo/books";
 import {
   type RootComponentModel,
   type RootLayoutComponentModel,
-  type BookCarouselComponentModel,
+  type BookListComponentModel,
   getLayoutComponentsByCreators,
   getComponentsByIds,
-  getBookCarouselComponentsByRefs,
+  getBookListComponents,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -51,9 +51,13 @@ export type ResolverContext = {
     >;
     listsBySlugsLoader: DataLoader<string, ListModel, string>;
     listsByCreatorsLoader: DataLoader<string, ListModel[], string>;
-    bookCarouselComponentsByRefsLoader: DataLoader<
-      { sourceId: string; sourceType: string },
-      BookCarouselComponentModel,
+    bookListComponentsLoader: DataLoader<
+      {
+        componentType: string;
+        sourceType: string | null;
+        sourceKey: string | null;
+      },
+      BookListComponentModel,
       string
     >;
   };
@@ -79,10 +83,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       ),
       listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
       listsByCreatorsLoader: new DataLoader(getListsByCreators(client)),
-      bookCarouselComponentsByRefsLoader: new DataLoader(
-        getBookCarouselComponentsByRefs(client),
-        { cacheKeyFn: JSON.stringify }
-      ),
+      bookListComponentsLoader: new DataLoader(getBookListComponents(client), {
+        cacheKeyFn: JSON.stringify,
+      }),
     },
     mutations: {
       addBookToList: addBookToList(client),

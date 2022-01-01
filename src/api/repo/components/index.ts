@@ -1,6 +1,6 @@
 import {
   type BookCardComponent,
-  LinkComponent,
+  BookListContext,
 } from "api/__generated__/resolvers-types";
 
 export type RootComponentModel = { id: string; componentType: string };
@@ -9,22 +9,19 @@ export type RootLayoutComponentModel = RootComponentModel & {
   componentRefs: string[];
 };
 
-export type RootBookCarouselComponentModel = RootComponentModel & {
-  sourceType: string;
-  sourceId: string;
-};
-
 export type RootBookListComponentModel = RootComponentModel & {
-  sourceType: string;
+  sourceType: BookListContext | null;
+  sourceKey: string | null;
 };
 
-export type BookCarouselComponentModel = {
+export type BookListComponentModel = {
   id: string;
   title: string;
-  link: LinkComponent;
+  slug: string;
+  totalBookCards: number;
   bookCards: BookCardComponent[];
 };
 
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
-export { default as getBookCarouselComponentsByRefs } from "./get-book-carousel-components-by-refs";
+export { default as getBookListComponents } from "./get-book-list-components";

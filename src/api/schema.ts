@@ -20,17 +20,20 @@ export default /* GraphQL */ `
 
   type BookGridComponent {
     id: ID!
-    title: String!
+    title(sourceType: BookListContext!, sourceKey: String!): String!
     bookCards(
       sourceType: BookListContext!
-      sourceSlug: String!
+      sourceKey: String!
     ): [BookCardComponent!]!
   }
 
   type BookListComponent {
     id: ID!
-    title: String!
-    bookCards: [BookCardComponent!]!
+    title(sourceType: BookListContext!, sourceKey: String!): String!
+    bookCards(
+      sourceType: BookListContext!
+      sourceKey: String!
+    ): [BookCardComponent!]!
   }
 
   type HeroComponent {

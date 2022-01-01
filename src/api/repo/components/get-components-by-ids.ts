@@ -13,15 +13,20 @@ export const selectLayoutModelData = (componentDoc: Expr) => ({
   ),
 });
 
-const selectBookCarouselModelData = {
-  id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
-  componentType: Q.Select(["data", "componentType"], Q.Var("componentDoc")),
-  sourceType: Q.Select(
-    ["data", "sourceRef", "collection", "id"],
-    Q.Var("componentDoc")
+const selectBookListModelData = (componentDoc: Expr) => ({
+  id: Q.Select(["ref", "id"], componentDoc),
+  componentType: Q.Select(["data", "componentType"], componentDoc),
+  sourceType: Q.If(
+    Q.ContainsPath(["data", "sourceType"], componentDoc),
+    Q.Select(["data", "sourceType"], componentDoc),
+    null
   ),
-  sourceId: Q.Select(["data", "sourceRef", "id"], Q.Var("componentDoc")),
-};
+  sourceKey: Q.If(
+    Q.ContainsPath(["data", "sourceKey"], componentDoc),
+    Q.Select(["data", "sourceKey"], componentDoc),
+    null
+  ),
+});
 
 const ifComponentType = (
   componentType: string,
@@ -65,14 +70,14 @@ export default function getComponentsByIds(client: Client) {
                   ifComponentType(
                     "LayoutComponent",
                     selectLayoutModelData(Q.Var("componentDoc")),
-                    ifComponentType(
-                      "BookCarouselComponent",
-                      selectBookCarouselModelData,
-                      ifOneOfComponentType(
-                        ["BookGridComponent"],
-                        Q.Select("data", Q.Var("componentDoc")),
-                        Q.Select("data", Q.Var("componentDoc"))
-                      )
+                    ifOneOfComponentType(
+                      [
+                        "BookCarouselComponent",
+                        "BookGridComponent",
+                        "BookListComponent",
+                      ],
+                      selectBookListModelData(Q.Var("componentDoc")),
+                      Q.Select("data", Q.Var("componentDoc"))
                     )
                   )
                 )
@@ -84,7 +89,7 @@ export default function getComponentsByIds(client: Client) {
 
       return result as RootComponentModel[];
     } catch (e) {
-      console.error(e);
+      console.error("get-components-by-ids", e);
 
       if (e instanceof Error) {
         // @ts-ignore

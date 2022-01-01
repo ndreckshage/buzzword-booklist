@@ -18,7 +18,7 @@ const createBooks = () =>
         collectionRef: Q.Select(["ref"], Q.CreateCollection({ name: "Books" })),
       },
       Q.CreateIndex({
-        name: "unique_books_by_google_books_volume_id",
+        name: "unique_books_by_googleBooksVolumeId",
         source: Q.Var("collectionRef"),
         terms: [{ field: ["data", "googleBooksVolumeId"] }],
         unique: true,
@@ -71,15 +71,22 @@ const createCategoryBookConnections = () =>
           Q.CreateCollection({ name: "CategoryBookConnections" })
         ),
       },
-      Q.CreateIndex({
-        name: "unique_category_book_connections_by_refs",
-        source: Q.Var("collectionRef"),
-        terms: [
-          { field: ["data", "categoryRef"] },
-          { field: ["data", "bookRef"] },
-        ],
-        unique: true,
-      })
+      Q.Do(
+        Q.CreateIndex({
+          name: "unique_category_book_connections_by_refs",
+          source: Q.Var("collectionRef"),
+          terms: [
+            { field: ["data", "categoryRef"] },
+            { field: ["data", "bookRef"] },
+          ],
+          unique: true,
+        }),
+        Q.CreateIndex({
+          name: "category_book_connections_by_categoryRef",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "categoryRef"] }],
+        })
+      )
     )
   );
 

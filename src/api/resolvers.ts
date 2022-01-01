@@ -1,4 +1,8 @@
-import { type Resolvers } from "api/__generated__/resolvers-types";
+import {
+  type Resolvers,
+  LinkComponentVariant,
+  BookListContext,
+} from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
 import { type GraphQLResolveInfo } from "graphql";
 
@@ -31,35 +35,42 @@ export default {
   },
   BookCarouselComponent: {
     id: globalIdField(),
-    title: ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByRefsLoader
-        .load({ sourceId, sourceType })
+    title: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType, sourceKey })
         .then(({ title }) => title),
 
-    link: ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByRefsLoader
-        .load({ sourceId, sourceType })
-        .then(({ link }) => link),
+    link: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType, sourceKey })
+        .then(({ totalBookCards }) => ({
+          title: `See all ${totalBookCards} books`,
+          href: `/collections/${(() => {
+            if (sourceType === BookListContext.List) return "lists";
+            if (sourceType === BookListContext.Category) return "categories";
+            if (sourceType === BookListContext.Author) return "authors";
+            throw new Error("Invalid Source Type");
+          })()}/show?sourceKey=${sourceKey}`,
+          variant: LinkComponentVariant.Default,
+        })),
 
-    bookCards: ({ sourceId, sourceType }, args, { loaders }) =>
-      loaders.bookCarouselComponentsByRefsLoader
-        .load({ sourceId, sourceType })
+    bookCards: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType, sourceKey })
         .then(({ bookCards }) => bookCards),
   },
   BookGridComponent: {
     id: globalIdField(),
 
-    title: async (parent, args, { loaders }) => {
-      console.log("book grid", parent, args);
-      return "dffsf";
-    },
+    title: ({ componentType }, { sourceType, sourceKey }, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType, sourceKey })
+        .then(({ title }) => title),
 
-    bookCards: async (parent, args, { loaders }) => {
-      console.log("book grid cards", args);
-      // create loader on loading by context!
-      // hmmm though .... how will the admin interface work, to know that I need to configure context for a nested selection
-      return [];
-    },
+    bookCards: ({ componentType }, { sourceType, sourceKey }, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType, sourceKey })
+        .then(({ bookCards }) => bookCards),
   },
   Component: {
     __resolveType: (obj) => obj.componentType,
