@@ -7,7 +7,9 @@ import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
   query GetList($listKey: String!) {
-    currentUser
+    currentUser {
+      name
+    }
     list(listKey: $listKey) {
       title
       createdBy
@@ -21,7 +23,9 @@ const GET_LISTS_QUERY = gql`
 `;
 
 type GetListsResponse = {
-  currentUser: string | null;
+  currentUser?: {
+    name: string;
+  };
   list: {
     title: string;
     createdBy: string;
@@ -71,7 +75,7 @@ const EditList = ({ listKey }: { listKey: string }) => {
 
   const isPending = getBooksPending || addBookPending || removeBookPending;
 
-  if (data.list.createdBy !== data.currentUser) {
+  if (data.list.createdBy !== data.currentUser?.name) {
     return <p>Not Authorized</p>;
   }
 
