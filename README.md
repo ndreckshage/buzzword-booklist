@@ -85,10 +85,10 @@ todo
 
 - lists view mine
 - layouts view mine
-- protect the various lists / layouts
 - limit query depth / something. protect gql.
 - make it look a lot prettier
 - add error boundaries and stuff
 - allow a list to specify between grid / list
-- get the node query working
 - begin planning blog post!
+- show how we can build a custom huruki murakami page and set as author page
+- show how we can build a book club page
