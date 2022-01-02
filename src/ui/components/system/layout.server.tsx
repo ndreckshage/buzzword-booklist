@@ -10,6 +10,7 @@ import BookCarousel, {
   BookCarouselComponentFragment,
 } from "./book-carousel.server";
 import BookGrid, { BookGridComponentFragment } from "./book-grid.server";
+import BookList, { BookListComponentFragment } from "./book-list.server";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
@@ -28,6 +29,7 @@ const ComponentFragment = gql`
     ...HeroComponentFragment
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
+    ...BookListComponentFragment
   }
 `;
 
@@ -68,12 +70,14 @@ const LAYOUT_QUERY = gql`
   ${HeroComponentFragment}
   ${BookCarouselComponentFragment}
   ${BookGridComponentFragment}
+  ${BookListComponentFragment}
 `;
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
   BookCarouselComponent: BookCarousel,
   BookGridComponent: BookGrid,
+  BookListComponent: BookList,
   HeroComponent: Hero,
 };
 

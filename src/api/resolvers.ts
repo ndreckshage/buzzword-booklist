@@ -83,6 +83,23 @@ export default {
         .load({ componentType, sourceType: contextType, sourceKey: contextKey })
         .then(({ bookCards }) => bookCards),
   },
+  BookListComponent: {
+    id: globalIdField(),
+
+    title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
+        .then(({ title }) => title),
+
+    bookCards: (
+      { componentType, contextType, contextKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
+        .then(({ bookCards }) => bookCards),
+  },
   Component: {
     __resolveType: (obj) => obj.componentType,
   },

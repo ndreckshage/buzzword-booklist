@@ -26,7 +26,7 @@ export default function CollectionsCategoriesShow(props: Props) {
 
   return (
     <Layout
-      id="TGF5b3V0Q29tcG9uZW50OjMxOTQyNjM4MTgyMzg2ODk5Mw=="
+      id="TGF5b3V0Q29tcG9uZW50OjMxOTYzNjY5MjM4ODU0NDU3Nw=="
       contextType={ComponentContextType.Category}
       contextKey={sourceKey}
     />
