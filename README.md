@@ -76,10 +76,10 @@ todo
 
 ## TODOS
 
-- rename slug to key in various places
 - update schema so that it returns the actual layout types ....
-- layout create
 - layout edit
+- layout create
+- add markdown support for hero
 - add created by component on book carousels
 - add cretaed by component on layouts
 
