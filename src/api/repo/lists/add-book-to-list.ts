@@ -4,7 +4,7 @@ import appendConnectionToDocumentIfUnique from "api/repo/fql-helpers/append-conn
 import ifListOwner from "api/repo/fql-helpers/exec-if-list-owner";
 
 export type AddBookToListInput = {
-  listSlug: string;
+  listKey: string;
   googleBooksVolumeId: string;
   loggedInAs: string;
 };
@@ -14,12 +14,12 @@ export type AddBookToListOutput = boolean;
 export default function addBookToList(client: Client) {
   return async ({
     googleBooksVolumeId,
-    listSlug,
+    listKey,
     loggedInAs,
   }: AddBookToListInput) => {
     console.log("addBookToList", {
       googleBooksVolumeId,
-      listSlug,
+      listKey,
       loggedInAs,
     });
 
@@ -27,11 +27,11 @@ export default function addBookToList(client: Client) {
       await createBookAuthorsAndCategories(client, googleBooksVolumeId);
       await client.query(
         ifListOwner({
-          listSlug,
+          listKey,
           loggedInAs,
           execExpr: appendConnectionToDocumentIfUnique({
-            docIndex: "unique_lists_by_slug",
-            docIndexTerms: [listSlug],
+            docIndex: "unique_lists_by_key",
+            docIndexTerms: [listKey],
             docEdgeRefName: "bookRefs",
             edgeIndex: "unique_books_by_google_books_volume_id",
             edgeIndexTerms: [googleBooksVolumeId],

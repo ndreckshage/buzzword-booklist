@@ -3,7 +3,7 @@ import execIfListOwner from "api/repo/fql-helpers/exec-if-list-owner";
 import removeConnectionFromDocument from "api/repo/fql-helpers/remove-connection-from-document";
 
 export type RemoveBookFromListInput = {
-  listSlug: string;
+  listKey: string;
   googleBooksVolumeId: string;
   loggedInAs: string;
 };
@@ -13,18 +13,18 @@ export type RemoveBookFromListOutput = boolean;
 export default function removeBookFromList(client: Client) {
   return async ({
     googleBooksVolumeId,
-    listSlug,
+    listKey,
     loggedInAs,
   }: RemoveBookFromListInput) => {
-    console.log("removeBookFromList", { googleBooksVolumeId, listSlug });
+    console.log("removeBookFromList", { googleBooksVolumeId, listKey });
     try {
       await client.query(
         execIfListOwner({
-          listSlug,
+          listKey,
           loggedInAs,
           execExpr: removeConnectionFromDocument({
-            docIndex: "unique_lists_by_slug",
-            docIndexTerms: [listSlug],
+            docIndex: "unique_lists_by_key",
+            docIndexTerms: [listKey],
             docEdgeRefName: "bookRefs",
             edgeIndex: "unique_books_by_google_books_volume_id",
             edgeIndexTerms: [googleBooksVolumeId],

@@ -36,9 +36,9 @@ const createAuthors = () =>
         ),
       },
       Q.CreateIndex({
-        name: "unique_authors_by_slug",
+        name: "unique_authors_by_key",
         source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "slug"] }],
+        terms: [{ field: ["data", "key"] }],
         unique: true,
       })
     )
@@ -54,9 +54,9 @@ const createCategories = () =>
         ),
       },
       Q.CreateIndex({
-        name: "unique_categories_by_slug",
+        name: "unique_categories_by_key",
         source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "slug"] }],
+        terms: [{ field: ["data", "key"] }],
         unique: true,
       })
     )
@@ -98,9 +98,9 @@ const createLists = () =>
       },
       Q.Do(
         Q.CreateIndex({
-          name: "unique_lists_by_slug",
+          name: "unique_lists_by_key",
           source: Q.Var("collectionRef"),
-          terms: [{ field: ["data", "slug"] }],
+          terms: [{ field: ["data", "key"] }],
           unique: true,
         }),
         Q.CreateIndex({

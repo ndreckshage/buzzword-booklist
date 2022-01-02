@@ -6,9 +6,9 @@ import { useQuery, useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 
 const GET_LISTS_QUERY = gql`
-  query GetList($listSlug: String!) {
+  query GetList($listKey: String!) {
     currentUser
-    list(listSlug: $listSlug) {
+    list(listKey: $listKey) {
       title
       createdBy
       books {
@@ -35,33 +35,30 @@ type GetListsResponse = {
 
 const REMOVE_BOOK_FROM_LIST_MUTATION = gql`
   mutation RemoveBookFromList(
-    $listSlug: String!
+    $listKey: String!
     $googleBooksVolumeId: String!
   ) {
     removeBookFromList(
-      listSlug: $listSlug
+      listKey: $listKey
       googleBooksVolumeId: $googleBooksVolumeId
     )
   }
 `;
 
 const ADD_BOOK_TO_LIST_MUTATION = gql`
-  mutation AddBookToList($listSlug: String!, $googleBooksVolumeId: String!) {
-    addBookToList(
-      listSlug: $listSlug
-      googleBooksVolumeId: $googleBooksVolumeId
-    )
+  mutation AddBookToList($listKey: String!, $googleBooksVolumeId: String!) {
+    addBookToList(listKey: $listKey, googleBooksVolumeId: $googleBooksVolumeId)
   }
 `;
 
-const EditList = ({ listSlug }: { listSlug: string }) => {
+const EditList = ({ listKey }: { listKey: string }) => {
   const {
     data,
     hydrateClient,
     refresh,
     isPending: getBooksPending,
-  } = useQuery<GetListsResponse>(`get-list::${listSlug}`, GET_LISTS_QUERY, {
-    listSlug,
+  } = useQuery<GetListsResponse>(`get-list::${listKey}`, GET_LISTS_QUERY, {
+    listKey,
   });
 
   const [addBookMutation, { isPending: addBookPending }] = useMutation<{
@@ -97,7 +94,7 @@ const EditList = ({ listSlug }: { listSlug: string }) => {
                   onClick={() => {
                     removeBookMutation({
                       googleBooksVolumeId,
-                      listSlug,
+                      listKey,
                     }).then(refresh);
                   }}
                 >
@@ -113,7 +110,7 @@ const EditList = ({ listSlug }: { listSlug: string }) => {
         <div>
           <GoogleBooksTypeahead
             addBook={({ googleBooksVolumeId }) => {
-              addBookMutation({ googleBooksVolumeId, listSlug }).then(refresh);
+              addBookMutation({ googleBooksVolumeId, listKey }).then(refresh);
             }}
           />
         </div>
@@ -124,22 +121,22 @@ const EditList = ({ listSlug }: { listSlug: string }) => {
 
 export default function EditListPage() {
   const router = useRouter();
-  const listSlug = router.query.list;
+  const listKey = router.query.list;
 
   // @NOTE next params dont work with streaming / nextjs yet
   // @NOTE AND dynamic routes dont work client side, so adjusting to query params
-  // const listSlug = router.asPath.match(/\/manage\/lists\/(.*)\/edit/)?.[1];
-  // if (!listSlug) {
+  // const listKey = router.asPath.match(/\/manage\/lists\/(.*)\/edit/)?.[1];
+  // if (!listKey) {
   //   return <>Bad Route Match: {router.asPath}</>;
   // }
 
-  if (typeof listSlug !== "string") {
+  if (typeof listKey !== "string") {
     return <p>No list to edit!</p>;
   }
 
   return (
     <Suspense fallback="Loading book list...">
-      <EditList listSlug={listSlug} />
+      <EditList listKey={listKey} />
     </Suspense>
   );
 }

@@ -134,18 +134,18 @@ export default {
     ),
 
     addBookToList: authenticated(
-      (parent, { listSlug, googleBooksVolumeId }, { mutations, loggedInAs }) =>
+      (parent, { listKey, googleBooksVolumeId }, { mutations, loggedInAs }) =>
         mutations.addBookToList({
-          listSlug,
+          listKey,
           googleBooksVolumeId,
           loggedInAs,
         })
     ),
 
     removeBookFromList: authenticated(
-      (parent, { listSlug, googleBooksVolumeId }, { mutations, loggedInAs }) =>
+      (parent, { listKey, googleBooksVolumeId }, { mutations, loggedInAs }) =>
         mutations.removeBookFromList({
-          listSlug,
+          listKey,
           googleBooksVolumeId,
           loggedInAs,
         })
@@ -178,9 +178,9 @@ export default {
       return component as RootLayoutComponentModel;
     },
 
-    list: (parent, { listSlug }, { loaders }) => {
-      console.log("GRAPHQL QUERY list", listSlug);
-      return loaders.listsBySlugsLoader.load(listSlug);
+    list: (parent, { listKey }, { loaders }) => {
+      console.log("GRAPHQL QUERY list", listKey);
+      return loaders.listsByKeysLoader.load(listKey);
     },
   },
 } as Resolvers<ResolverContext>;

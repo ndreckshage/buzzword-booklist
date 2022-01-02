@@ -1,17 +1,17 @@
 import { type Client, query as Q } from "faunadb";
 import { type ListModel, selectListModel } from ".";
 
-export default function getListsBySlugs(client: Client) {
-  return async (listSlugs: readonly string[]) => {
+export default function getListsByKeys(client: Client) {
+  return async (listKeys: readonly string[]) => {
     const result = await client.query(
       Q.Map(
-        listSlugs,
+        listKeys,
         Q.Lambda(
-          "listSlug",
+          "listKey",
           Q.Let(
             {
               listDoc: Q.Get(
-                Q.Match(Q.Index("unique_lists_by_slug"), Q.Var("listSlug"))
+                Q.Match(Q.Index("unique_lists_by_key"), Q.Var("listKey"))
               ),
             },
             selectListModel

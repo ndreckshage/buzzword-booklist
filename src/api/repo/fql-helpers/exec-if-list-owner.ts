@@ -1,11 +1,11 @@
 import { query as Q, type Expr } from "faunadb";
 
 export default function execIfListOwner({
-  listSlug,
+  listKey,
   loggedInAs,
   execExpr,
 }: {
-  listSlug: string;
+  listKey: string;
   loggedInAs: string;
   execExpr: Expr;
 }) {
@@ -13,7 +13,7 @@ export default function execIfListOwner({
     Q.Equals(
       Q.Select(
         ["data", "createdBy"],
-        Q.Get(Q.Match(Q.Index("unique_lists_by_slug"), listSlug))
+        Q.Get(Q.Match(Q.Index("unique_lists_by_key"), listKey))
       ),
       loggedInAs
     ),

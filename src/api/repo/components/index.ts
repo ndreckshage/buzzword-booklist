@@ -22,7 +22,7 @@ export type RootBookListComponentModel = RootComponentModel & {
 export type BookListComponentModel = {
   id: string;
   title: string;
-  slug: string;
+  key: string;
   totalBookCards: number;
   bookCards: BookCardComponent[];
 };

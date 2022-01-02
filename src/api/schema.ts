@@ -71,7 +71,7 @@ export default /* GraphQL */ `
   type List {
     id: ID!
     title: String!
-    slug: String!
+    key: String!
     createdBy: String!
     books: [Book!]!
   }
@@ -98,12 +98,12 @@ export default /* GraphQL */ `
       contextKey: String!
     ): LayoutComponent
     component(id: ID!): Component
-    list(listSlug: String!): List
+    list(listKey: String!): List
   }
 
   type Mutation {
     createList(title: String!): Boolean
-    addBookToList(listSlug: String!, googleBooksVolumeId: String!): Boolean
-    removeBookFromList(listSlug: String!, googleBooksVolumeId: String!): Boolean
+    addBookToList(listKey: String!, googleBooksVolumeId: String!): Boolean
+    removeBookFromList(listKey: String!, googleBooksVolumeId: String!): Boolean
   }
 `;

@@ -29,8 +29,8 @@ type MappedBookData = {
     pageCount: number | null;
     image: string;
   };
-  authors: { name: string; slug: string }[];
-  categories: { name: string; slug: string }[];
+  authors: { name: string; key: string }[];
+  categories: { name: string; key: string }[];
 };
 
 const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
@@ -54,12 +54,12 @@ const fetchFromGoogleBooks = async (googleBooksVolumeId: string) => {
   };
 
   const authors = (googleBook.volumeInfo.authors ?? []).map((name) => ({
-    slug: slugify(name, { lower: true, strict: true }),
+    key: slugify(name, { lower: true, strict: true }),
     name,
   }));
 
   const categories = (googleBook.volumeInfo.categories ?? []).map((name) => ({
-    slug: slugify(name, { lower: true, strict: true }),
+    key: slugify(name, { lower: true, strict: true }),
     name,
   }));
 
@@ -97,16 +97,16 @@ export default async function createBookAuthorsAndCategories(
     Q.Do(
       ...authors.map((author) =>
         createDocumentIfUnique({
-          index: "unique_authors_by_slug",
-          indexTerms: [author.slug],
+          index: "unique_authors_by_key",
+          indexTerms: [author.key],
           collectionName: "Authors",
           documentData: { ...author, bookRefs: [] },
         })
       ),
       ...categories.map((category) =>
         createDocumentIfUnique({
-          index: "unique_categories_by_slug",
-          indexTerms: [category.slug],
+          index: "unique_categories_by_key",
+          indexTerms: [category.key],
           collectionName: "Categories",
           documentData: category,
         })
@@ -120,23 +120,21 @@ export default async function createBookAuthorsAndCategories(
           authorRefs: authors.map((author) =>
             Q.Select(
               "ref",
-              Q.Get(Q.Match(Q.Index("unique_authors_by_slug"), author.slug))
+              Q.Get(Q.Match(Q.Index("unique_authors_by_key"), author.key))
             )
           ),
           categoryRefs: categories.map((category) =>
             Q.Select(
               "ref",
-              Q.Get(
-                Q.Match(Q.Index("unique_categories_by_slug"), category.slug)
-              )
+              Q.Get(Q.Match(Q.Index("unique_categories_by_key"), category.key))
             )
           ),
         },
       }),
       ...authors.map((author) =>
         appendConnectionToDocumentIfUnique({
-          docIndex: "unique_authors_by_slug",
-          docIndexTerms: [author.slug],
+          docIndex: "unique_authors_by_key",
+          docIndexTerms: [author.key],
           docEdgeRefName: "bookRefs",
           edgeIndex: "unique_books_by_google_books_volume_id",
           edgeIndexTerms: [googleBooksVolumeId],
@@ -146,8 +144,8 @@ export default async function createBookAuthorsAndCategories(
         createConnectionIfUnique({
           edgeAName: "categoryRef",
           edgeBName: "bookRef",
-          edgeAIndex: "unique_categories_by_slug",
-          edgeAIndexTerms: [category.slug],
+          edgeAIndex: "unique_categories_by_key",
+          edgeAIndexTerms: [category.key],
           edgeBIndex: "unique_books_by_google_books_volume_id",
           edgeBIndexTerms: [googleBooksVolumeId],
           connectionRefIndex: "unique_category_book_connections_by_refs",

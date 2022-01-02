@@ -49,11 +49,11 @@ const selectIndex = ({
 }) =>
   Q.If(
     Q.Equals(sourceType, "LIST"),
-    Q.Index("unique_lists_by_slug"),
+    Q.Index("unique_lists_by_key"),
     Q.If(
       Q.Equals(sourceType, "CATEGORY"),
-      Q.Index("unique_categories_by_slug"),
-      Q.Index("unique_authors_by_slug")
+      Q.Index("unique_categories_by_key"),
+      Q.Index("unique_authors_by_key")
     )
   );
 

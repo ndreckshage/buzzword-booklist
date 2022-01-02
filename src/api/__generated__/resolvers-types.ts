@@ -111,7 +111,7 @@ export type List = {
   books: Array<Book>;
   createdBy: Scalars['String'];
   id: Scalars['ID'];
-  slug: Scalars['String'];
+  key: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -125,7 +125,7 @@ export type Mutation = {
 
 export type MutationAddBookToListArgs = {
   googleBooksVolumeId: Scalars['String'];
-  listSlug: Scalars['String'];
+  listKey: Scalars['String'];
 };
 
 
@@ -136,7 +136,7 @@ export type MutationCreateListArgs = {
 
 export type MutationRemoveBookFromListArgs = {
   googleBooksVolumeId: Scalars['String'];
-  listSlug: Scalars['String'];
+  listKey: Scalars['String'];
 };
 
 export type Query = {
@@ -161,7 +161,7 @@ export type QueryLayoutArgs = {
 
 
 export type QueryListArgs = {
-  listSlug: Scalars['String'];
+  listKey: Scalars['String'];
 };
 
 
@@ -355,22 +355,22 @@ export type ListResolvers<ContextType = ResolverContext, ParentType extends Reso
   books?: Resolver<Array<ResolversTypes['Book']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addBookToList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddBookToListArgs, 'googleBooksVolumeId' | 'listSlug'>>;
+  addBookToList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddBookToListArgs, 'googleBooksVolumeId' | 'listKey'>>;
   createList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateListArgs, 'title'>>;
-  removeBookFromList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listSlug'>>;
+  removeBookFromList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listKey'>>;
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   component?: Resolver<Maybe<ResolversTypes['Component']>, ParentType, ContextType, RequireFields<QueryComponentArgs, 'id'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
   layout?: Resolver<Maybe<ResolversTypes['LayoutComponent']>, ParentType, ContextType, RequireFields<QueryLayoutArgs, 'contextKey' | 'contextType' | 'id'>>;
-  list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listSlug'>>;
+  list?: Resolver<Maybe<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListArgs, 'listKey'>>;
 };
 
 export type Resolvers<ContextType = ResolverContext> = {

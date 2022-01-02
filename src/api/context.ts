@@ -12,7 +12,7 @@ import {
   createList,
   addBookToList,
   removeBookFromList,
-  getListsBySlugs,
+  getListsByKeys,
   getListsByCreators,
 } from "api/repo/lists";
 
@@ -55,7 +55,7 @@ export type ResolverContext = {
       RootLayoutComponentModel[],
       string
     >;
-    listsBySlugsLoader: DataLoader<string, ListModel, string>;
+    listsByKeysLoader: DataLoader<string, ListModel, string>;
     listsByCreatorsLoader: DataLoader<string, ListModel[], string>;
     bookListComponentsLoader: DataLoader<
       {
@@ -92,7 +92,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       layoutComponentsByCreatorsLoader: new DataLoader(
         getLayoutComponentsByCreators(client)
       ),
-      listsBySlugsLoader: new DataLoader(getListsBySlugs(client)),
+      listsByKeysLoader: new DataLoader(getListsByKeys(client)),
       listsByCreatorsLoader: new DataLoader(getListsByCreators(client)),
       bookListComponentsLoader: new DataLoader(getBookListComponents(client), {
         cacheKeyFn: JSON.stringify,

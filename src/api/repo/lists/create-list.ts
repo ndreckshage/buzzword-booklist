@@ -6,12 +6,12 @@ export type CreateListOutput = boolean;
 
 export default function createList(client: Client) {
   return async ({ title, loggedInAs }: CreateListInput) => {
-    const slug = slugify(title, { lower: true, strict: true });
+    const key = slugify(title, { lower: true, strict: true });
 
     const list = await client.query(
       Q.Let(
         {
-          listMatch: Q.Match(Q.Index("unique_lists_by_slug"), slug),
+          listMatch: Q.Match(Q.Index("unique_lists_by_key"), key),
         },
         Q.If(
           Q.Exists(Q.Var("listMatch")),
@@ -19,7 +19,7 @@ export default function createList(client: Client) {
           Q.Select(
             "ref",
             Q.Create("Lists", {
-              data: { title, slug, createdBy: loggedInAs, bookRefs: [] },
+              data: { title, key, createdBy: loggedInAs, bookRefs: [] },
             })
           )
         )

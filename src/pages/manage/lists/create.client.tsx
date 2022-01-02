@@ -22,11 +22,11 @@ export default function CreateList() {
     setListTitle(e.target.value);
   };
 
-  const listSlug = slugify(listTitle, { lower: true, strict: true });
-  // const expectedUrl = `/collections/lists/${listSlug}`;
-  const expectedUrl = `/collections/lists?list=${listSlug}`;
-  // const manageUrl = `/manage/lists/${listSlug}/edit`;
-  const manageUrl = `/manage/lists/edit?list=${listSlug}`;
+  const listKey = slugify(listTitle, { lower: true, strict: true });
+  // const expectedUrl = `/collections/lists/${listKey}`;
+  const expectedUrl = `/collections/lists?list=${listKey}`;
+  // const manageUrl = `/manage/lists/${listKey}/edit`;
+  const manageUrl = `/manage/lists/edit?list=${listKey}`;
 
   return (
     <div className="container mx-auto px-4">
@@ -43,7 +43,7 @@ export default function CreateList() {
           onChange={handleChange}
         />
       </label>
-      {listSlug && <Text as={TextTypes.p}>List URL: {expectedUrl}</Text>}
+      {listKey && <Text as={TextTypes.p}>List URL: {expectedUrl}</Text>}
       <button
         className={cx(
           "block bg-blue-500 text-white p-5 rounded-md transition-opacity",
