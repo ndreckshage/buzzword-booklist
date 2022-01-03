@@ -150,6 +150,23 @@ export default {
           loggedInAs,
         })
     ),
+
+    reorderComponentsInLayout: authenticated(
+      (parent, { layoutId, componentIds }, { mutations, loggedInAs }) => {
+        return mutations.reorderComponentsInLayout({
+          layoutId: fromGlobalId(layoutId).id,
+          componentIds: componentIds.map(
+            (componentId) => fromGlobalId(componentId).id
+          ),
+          loggedInAs,
+        });
+      }
+    ),
+
+    createLayout: authenticated(
+      (parent, { title }, { mutations, loggedInAs }) =>
+        mutations.createLayout({ title, loggedInAs })
+    ),
   },
   Query: {
     currentUser: (parent, args, { loggedInAs }) => {

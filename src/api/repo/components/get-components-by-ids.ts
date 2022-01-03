@@ -6,7 +6,7 @@ export const selectLayoutModelData = (componentDoc: Expr) => ({
   componentType: Q.Select(["data", "componentType"], componentDoc),
   createdBy: Q.Select(["data", "createdBy"], componentDoc),
   title: Q.Select(["data", "title"], componentDoc),
-  styleOptions: Q.Select(["data", "styleOptions"], componentDoc),
+  flexDirection: Q.Select(["data", "flexDirection"], componentDoc),
   componentRefs: Q.Map(
     Q.Select(["data", "componentRefs"], componentDoc),
     Q.Lambda("componentRef", Q.Select("id", Q.Var("componentRef")))

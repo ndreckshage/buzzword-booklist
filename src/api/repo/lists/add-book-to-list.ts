@@ -33,7 +33,7 @@ export default function addBookToList(client: Client) {
             docIndex: "unique_lists_by_key",
             docIndexTerms: [listKey],
             docEdgeRefName: "bookRefs",
-            edgeIndex: "unique_books_by_google_books_volume_id",
+            edgeIndex: "unique_books_by_googleBooksVolumeId",
             edgeIndexTerms: [googleBooksVolumeId],
           }),
         })

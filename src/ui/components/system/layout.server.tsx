@@ -16,9 +16,7 @@ const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
     id
     createdBy
-    styleOptions {
-      flexDirection
-    }
+    flexDirection
   }
 `;
 
@@ -101,7 +99,7 @@ function Layout({
   id,
   createdBy,
   root,
-  styleOptions,
+  flexDirection,
   components,
 }: LayoutProps) {
   return (
@@ -110,8 +108,8 @@ function Layout({
       {root && <CreatedBy user={createdBy} />}
       <div
         className={cx("flex", {
-          "flex-row": styleOptions.flexDirection === "row",
-          "flex-col": styleOptions.flexDirection === "col",
+          "flex-row": flexDirection === "row",
+          "flex-col": flexDirection === "col",
         })}
       >
         {components.map((component) => {

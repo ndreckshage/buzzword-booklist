@@ -24,9 +24,13 @@ import {
   type RootComponentModel,
   type RootLayoutComponentModel,
   type BookListComponentModel,
+  type CreateLayoutInput,
+  type CreateLayoutOutput,
   getLayoutComponentsByCreators,
   getComponentsByIds,
   getBookListComponents,
+  reorderComponentsInLayout,
+  createLayout,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -73,6 +77,16 @@ export type ResolverContext = {
     removeBookFromList: (
       input: RemoveBookFromListInput
     ) => Promise<RemoveBookFromListOutput>;
+    reorderComponentsInLayout: ({
+      layoutId,
+      componentIds,
+      loggedInAs,
+    }: {
+      layoutId: string;
+      componentIds: string[];
+      loggedInAs: string;
+    }) => Promise<boolean>;
+    createLayout: (input: CreateLayoutInput) => Promise<CreateLayoutOutput>;
   };
 };
 
@@ -102,6 +116,8 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       addBookToList: addBookToList(client),
       createList: createList(client),
       removeBookFromList: removeBookFromList(client),
+      reorderComponentsInLayout: reorderComponentsInLayout(client),
+      createLayout: createLayout(client),
     },
   };
 }

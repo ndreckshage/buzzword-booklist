@@ -78,7 +78,7 @@ export default async function createBookAuthorsAndCategories(
     await client.query(
       Q.Exists(
         Q.Match(
-          Q.Index("unique_books_by_google_books_volume_id"),
+          Q.Index("unique_books_by_googleBooksVolumeId"),
           googleBooksVolumeId
         )
       )
@@ -112,7 +112,7 @@ export default async function createBookAuthorsAndCategories(
         })
       ),
       createDocumentIfUnique({
-        index: "unique_books_by_google_books_volume_id",
+        index: "unique_books_by_googleBooksVolumeId",
         indexTerms: [googleBooksVolumeId],
         collectionName: "Books",
         documentData: {
@@ -136,7 +136,7 @@ export default async function createBookAuthorsAndCategories(
           docIndex: "unique_authors_by_key",
           docIndexTerms: [author.key],
           docEdgeRefName: "bookRefs",
-          edgeIndex: "unique_books_by_google_books_volume_id",
+          edgeIndex: "unique_books_by_googleBooksVolumeId",
           edgeIndexTerms: [googleBooksVolumeId],
         })
       ),
@@ -146,7 +146,7 @@ export default async function createBookAuthorsAndCategories(
           edgeBName: "bookRef",
           edgeAIndex: "unique_categories_by_key",
           edgeAIndexTerms: [category.key],
-          edgeBIndex: "unique_books_by_google_books_volume_id",
+          edgeBIndex: "unique_books_by_googleBooksVolumeId",
           edgeBIndexTerms: [googleBooksVolumeId],
           connectionRefIndex: "unique_category_book_connections_by_refs",
           connectionCollectionName: "CategoryBookConnections",

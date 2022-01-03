@@ -30,10 +30,6 @@ export default /* GraphQL */ `
     subTitle: String!
   }
 
-  type LayoutComponentStyleOptions {
-    flexDirection: String!
-  }
-
   enum LinkComponentVariant {
     DEFAULT
     BUTTON
@@ -49,7 +45,7 @@ export default /* GraphQL */ `
     id: ID!
     title: String!
     createdBy: String!
-    styleOptions: LayoutComponentStyleOptions!
+    flexDirection: String!
     components: [Component!]!
   }
 
@@ -103,7 +99,13 @@ export default /* GraphQL */ `
 
   type Mutation {
     createList(title: String!): Boolean
-    addBookToList(listKey: String!, googleBooksVolumeId: String!): Boolean
-    removeBookFromList(listKey: String!, googleBooksVolumeId: String!): Boolean
+    createLayout(title: String!): Boolean
+    addBookToList(listKey: String!, googleBooksVolumeId: String!): Boolean!
+    removeBookFromList(listKey: String!, googleBooksVolumeId: String!): Boolean!
+    reorderComponentsInLayout(
+      layoutId: String!
+      componentIds: [String!]!
+    ): Boolean!
+    updateComponent(componentId: String!): Boolean!
   }
 `;
