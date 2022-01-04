@@ -98,14 +98,22 @@ export default /* GraphQL */ `
   }
 
   type Mutation {
+    # books / lists...
     createList(title: String!): Boolean
-    createLayout(title: String!): Boolean
     addBookToList(listKey: String!, googleBooksVolumeId: String!): Boolean!
     removeBookFromList(listKey: String!, googleBooksVolumeId: String!): Boolean!
-    reorderComponentsInLayout(
-      layoutId: String!
-      componentIds: [String!]!
+    # layouts...
+    createLayoutComponent(title: String!): Boolean
+    updateLayoutComponent(
+      layoutId: ID!
+      componentOrder: [ID!]
+      flexDirection: String
     ): Boolean!
-    updateComponent(componentId: String!): Boolean!
+    createComponentInLayout(layoutId: ID!, componentType: String!): Boolean!
+    updateHeroComponent(
+      componentId: ID!
+      title: String
+      subTitle: String
+    ): Boolean!
   }
 `;

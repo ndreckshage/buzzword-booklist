@@ -119,7 +119,7 @@ const MOVE_COMPONENT_MUTATION = gql`
     $layoutId: String!
     $componentIds: [String!]!
   ) {
-    reorderComponentsInLayout(layoutId: $layoutId, componentIds: $componentIds)
+    updateLayoutComponent(layoutId: $layoutId, componentIds: $componentIds)
   }
 `;
 

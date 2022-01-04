@@ -1,19 +1,20 @@
 import { query as Q, type Client } from "faunadb";
 import execIfLayoutOwner from "../fql-helpers/exec-if-layout-owner";
 
-export default function reorderComponentsInLayout(client: Client) {
+export default function updateLayoutComponent(client: Client) {
   return async ({
     layoutId,
     componentIds,
+    flexDirection,
     loggedInAs,
   }: {
     layoutId: string;
-    componentIds: string[];
+    componentIds: string[] | null;
+    flexDirection: string | null;
     loggedInAs: string;
   }) => {
-    const reorderdComponents = componentIds.map((id) =>
-      Q.Ref(Q.Collection("Components"), id)
-    );
+    const reorderdComponents =
+      componentIds?.map((id) => Q.Ref(Q.Collection("Components"), id)) ?? null;
 
     try {
       await client.query(
@@ -33,11 +34,20 @@ export default function reorderComponentsInLayout(client: Client) {
               },
               Q.If(
                 Q.IsEmpty(
-                  Q.Difference(Q.Var("componentRefs"), reorderdComponents)
+                  // important! dont allow deleting or adding any components someone else owns0..
+                  Q.Difference(
+                    Q.Var("componentRefs"),
+                    reorderdComponents ?? Q.Var("componentRefs")
+                  )
                 ),
                 Q.Update(Q.Select("ref", Q.Var("layoutDoc")), {
                   data: {
-                    componentRefs: reorderdComponents,
+                    ...(reorderdComponents
+                      ? { componentRefs: reorderdComponents }
+                      : {}),
+                    ...(flexDirection && ["row", "col"].includes(flexDirection)
+                      ? { flexDirection }
+                      : {}),
                   },
                 }),
                 Q.Abort("Unexpected array difference while reordering")

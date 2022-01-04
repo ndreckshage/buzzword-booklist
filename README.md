@@ -76,7 +76,7 @@ todo
 
 ## TODOS
 
-- update schema so that it returns the actual layout types ....
+- update various so that we return raw refIds as well and use that for queries/mutations
 - layout edit
 - layout create
 - add markdown support for hero

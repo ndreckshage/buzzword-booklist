@@ -30,10 +30,16 @@ export type BookListComponentModel = {
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
 export { default as getBookListComponents } from "./get-book-list-components";
-export { default as reorderComponentsInLayout } from "./reorder-components-in-layout";
+export { default as updateLayoutComponent } from "./update-layout-component";
 
 export {
-  default as createLayout,
-  type CreateLayoutInput,
-  type CreateLayoutOutput,
-} from "./create-layout";
+  default as createLayoutComponent,
+  type CreateLayoutComponentInput,
+  type CreateLayoutComponentOutput,
+} from "./create-layout-component";
+
+export {
+  default as createComponentInLayout,
+  type CreateComponentInLayoutInput,
+  type CreateComponentInLayoutOutput,
+} from "./create-component-in-layout";

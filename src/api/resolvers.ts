@@ -121,7 +121,11 @@ export default {
       { loaders }
     ) =>
       loaders.componentsByIdsAndContextLoader.loadMany(
-        componentRefs.map((id) => ({ id, contextKey, contextType }))
+        componentRefs.map((id) => ({
+          id,
+          contextType: contextType || ComponentContextType.None,
+          contextKey: contextKey || "",
+        }))
       ),
   },
   List: {
@@ -151,21 +155,35 @@ export default {
         })
     ),
 
-    reorderComponentsInLayout: authenticated(
-      (parent, { layoutId, componentIds }, { mutations, loggedInAs }) => {
-        return mutations.reorderComponentsInLayout({
+    updateLayoutComponent: authenticated(
+      (
+        parent,
+        { layoutId, componentOrder, flexDirection },
+        { mutations, loggedInAs }
+      ) => {
+        return mutations.updateLayoutComponent({
           layoutId: fromGlobalId(layoutId).id,
-          componentIds: componentIds.map(
-            (componentId) => fromGlobalId(componentId).id
-          ),
+          componentIds: componentOrder
+            ? componentOrder.map((componentId) => fromGlobalId(componentId).id)
+            : null,
+          flexDirection: flexDirection ?? null,
           loggedInAs,
         });
       }
     ),
 
-    createLayout: authenticated(
+    createLayoutComponent: authenticated(
       (parent, { title }, { mutations, loggedInAs }) =>
-        mutations.createLayout({ title, loggedInAs })
+        mutations.createLayoutComponent({ title, loggedInAs })
+    ),
+
+    createComponentInLayout: authenticated(
+      (parent, { layoutId, componentType }, { mutations, loggedInAs }) =>
+        mutations.createComponentInLayout({
+          layoutId: fromGlobalId(layoutId).id,
+          componentType,
+          loggedInAs,
+        })
     ),
   },
   Query: {

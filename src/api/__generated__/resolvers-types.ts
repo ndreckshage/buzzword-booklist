@@ -113,11 +113,12 @@ export type List = {
 export type Mutation = {
   __typename?: 'Mutation';
   addBookToList: Scalars['Boolean'];
-  createLayout?: Maybe<Scalars['Boolean']>;
+  createComponentInLayout: Scalars['Boolean'];
+  createLayoutComponent?: Maybe<Scalars['Boolean']>;
   createList?: Maybe<Scalars['Boolean']>;
   removeBookFromList: Scalars['Boolean'];
-  reorderComponentsInLayout: Scalars['Boolean'];
-  updateComponent: Scalars['Boolean'];
+  updateHeroComponent: Scalars['Boolean'];
+  updateLayoutComponent: Scalars['Boolean'];
 };
 
 
@@ -127,7 +128,13 @@ export type MutationAddBookToListArgs = {
 };
 
 
-export type MutationCreateLayoutArgs = {
+export type MutationCreateComponentInLayoutArgs = {
+  componentType: Scalars['String'];
+  layoutId: Scalars['ID'];
+};
+
+
+export type MutationCreateLayoutComponentArgs = {
   title: Scalars['String'];
 };
 
@@ -143,14 +150,17 @@ export type MutationRemoveBookFromListArgs = {
 };
 
 
-export type MutationReorderComponentsInLayoutArgs = {
-  componentIds: Array<Scalars['String']>;
-  layoutId: Scalars['String'];
+export type MutationUpdateHeroComponentArgs = {
+  componentId: Scalars['ID'];
+  subTitle?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
 };
 
 
-export type MutationUpdateComponentArgs = {
-  componentId: Scalars['String'];
+export type MutationUpdateLayoutComponentArgs = {
+  componentOrder?: InputMaybe<Array<Scalars['ID']>>;
+  flexDirection?: InputMaybe<Scalars['String']>;
+  layoutId: Scalars['ID'];
 };
 
 export type Query = {
@@ -369,11 +379,12 @@ export type ListResolvers<ContextType = ResolverContext, ParentType extends Reso
 
 export type MutationResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addBookToList?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationAddBookToListArgs, 'googleBooksVolumeId' | 'listKey'>>;
-  createLayout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateLayoutArgs, 'title'>>;
+  createComponentInLayout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateComponentInLayoutArgs, 'componentType' | 'layoutId'>>;
+  createLayoutComponent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateLayoutComponentArgs, 'title'>>;
   createList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateListArgs, 'title'>>;
   removeBookFromList?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listKey'>>;
-  reorderComponentsInLayout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationReorderComponentsInLayoutArgs, 'componentIds' | 'layoutId'>>;
-  updateComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateComponentArgs, 'componentId'>>;
+  updateHeroComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateHeroComponentArgs, 'componentId'>>;
+  updateLayoutComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateLayoutComponentArgs, 'layoutId'>>;
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

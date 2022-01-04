@@ -6,8 +6,8 @@ import { useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 
 const CREATE_LAYOUT_MUTATION = gql`
-  mutation CreateLayout($title: String!) {
-    createLayout(title: $title)
+  mutation createLayoutComponent($title: String!) {
+    createLayoutComponent(title: $title)
   }
 `;
 
@@ -15,7 +15,7 @@ export default function CreateLayout() {
   const router = useRouter();
   const [layoutTitle, setLayoutTitle] = useState("");
   const [createLayoutMutation, { isPending }] = useMutation<{
-    createLayout: boolean;
+    createLayoutComponent: boolean;
   }>(CREATE_LAYOUT_MUTATION);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +45,7 @@ export default function CreateLayout() {
         onClick={(e) => {
           e.preventDefault();
           createLayoutMutation({ title: layoutTitle }).then((data) => {
-            if (data.createLayout) router.push("/manage/layouts");
+            if (data.createLayoutComponent) router.push("/manage/layouts");
           });
         }}
       >

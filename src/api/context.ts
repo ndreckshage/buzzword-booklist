@@ -24,13 +24,16 @@ import {
   type RootComponentModel,
   type RootLayoutComponentModel,
   type BookListComponentModel,
-  type CreateLayoutInput,
-  type CreateLayoutOutput,
+  type CreateLayoutComponentInput,
+  type CreateLayoutComponentOutput,
+  type CreateComponentInLayoutInput,
+  type CreateComponentInLayoutOutput,
   getLayoutComponentsByCreators,
   getComponentsByIds,
   getBookListComponents,
-  reorderComponentsInLayout,
-  createLayout,
+  updateLayoutComponent,
+  createLayoutComponent,
+  createComponentInLayout,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -77,16 +80,29 @@ export type ResolverContext = {
     removeBookFromList: (
       input: RemoveBookFromListInput
     ) => Promise<RemoveBookFromListOutput>;
-    reorderComponentsInLayout: ({
+    createLayoutComponent: (
+      input: CreateLayoutComponentInput
+    ) => Promise<CreateLayoutComponentOutput>;
+    updateLayoutComponent: ({
       layoutId,
       componentIds,
+      flexDirection,
       loggedInAs,
     }: {
       layoutId: string;
-      componentIds: string[];
+      componentIds: string[] | null;
+      flexDirection: string | null;
       loggedInAs: string;
     }) => Promise<boolean>;
-    createLayout: (input: CreateLayoutInput) => Promise<CreateLayoutOutput>;
+    createComponentInLayout: ({
+      layoutId,
+      componentType,
+      loggedInAs,
+    }: {
+      layoutId: string;
+      componentType: string;
+      loggedInAs: string;
+    }) => Promise<boolean>;
   };
 };
 
@@ -116,8 +132,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       addBookToList: addBookToList(client),
       createList: createList(client),
       removeBookFromList: removeBookFromList(client),
-      reorderComponentsInLayout: reorderComponentsInLayout(client),
-      createLayout: createLayout(client),
+      createLayoutComponent: createLayoutComponent(client),
+      updateLayoutComponent: updateLayoutComponent(client),
+      createComponentInLayout: createComponentInLayout(client),
     },
   };
 }

@@ -1,10 +1,10 @@
 import { type Client, query as Q } from "faunadb";
 
-export type CreateLayoutInput = { title: string; loggedInAs: string };
-export type CreateLayoutOutput = boolean;
+export type CreateLayoutComponentInput = { title: string; loggedInAs: string };
+export type CreateLayoutComponentOutput = boolean;
 
-export default function createLayout(client: Client) {
-  return async ({ title, loggedInAs }: CreateLayoutInput) => {
+export default function createLayoutComponent(client: Client) {
+  return async ({ title, loggedInAs }: CreateLayoutComponentInput) => {
     const layout = await client.query(
       Q.Create("Components", {
         data: {
@@ -17,6 +17,6 @@ export default function createLayout(client: Client) {
       })
     );
 
-    return !!layout as CreateLayoutOutput;
+    return !!layout as CreateLayoutComponentOutput;
   };
 }
