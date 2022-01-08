@@ -1,4 +1,10 @@
-import { Suspense, useReducer } from "react";
+import {
+  createContext,
+  Suspense,
+  useContext,
+  useReducer,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import { useQuery, useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
@@ -8,6 +14,9 @@ import {
   BookListComponent,
   MarkdownComponent,
   type LayoutComponent,
+  type MutationUpdateLayoutComponentArgs,
+  type MutationRemoveComponentInLayoutArgs,
+  MutationUpdateMarkdownComponentArgs,
 } from "api/__generated__/resolvers-types";
 
 const LayoutComponentFragment = gql`
@@ -113,15 +122,29 @@ const LAYOUT_QUERY = gql`
   ${BookListComponentFragment}
 `;
 
-const MOVE_COMPONENT_MUTATION = gql`
-  mutation MoveComponentInLayout($layoutId: ID!, $componentOrder: [ID!]!) {
-    updateLayoutComponent(layoutId: $layoutId, componentOrder: $componentOrder)
+const UPDATE_LAYOUT_COMPONENT_MUTATION = gql`
+  mutation UpdateLayoutCompenent(
+    $layoutId: ID!
+    $componentOrder: [ID!]
+    $flexDirection: String
+  ) {
+    updateLayoutComponent(
+      layoutId: $layoutId
+      componentOrder: $componentOrder
+      flexDirection: $flexDirection
+    )
   }
 `;
 
 const REMOVE_COMPONENT_MUTATION = gql`
   mutation RemoveComponentInLayout($layoutId: ID!, $componentId: ID!) {
     removeComponentInLayout(layoutId: $layoutId, componentId: $componentId)
+  }
+`;
+
+const UPDATE_MARKDOWN_MUTATION = gql`
+  mutation UpdateMarkdownComponent($componentId: ID!, $text: String!) {
+    updateMarkdownComponent(componentId: $componentId, text: $text)
   }
 `;
 
@@ -154,19 +177,10 @@ const COMPONENT_MAP = {
   MarkdownComponent: Markdown,
 };
 
-function Layout(
-  props: LayoutComponent & {
-    moveComponentMutation: (args: {
-      layoutId: string;
-      componentOrder: string[];
-    }) => Promise<boolean>;
-    removeComponentMutation: (args: {
-      layoutId: string;
-      componentId: string;
-    }) => Promise<boolean>;
-    refresh: () => void;
-  }
-) {
+function Layout(props: LayoutComponent) {
+  const { updateLayoutMutation, removeComponentMutation } =
+    useContext(LayoutContext);
+
   return (
     <div className="border border-red-500 m-2 p-2">
       <p>Layout Component</p>
@@ -176,7 +190,15 @@ function Layout(
           "flex-col": props.flexDirection === "col",
         })}
       >
-        <select value={props.flexDirection} onChange={(e) => {}}>
+        <select
+          value={props.flexDirection}
+          onChange={(e) => {
+            updateLayoutMutation({
+              layoutId: props.id,
+              flexDirection: e.target.value,
+            });
+          }}
+        >
           {["row", "col"].map((opt) => (
             <option key={opt} value={opt}>
               {opt}
@@ -194,16 +216,14 @@ function Layout(
             <div key={component.id} className="border border-blue-500 m-2 p-2">
               <button
                 onClick={() =>
-                  props
-                    .moveComponentMutation({
-                      layoutId: props.id,
-                      componentOrder: getReorderedIds(
-                        props.components,
-                        component,
-                        -1
-                      ),
-                    })
-                    .then(props.refresh)
+                  updateLayoutMutation({
+                    layoutId: props.id,
+                    componentOrder: getReorderedIds(
+                      props.components,
+                      component,
+                      -1
+                    ),
+                  })
                 }
               >
                 move up
@@ -211,16 +231,14 @@ function Layout(
               |{" "}
               <button
                 onClick={() =>
-                  props
-                    .moveComponentMutation({
-                      layoutId: props.id,
-                      componentOrder: getReorderedIds(
-                        props.components,
-                        component,
-                        1
-                      ),
-                    })
-                    .then(props.refresh)
+                  updateLayoutMutation({
+                    layoutId: props.id,
+                    componentOrder: getReorderedIds(
+                      props.components,
+                      component,
+                      1
+                    ),
+                  })
                 }
               >
                 move down
@@ -228,21 +246,15 @@ function Layout(
               |{" "}
               <button
                 onClick={() =>
-                  props
-                    .removeComponentMutation({
-                      layoutId: props.id,
-                      componentId: component.id,
-                    })
-                    .then(props.refresh)
+                  removeComponentMutation({
+                    layoutId: props.id,
+                    componentId: component.id,
+                  })
                 }
               >
                 remove
               </button>
-              <Component
-                {...component}
-                moveComponentMutation={props.moveComponentMutation}
-                refresh={props.refresh}
-              />
+              <Component {...component} />
             </div>
           );
         })}
@@ -264,13 +276,45 @@ function BookList(props: BookListComponent) {
 }
 
 function Markdown(props: MarkdownComponent) {
+  const { updateMarkdownComponent } = useContext(LayoutContext);
+  const [textState, updateText] = useState(props.text);
+
+  console.log("hmm", textState);
+
   return (
     <div>
       <p>Markdown</p>
-      <p>Text: {props.text}</p>
+      <textarea
+        value={textState}
+        onChange={(e) => {
+          updateText(e.target.value);
+        }}
+      />
+      {textState !== props.text && (
+        <button
+          onClick={() => {
+            console.log("save markdown");
+            updateMarkdownComponent({
+              componentId: props.id,
+              text: textState,
+            });
+          }}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 }
+
+const LayoutContext = createContext<{
+  updateLayoutMutation: (args: MutationUpdateLayoutComponentArgs) => void;
+  removeComponentMutation: (args: MutationRemoveComponentInLayoutArgs) => void;
+  updateMarkdownComponent: (args: MutationUpdateMarkdownComponentArgs) => void;
+}>(
+  // @ts-ignore
+  null
+);
 
 const EditLayout = ({ id }: { id: string }) => {
   const {
@@ -282,14 +326,20 @@ const EditLayout = ({ id }: { id: string }) => {
     id,
   });
 
-  const [moveComponentMutation, { isPending: moveComponentPending }] =
-    useMutation<boolean>(MOVE_COMPONENT_MUTATION);
+  const [updateLayoutMutation, { isPending: updateLayoutPending }] =
+    useMutation<boolean>(UPDATE_LAYOUT_COMPONENT_MUTATION);
 
   const [removeComponentMutation, { isPending: removeComponentPending }] =
     useMutation<boolean>(REMOVE_COMPONENT_MUTATION);
 
+  const [updateMarkdownComponent, { isPending: updateMarkdownPending }] =
+    useMutation<boolean>(UPDATE_MARKDOWN_MUTATION);
+
   const isPending =
-    getLayoutPending || moveComponentPending || removeComponentPending;
+    getLayoutPending ||
+    updateLayoutPending ||
+    removeComponentPending ||
+    updateMarkdownPending;
 
   return (
     <>
@@ -299,12 +349,18 @@ const EditLayout = ({ id }: { id: string }) => {
           "opacity-50": isPending,
         })}
       >
-        <Layout
-          {...data.layout}
-          moveComponentMutation={moveComponentMutation}
-          removeComponentMutation={removeComponentMutation}
-          refresh={refresh}
-        />
+        <LayoutContext.Provider
+          value={{
+            updateLayoutMutation: (arg) =>
+              updateLayoutMutation(arg).then(refresh),
+            removeComponentMutation: (arg) =>
+              removeComponentMutation(arg).then(refresh),
+            updateMarkdownComponent: (arg) =>
+              updateMarkdownComponent(arg).then(refresh),
+          }}
+        >
+          <Layout {...data.layout} />
+        </LayoutContext.Provider>
       </div>
       {hydrateClient}
     </>
