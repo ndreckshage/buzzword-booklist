@@ -278,6 +278,7 @@ function BookList(props: BookListComponent) {
 function Markdown(props: MarkdownComponent) {
   const { updateMarkdownComponent } = useContext(LayoutContext);
   const [textState, updateText] = useState(props.text);
+  const [, forceUpdate] = useState(0);
 
   console.log("hmm", textState);
 
@@ -286,23 +287,28 @@ function Markdown(props: MarkdownComponent) {
       <p>Markdown</p>
       <textarea
         value={textState}
+        onFocus={(e) => {
+          if (textState !== e.target.value) {
+            // streaming bug, or somethign
+            forceUpdate((v) => v + 1);
+          }
+        }}
         onChange={(e) => {
+          console.log("trigger change");
           updateText(e.target.value);
         }}
       />
-      {textState !== props.text && (
-        <button
-          onClick={() => {
-            console.log("save markdown");
-            updateMarkdownComponent({
-              componentId: props.id,
-              text: textState,
-            });
-          }}
-        >
-          Save
-        </button>
-      )}
+      <button
+        onClick={() => {
+          console.log("save markdown");
+          updateMarkdownComponent({
+            componentId: props.id,
+            text: textState,
+          });
+        }}
+      >
+        Save
+      </button>
     </div>
   );
 }
