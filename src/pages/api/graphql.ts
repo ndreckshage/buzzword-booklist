@@ -4,7 +4,8 @@ import { graphqlHTTP } from "express-graphql";
 import session from "api/session";
 import Cors from "cors";
 
-import typeDefs from "api/schema";
+// @ts-ignore
+import typeDefs from "api/schema.graphql";
 import resolvers from "api/resolvers";
 import { createContext } from "api/context";
 

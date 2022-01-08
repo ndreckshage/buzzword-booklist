@@ -26,7 +26,7 @@ export default function CollectionsListsShow(props: Props) {
 
   return (
     <Layout
-      id="TGF5b3V0Q29tcG9uZW50OjMxOTQyNjM4MTgyMzg2ODk5Mw=="
+      id="319426381823868993"
       contextType={ComponentContextType.List}
       contextKey={sourceKey}
     />

@@ -7,8 +7,6 @@ import { type ResolverContext } from "api/context";
 import { type RootLayoutComponentModel } from "api/repo/components";
 import { type GraphQLResolveInfo } from "graphql";
 
-import { globalIdField, fromGlobalId } from "graphql-relay";
-
 const authenticated =
   <T, R>(
     next: (
@@ -28,14 +26,7 @@ const authenticated =
   };
 
 export default {
-  Book: {
-    id: globalIdField(),
-  },
-  BookCardComponent: {
-    id: globalIdField(),
-  },
   BookCarouselComponent: {
-    id: globalIdField(),
     title: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
       loaders.bookListComponentsLoader
         .load({ componentType, sourceType, sourceKey })
@@ -67,8 +58,6 @@ export default {
         .then(({ bookCards }) => bookCards),
   },
   BookGridComponent: {
-    id: globalIdField(),
-
     title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
       loaders.bookListComponentsLoader
         .load({ componentType, sourceType: contextType, sourceKey: contextKey })
@@ -84,8 +73,6 @@ export default {
         .then(({ bookCards }) => bookCards),
   },
   BookListComponent: {
-    id: globalIdField(),
-
     title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
       loaders.bookListComponentsLoader
         .load({ componentType, sourceType: contextType, sourceKey: contextKey })
@@ -110,11 +97,7 @@ export default {
     lists: async ({ name }, args, { loaders }) =>
       loaders.listsByCreatorsLoader.load(name),
   },
-  HeroComponent: {
-    id: globalIdField(),
-  },
   LayoutComponent: {
-    id: globalIdField(),
     components: (
       { componentRefs, contextKey, contextType },
       args,
@@ -129,7 +112,6 @@ export default {
       ),
   },
   List: {
-    id: globalIdField(),
     books: ({ id }, args, { loaders }) => loaders.booksByListIdsLoader.load(id),
   },
   Mutation: {
@@ -162,10 +144,8 @@ export default {
         { mutations, loggedInAs }
       ) => {
         return mutations.updateLayoutComponent({
-          layoutId: fromGlobalId(layoutId).id,
-          componentIds: componentOrder
-            ? componentOrder.map((componentId) => fromGlobalId(componentId).id)
-            : null,
+          layoutId,
+          componentIds: componentOrder ?? null,
           flexDirection: flexDirection ?? null,
           loggedInAs,
         });
@@ -180,8 +160,17 @@ export default {
     createComponentInLayout: authenticated(
       (parent, { layoutId, componentType }, { mutations, loggedInAs }) =>
         mutations.createComponentInLayout({
-          layoutId: fromGlobalId(layoutId).id,
+          layoutId,
           componentType,
+          loggedInAs,
+        })
+    ),
+
+    removeComponentInLayout: authenticated(
+      (parent, { layoutId, componentId }, { mutations, loggedInAs }) =>
+        mutations.removeComponentInLayout({
+          layoutId,
+          componentId,
           loggedInAs,
         })
     ),
@@ -193,15 +182,10 @@ export default {
     },
 
     layout: async (parent, { id, contextType, contextKey }, { loaders }) => {
-      console.log(
-        "GRAPHQL QUERY layout",
-        fromGlobalId(id),
-        contextType,
-        contextKey
-      );
+      console.log("GRAPHQL QUERY layout", id, contextType, contextKey);
 
       const component = await loaders.componentsByIdsAndContextLoader.load({
-        id: fromGlobalId(id).id,
+        id,
         contextType,
         contextKey,
       });

@@ -115,11 +115,14 @@ const LAYOUT_QUERY = gql`
 `;
 
 const MOVE_COMPONENT_MUTATION = gql`
-  mutation MoveComponentInLayout(
-    $layoutId: String!
-    $componentIds: [String!]!
-  ) {
-    updateLayoutComponent(layoutId: $layoutId, componentIds: $componentIds)
+  mutation MoveComponentInLayout($layoutId: ID!, $componentOrder: [ID!]!) {
+    updateLayoutComponent(layoutId: $layoutId, componentOrder: $componentOrder)
+  }
+`;
+
+const REMOVE_COMPONENT_MUTATION = gql`
+  mutation RemoveComponentInLayout($layoutId: ID!, $componentId: ID!) {
+    removeComponentInLayout(layoutId: $layoutId, componentId: $componentId)
   }
 `;
 
@@ -154,12 +157,13 @@ const COMPONENT_MAP = {
 
 function Layout(
   props: LayoutComponent & {
-    moveComponentMutation: ({
-      layoutId,
-      componentIds,
-    }: {
+    moveComponentMutation: (args: {
       layoutId: string;
-      componentIds: string[];
+      componentOrder: string[];
+    }) => Promise<boolean>;
+    removeComponentMutation: (args: {
+      layoutId: string;
+      componentId: string;
     }) => Promise<boolean>;
     refresh: () => void;
   }
@@ -194,7 +198,7 @@ function Layout(
                   props
                     .moveComponentMutation({
                       layoutId: props.id,
-                      componentIds: getReorderedIds(
+                      componentOrder: getReorderedIds(
                         props.components,
                         component,
                         -1
@@ -211,7 +215,7 @@ function Layout(
                   props
                     .moveComponentMutation({
                       layoutId: props.id,
-                      componentIds: getReorderedIds(
+                      componentOrder: getReorderedIds(
                         props.components,
                         component,
                         1
@@ -221,6 +225,19 @@ function Layout(
                 }
               >
                 move down
+              </button>{" "}
+              |{" "}
+              <button
+                onClick={() =>
+                  props
+                    .removeComponentMutation({
+                      layoutId: props.id,
+                      componentId: component.id,
+                    })
+                    .then(props.refresh)
+                }
+              >
+                remove
               </button>
               <Component
                 {...component}
@@ -270,7 +287,11 @@ const EditLayout = ({ id }: { id: string }) => {
   const [moveComponentMutation, { isPending: moveComponentPending }] =
     useMutation<boolean>(MOVE_COMPONENT_MUTATION);
 
-  const isPending = getLayoutPending || moveComponentPending;
+  const [removeComponentMutation, { isPending: removeComponentPending }] =
+    useMutation<boolean>(REMOVE_COMPONENT_MUTATION);
+
+  const isPending =
+    getLayoutPending || moveComponentPending || removeComponentPending;
 
   return (
     <>
@@ -283,6 +304,7 @@ const EditLayout = ({ id }: { id: string }) => {
         <Layout
           {...data.layout}
           moveComponentMutation={moveComponentMutation}
+          removeComponentMutation={removeComponentMutation}
           refresh={refresh}
         />
       </div>

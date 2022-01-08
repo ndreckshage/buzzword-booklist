@@ -11,6 +11,20 @@ module.exports = {
     concurrentFeatures: true,
     serverComponents: true,
   },
+  webpack(config, options) {
+    config.module.rules.push({
+      test: /\.(graphql|gql)$/,
+      include: [options.dir],
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: require.resolve("graphql-tag/loader"),
+        },
+      ],
+    });
+
+    return config;
+  },
   // typescript: {
   //   // !! WARN !!
   //   // Dangerously allow production builds to successfully complete even if

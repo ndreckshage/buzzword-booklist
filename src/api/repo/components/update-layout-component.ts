@@ -1,18 +1,22 @@
 import { query as Q, type Client } from "faunadb";
 import execIfLayoutOwner from "../fql-helpers/exec-if-layout-owner";
 
+type UpdateLayoutComponentInput = {
+  layoutId: string;
+  componentIds: string[] | null;
+  flexDirection: string | null;
+  loggedInAs: string;
+};
+
+type UpdateLayoutComponentOutput = boolean;
+
 export default function updateLayoutComponent(client: Client) {
   return async ({
     layoutId,
     componentIds,
     flexDirection,
     loggedInAs,
-  }: {
-    layoutId: string;
-    componentIds: string[] | null;
-    flexDirection: string | null;
-    loggedInAs: string;
-  }) => {
+  }: UpdateLayoutComponentInput) => {
     const reorderdComponents =
       componentIds?.map((id) => Q.Ref(Q.Collection("Components"), id)) ?? null;
 

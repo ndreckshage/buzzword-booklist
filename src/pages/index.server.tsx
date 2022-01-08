@@ -4,7 +4,7 @@ import { ComponentContextType } from "api/__generated__/resolvers-types";
 export default function HomePage() {
   return (
     <Layout
-      id="TGF5b3V0Q29tcG9uZW50OjMxOTI4NDgyNTgxODEzNjY0NA=="
+      id="319284825818136644"
       contextType={ComponentContextType.None}
       contextKey=""
     />

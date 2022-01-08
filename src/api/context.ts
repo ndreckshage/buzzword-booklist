@@ -24,16 +24,21 @@ import {
   type RootComponentModel,
   type RootLayoutComponentModel,
   type BookListComponentModel,
-  type CreateLayoutComponentInput,
-  type CreateLayoutComponentOutput,
-  type CreateComponentInLayoutInput,
-  type CreateComponentInLayoutOutput,
   getLayoutComponentsByCreators,
   getComponentsByIds,
   getBookListComponents,
-  updateLayoutComponent,
   createLayoutComponent,
+  type CreateLayoutComponentInput,
+  type CreateLayoutComponentOutput,
   createComponentInLayout,
+  type CreateComponentInLayoutInput,
+  type CreateComponentInLayoutOutput,
+  updateLayoutComponent,
+  type UpdateLayoutComponentInput,
+  type UpdateLayoutComponentOutput,
+  removeComponentInLayout,
+  type RemoveComponentInLayoutInput,
+  type RemoveComponentInLayoutOutput,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -83,26 +88,15 @@ export type ResolverContext = {
     createLayoutComponent: (
       input: CreateLayoutComponentInput
     ) => Promise<CreateLayoutComponentOutput>;
-    updateLayoutComponent: ({
-      layoutId,
-      componentIds,
-      flexDirection,
-      loggedInAs,
-    }: {
-      layoutId: string;
-      componentIds: string[] | null;
-      flexDirection: string | null;
-      loggedInAs: string;
-    }) => Promise<boolean>;
-    createComponentInLayout: ({
-      layoutId,
-      componentType,
-      loggedInAs,
-    }: {
-      layoutId: string;
-      componentType: string;
-      loggedInAs: string;
-    }) => Promise<boolean>;
+    updateLayoutComponent: (
+      input: UpdateLayoutComponentInput
+    ) => Promise<UpdateLayoutComponentOutput>;
+    createComponentInLayout: (
+      input: CreateComponentInLayoutInput
+    ) => Promise<CreateComponentInLayoutOutput>;
+    removeComponentInLayout: (
+      input: RemoveComponentInLayoutInput
+    ) => Promise<RemoveComponentInLayoutOutput>;
   };
 };
 
@@ -135,6 +129,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       createLayoutComponent: createLayoutComponent(client),
       updateLayoutComponent: updateLayoutComponent(client),
       createComponentInLayout: createComponentInLayout(client),
+      removeComponentInLayout: removeComponentInLayout(client),
     },
   };
 }
