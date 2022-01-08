@@ -1,14 +1,14 @@
 import { query as Q, type Client } from "faunadb";
-import execIfLayoutOwner from "../fql-helpers/exec-if-layout-owner";
+import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
-type UpdateLayoutComponentInput = {
+export type UpdateLayoutComponentInput = {
   layoutId: string;
   componentIds: string[] | null;
   flexDirection: string | null;
   loggedInAs: string;
 };
 
-type UpdateLayoutComponentOutput = boolean;
+export type UpdateLayoutComponentOutput = boolean;
 
 export default function updateLayoutComponent(client: Client) {
   return async ({
@@ -26,8 +26,8 @@ export default function updateLayoutComponent(client: Client) {
           {
             layoutDoc: Q.Get(Q.Ref(Q.Collection("Components"), layoutId)),
           },
-          execIfLayoutOwner({
-            layoutDoc: Q.Var("layoutDoc"),
+          execIfComponentOwner({
+            componentDoc: Q.Var("layoutDoc"),
             loggedInAs,
             execExpr: Q.Let(
               {

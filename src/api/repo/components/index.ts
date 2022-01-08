@@ -54,3 +54,9 @@ export {
   type RemoveComponentInLayoutInput,
   type RemoveComponentInLayoutOutput,
 } from "./remove-component-in-layout";
+
+export {
+  default as updateMarkdownComponent,
+  type UpdateMarkdownComponentInput,
+  type UpdateMarkdownComponentOutput,
+} from "./update-markdown-component";

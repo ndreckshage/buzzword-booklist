@@ -5,7 +5,7 @@ import {
 } from "api/__generated__/resolvers-types";
 import cx from "classnames";
 
-import Hero, { HeroComponentFragment } from "./hero.server";
+import Markdown, { MarkdownComponentFragment } from "./markdown.server";
 import BookCarousel, {
   BookCarouselComponentFragment,
 } from "./book-carousel.server";
@@ -24,7 +24,7 @@ const ComponentFragment = gql`
   fragment ComponentFragment on Component {
     __typename
     ...LayoutComponentFragment
-    ...HeroComponentFragment
+    ...MarkdownComponentFragment
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
     ...BookListComponentFragment
@@ -65,7 +65,7 @@ const LAYOUT_QUERY = gql`
 
   ${LayoutComponentFragment}
   ${ComponentFragment}
-  ${HeroComponentFragment}
+  ${MarkdownComponentFragment}
   ${BookCarouselComponentFragment}
   ${BookGridComponentFragment}
   ${BookListComponentFragment}
@@ -76,7 +76,7 @@ const COMPONENT_MAP = {
   BookCarouselComponent: BookCarousel,
   BookGridComponent: BookGrid,
   BookListComponent: BookList,
-  HeroComponent: Hero,
+  MarkdownComponent: Markdown,
 };
 
 const CreatedBy = ({ user }: { user: string }) => (

@@ -174,6 +174,15 @@ export default {
           loggedInAs,
         })
     ),
+
+    updateMarkdownComponent: authenticated(
+      (parent, { componentId, text }, { mutations, loggedInAs }) =>
+        mutations.updateMarkdownComponent({
+          componentId,
+          text,
+          loggedInAs,
+        })
+    ),
   },
   Query: {
     currentUser: (parent, args, { loggedInAs }) => {

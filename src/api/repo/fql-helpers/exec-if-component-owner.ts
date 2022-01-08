@@ -1,16 +1,16 @@
 import { query as Q, type Expr } from "faunadb";
 
-export default function execIfLayoutOwner({
-  layoutDoc,
+export default function execIfComponentOwner({
+  componentDoc,
   loggedInAs,
   execExpr,
 }: {
-  layoutDoc: Expr;
+  componentDoc: Expr;
   loggedInAs: string;
   execExpr: Expr;
 }) {
   return Q.If(
-    Q.Equals(Q.Select(["data", "createdBy"], layoutDoc), loggedInAs),
+    Q.Equals(Q.Select(["data", "createdBy"], componentDoc), loggedInAs),
     execExpr,
     Q.Abort("Not Authorized")
   );

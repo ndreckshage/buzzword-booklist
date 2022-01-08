@@ -6,7 +6,7 @@ import {
   BookCarouselComponent,
   BookGridComponent,
   BookListComponent,
-  HeroComponent,
+  MarkdownComponent,
   type LayoutComponent,
 } from "api/__generated__/resolvers-types";
 
@@ -47,11 +47,10 @@ const BookGridComponentFragment = gql`
   }
 `;
 
-const HeroComponentFragment = gql`
-  fragment HeroComponentFragment on HeroComponent {
+const MarkdownComponentFragment = gql`
+  fragment MarkdownComponentFragment on MarkdownComponent {
     id
-    title
-    subTitle
+    text
   }
 `;
 
@@ -71,7 +70,7 @@ const ComponentFragment = gql`
   fragment ComponentFragment on Component {
     __typename
     ...LayoutComponentFragment
-    ...HeroComponentFragment
+    ...MarkdownComponentFragment
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
     ...BookListComponentFragment
@@ -108,7 +107,7 @@ const LAYOUT_QUERY = gql`
 
   ${LayoutComponentFragment}
   ${ComponentFragment}
-  ${HeroComponentFragment}
+  ${MarkdownComponentFragment}
   ${BookCarouselComponentFragment}
   ${BookGridComponentFragment}
   ${BookListComponentFragment}
@@ -152,7 +151,7 @@ const COMPONENT_MAP = {
   BookCarouselComponent: BookCarousel,
   BookGridComponent: BookGrid,
   BookListComponent: BookList,
-  HeroComponent: Hero,
+  MarkdownComponent: Markdown,
 };
 
 function Layout(
@@ -264,12 +263,11 @@ function BookList(props: BookListComponent) {
   return <p>BookList</p>;
 }
 
-function Hero(props: HeroComponent) {
+function Markdown(props: MarkdownComponent) {
   return (
     <div>
-      <p>Hero</p>
-      <p>Title: {props.title}</p>
-      <p>Subtitle: {props.subTitle}</p>
+      <p>Markdown</p>
+      <p>Text: {props.text}</p>
     </div>
   );
 }

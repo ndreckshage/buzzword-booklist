@@ -1,5 +1,5 @@
 import { type Client, query as Q } from "faunadb";
-import execIfLayoutOwner from "../fql-helpers/exec-if-layout-owner";
+import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type RemoveComponentInLayoutInput = {
   layoutId: string;
@@ -23,8 +23,8 @@ export default function removeComponentInLayout(client: Client) {
           {
             layoutDoc: Q.Get(Q.Ref(Q.Collection("Components"), layoutId)),
           },
-          execIfLayoutOwner({
-            layoutDoc: Q.Var("layoutDoc"),
+          execIfComponentOwner({
+            componentDoc: Q.Var("layoutDoc"),
             loggedInAs,
             execExpr: Q.Update(Q.Select("ref", Q.Var("layoutDoc")), {
               data: {

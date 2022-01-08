@@ -39,6 +39,9 @@ import {
   removeComponentInLayout,
   type RemoveComponentInLayoutInput,
   type RemoveComponentInLayoutOutput,
+  updateMarkdownComponent,
+  type UpdateMarkdownComponentInput,
+  type UpdateMarkdownComponentOutput,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -97,6 +100,9 @@ export type ResolverContext = {
     removeComponentInLayout: (
       input: RemoveComponentInLayoutInput
     ) => Promise<RemoveComponentInLayoutOutput>;
+    updateMarkdownComponent: (
+      input: UpdateMarkdownComponentInput
+    ) => Promise<UpdateMarkdownComponentOutput>;
   };
 };
 
@@ -130,6 +136,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       updateLayoutComponent: updateLayoutComponent(client),
       createComponentInLayout: createComponentInLayout(client),
       removeComponentInLayout: removeComponentInLayout(client),
+      updateMarkdownComponent: updateMarkdownComponent(client),
     },
   };
 }

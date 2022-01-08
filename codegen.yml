@@ -9,7 +9,7 @@ generates:
         BookGridComponent: ../repo/components#RootBookListComponentModel
         BookListComponent: ../repo/components#RootBookListComponentModel
         Component: ../repo/components#RootComponentModel
-        HeroComponent: ../repo/components#RootComponentModel
+        MarkdownComponent: ../repo/components#RootComponentModel
         LayoutComponent: ../repo/components#RootLayoutComponentModel
         List: ../repo/lists#ListModel
     plugins:

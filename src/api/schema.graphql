@@ -23,10 +23,9 @@ type BookListComponent {
   bookCards: [BookCardComponent!]!
 }
 
-type HeroComponent {
+type MarkdownComponent {
   id: ID!
-  title: String!
-  subTitle: String!
+  text: String!
 }
 
 enum LinkComponentVariant {
@@ -54,7 +53,7 @@ union Component =
   | BookCarouselComponent
   | BookGridComponent
   | BookListComponent
-  | HeroComponent
+  | MarkdownComponent
 
 type Book {
   id: ID!
@@ -110,9 +109,5 @@ type Mutation {
   ): Boolean!
   createComponentInLayout(layoutId: ID!, componentType: String!): Boolean!
   removeComponentInLayout(layoutId: ID!, componentId: ID!): Boolean!
-  updateHeroComponent(
-    componentId: ID!
-    title: String
-    subTitle: String
-  ): Boolean!
+  updateMarkdownComponent(componentId: ID!, text: String!): Boolean!
 }
