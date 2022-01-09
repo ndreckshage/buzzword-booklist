@@ -82,57 +82,72 @@ export default function getBookListComponents(client: Client) {
               },
               Q.Let(
                 {
-                  sourceDoc: Q.Get(
-                    Q.Match(
-                      selectIndex({
-                        sourceDoc: Q.Var("sourceDoc"),
-                        sourceType: Q.Var("sourceType"),
-                      }),
-                      Q.Var("sourceKey")
-                    )
+                  sourceMatch: Q.Match(
+                    selectIndex({
+                      sourceDoc: Q.Var("sourceDoc"),
+                      sourceType: Q.Var("sourceType"),
+                    }),
+                    Q.Var("sourceKey")
                   ),
                 },
-                Q.Let(
-                  {
-                    bookRefs: selectBookRefs({
-                      sourceDoc: Q.Var("sourceDoc"),
-                      sourceType: Q.Var("sourceType"),
-                    }),
-                  },
-                  {
-                    title: selectTitle({
-                      sourceDoc: Q.Var("sourceDoc"),
-                      sourceType: Q.Var("sourceType"),
-                    }),
-                    totalBookCards: Q.Count(Q.Var("bookRefs")),
-                    bookCards: Q.Take(
-                      selectNumberWanted({
-                        componentType: Q.Var("componentType"),
-                      }),
-                      Q.Map(
-                        Q.Var("bookRefs"),
-                        Q.Lambda(
-                          "bookRef",
-                          Q.Let(
-                            {
-                              bookDoc: Q.Get(Q.Var("bookRef")),
-                            },
-                            {
-                              id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
-                              googleBooksVolumeId: Q.Select(
-                                ["data", "googleBooksVolumeId"],
-                                Q.Var("bookDoc")
-                              ),
-                              image: Q.Select(
-                                ["data", "image"],
-                                Q.Var("bookDoc")
-                              ),
-                            }
+                Q.If(
+                  Q.Exists(Q.Var("sourceMatch")),
+                  Q.Let(
+                    {
+                      sourceDoc: Q.Get(Q.Var("sourceMatch")),
+                    },
+                    Q.Let(
+                      {
+                        bookRefs: selectBookRefs({
+                          sourceDoc: Q.Var("sourceDoc"),
+                          sourceType: Q.Var("sourceType"),
+                        }),
+                      },
+                      {
+                        title: selectTitle({
+                          sourceDoc: Q.Var("sourceDoc"),
+                          sourceType: Q.Var("sourceType"),
+                        }),
+                        totalBookCards: Q.Count(Q.Var("bookRefs")),
+                        bookCards: Q.Take(
+                          selectNumberWanted({
+                            componentType: Q.Var("componentType"),
+                          }),
+                          Q.Map(
+                            Q.Var("bookRefs"),
+                            Q.Lambda(
+                              "bookRef",
+                              Q.Let(
+                                {
+                                  bookDoc: Q.Get(Q.Var("bookRef")),
+                                },
+                                {
+                                  id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
+                                  googleBooksVolumeId: Q.Select(
+                                    ["data", "googleBooksVolumeId"],
+                                    Q.Var("bookDoc")
+                                  ),
+                                  image: Q.Select(
+                                    ["data", "image"],
+                                    Q.Var("bookDoc")
+                                  ),
+                                }
+                              )
+                            )
                           )
-                        )
-                      )
-                    ),
-                  }
+                        ),
+                      }
+                    )
+                  ),
+                  Q.Let(
+                    {},
+                    {
+                      title:
+                        "Data source not found. Ensure valid context / source entered.",
+                      totalBookCards: 0,
+                      bookCards: [],
+                    }
+                  )
                 )
               )
             )
@@ -156,7 +171,7 @@ export default function getBookListComponents(client: Client) {
         })),
       }));
     } catch (e) {
-      console.error(e);
+      console.error("get-book-list-components", e);
 
       if (e instanceof Error) {
         // @ts-ignore

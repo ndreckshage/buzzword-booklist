@@ -55,6 +55,8 @@ export default function getBooksByListIds(client: Client) {
         )
       )) as BookModel[];
     } catch (e) {
+      console.error("get-books-by-list-ids", e);
+
       if (e instanceof Error) {
         // @ts-ignore
         throw new Error(e.description || e.message);

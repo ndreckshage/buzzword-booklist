@@ -2,7 +2,9 @@ import {
   createContext,
   Suspense,
   useContext,
+  useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { useRouter } from "next/router";
@@ -79,10 +81,10 @@ const ComponentFragment = gql`
   fragment ComponentFragment on Component {
     __typename
     ...LayoutComponentFragment
-    ...MarkdownComponentFragment
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
     ...BookListComponentFragment
+    ...MarkdownComponentFragment
   }
 `;
 
@@ -279,20 +281,21 @@ function Markdown(props: MarkdownComponent) {
   const { updateMarkdownComponent } = useContext(LayoutContext);
   const [textState, updateText] = useState(props.text);
   const [, forceUpdate] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  console.log("hmm", textState);
+  // workaround for a streaming bug, or somethign
+  useEffect(() => {
+    if (textareaRef.current?.value !== textState) {
+      forceUpdate((v) => v + 1);
+    }
+  }, [textareaRef]);
 
   return (
     <div>
       <p>Markdown</p>
       <textarea
         value={textState}
-        onFocus={(e) => {
-          if (textState !== e.target.value) {
-            // streaming bug, or somethign
-            forceUpdate((v) => v + 1);
-          }
-        }}
+        ref={textareaRef}
         onChange={(e) => {
           console.log("trigger change");
           updateText(e.target.value);

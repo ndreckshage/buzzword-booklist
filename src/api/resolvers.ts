@@ -27,18 +27,37 @@ const authenticated =
 
 export default {
   BookCarouselComponent: {
-    title: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
+    title: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType, sourceKey })
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
         .then(({ title }) => title),
 
-    link: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
-      loaders.bookListComponentsLoader
-        .load({ componentType, sourceType, sourceKey })
+    link: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) => {
+      const finalSourceType = sourceType ?? contextType;
+      const finalSourceKey = sourceKey ?? contextKey;
+
+      return loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: finalSourceType,
+          sourceKey: finalSourceKey,
+        })
         .then(({ totalBookCards }) => ({
           title: `See all ${totalBookCards} books`,
           href: `/collections/${(() => {
-            switch (sourceType) {
+            switch (finalSourceType) {
               case ComponentContextType.List:
                 return "lists";
               case ComponentContextType.Category:
@@ -46,45 +65,78 @@ export default {
               case ComponentContextType.Author:
                 return "authors";
               default:
-                throw new Error(`Invalid type ${sourceType} requested`);
+                throw new Error(`Invalid type ${finalSourceType} requested`);
             }
-          })()}/show?sourceKey=${sourceKey}`,
+          })()}/show?sourceKey=${finalSourceKey}`,
           variant: LinkComponentVariant.Default,
-        })),
+        }));
+    },
 
-    bookCards: ({ componentType, sourceType, sourceKey }, args, { loaders }) =>
+    bookCards: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType, sourceKey })
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
         .then(({ bookCards }) => bookCards),
   },
   BookGridComponent: {
-    title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
-      loaders.bookListComponentsLoader
-        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
-        .then(({ title }) => title),
-
-    bookCards: (
-      { componentType, contextType, contextKey },
+    title: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
       args,
       { loaders }
     ) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
+        .then(({ title }) => title),
+
+    bookCards: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
         .then(({ bookCards }) => bookCards),
   },
   BookListComponent: {
-    title: ({ componentType, contextType, contextKey }, args, { loaders }) =>
-      loaders.bookListComponentsLoader
-        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
-        .then(({ title }) => title),
-
-    bookCards: (
-      { componentType, contextType, contextKey },
+    title: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
       args,
       { loaders }
     ) =>
       loaders.bookListComponentsLoader
-        .load({ componentType, sourceType: contextType, sourceKey: contextKey })
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
+        .then(({ title }) => title),
+
+    bookCards: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
         .then(({ bookCards }) => bookCards),
   },
   Component: {
