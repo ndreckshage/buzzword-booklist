@@ -21,6 +21,31 @@ type BookGridComponent {
   sourceKey: String
 }
 
+type BookImageComponent {
+  id: ID!
+  href: String!
+}
+
+type BookTitleComponent {
+  id: ID!
+  title: String!
+}
+
+type BookAuthorsComponent {
+  id: ID!
+  links: [LinkComponent!]!
+}
+
+type BookCategoriesComponent {
+  id: ID!
+  links: [LinkComponent!]!
+}
+
+type BookDetailsComponent {
+  id: ID!
+  text: String!
+}
+
 type BookListComponent {
   id: ID!
   title: String!
@@ -59,6 +84,11 @@ union Component =
   | BookCarouselComponent
   | BookGridComponent
   | BookListComponent
+  | BookImageComponent
+  | BookTitleComponent
+  | BookAuthorsComponent
+  | BookCategoriesComponent
+  | BookDetailsComponent
   | MarkdownComponent
 
 type Book {

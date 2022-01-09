@@ -20,6 +20,15 @@ export default function createComponentInLayout(client: Client) {
 
     const componentData = (() => {
       switch (componentType) {
+        case "LayoutComponent":
+          return {
+            componentType,
+            title: "Nested layout",
+            createdBy: loggedInAs,
+            flexDirection: "col",
+            componentRefs: [],
+          };
+
         case "BookCarouselComponent":
         case "BookGridComponent":
         case "BookListComponent":

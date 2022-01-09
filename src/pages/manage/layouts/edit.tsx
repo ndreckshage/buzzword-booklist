@@ -17,11 +17,13 @@ import {
   type MutationRemoveComponentInLayoutArgs,
   type MutationUpdateMarkdownComponentArgs,
   MutationUpdateBooklistComponentArgs,
+  MutationCreateComponentInLayoutArgs,
 } from "api/__generated__/resolvers-types";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
     id
+    title
     createdBy
     flexDirection
   }
@@ -108,6 +110,12 @@ const LAYOUT_QUERY = gql`
   ${BookListComponentFragment}
 `;
 
+const CREATE_COMPONENT_IN_LAYOUT_MUTATION = gql`
+  mutation CreateComponentInLayout($layoutId: ID!, $componentType: String!) {
+    createComponentInLayout(layoutId: $layoutId, componentType: $componentType)
+  }
+`;
+
 const UPDATE_LAYOUT_COMPONENT_MUTATION = gql`
   mutation UpdateLayoutCompenent(
     $layoutId: ID!
@@ -177,19 +185,67 @@ const COMPONENT_MAP = {
   MarkdownComponent: Markdown,
 };
 
+enum ComponentTypes {
+  LayoutComponent = "LayoutComponent",
+  BookCarouselComponent = "BookCarouselComponent",
+  BookGridComponent = "BookGridComponent",
+  BookListComponent = "BookListComponent",
+  MarkdownComponent = "MarkdownComponent",
+}
+
 function Layout(props: LayoutComponent) {
-  const { updateLayoutMutation, removeComponentMutation } =
-    useContext(LayoutContext);
+  const {
+    createComponentMutation,
+    updateLayoutMutation,
+    removeComponentMutation,
+  } = useContext(LayoutContext);
+
+  const [createComponentType, setCreateComponentType] = useState(
+    ComponentTypes.LayoutComponent
+  );
+
+  const validOpts = [
+    ComponentTypes.LayoutComponent,
+    ComponentTypes.BookCarouselComponent,
+    ComponentTypes.BookGridComponent,
+    ComponentTypes.BookListComponent,
+    ComponentTypes.MarkdownComponent,
+  ];
 
   return (
     <div className="border border-red-500 m-2 p-2">
-      <p>Layout Component</p>
-      <div
-        className={cx("flex", {
-          "flex-row": props.flexDirection === "row",
-          "flex-col": props.flexDirection === "col",
-        })}
-      >
+      <p>Layout Component: {props.title}</p>
+      <a href={`/manage/layouts/show?layout=${props.id}`} target="_blank">
+        View in new tab
+      </a>
+      <div className="border border-purple-500 m-2 p-2">
+        <p>Add Component to Layout:</p>
+        <select
+          value={createComponentType}
+          onChange={(e) => {
+            const opt = validOpts.find((o) => o === e.target.value);
+            setCreateComponentType(opt ?? ComponentTypes.LayoutComponent);
+          }}
+        >
+          {validOpts.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={() => {
+            createComponentMutation({
+              layoutId: props.id,
+              componentType: createComponentType,
+            });
+          }}
+        >
+          Add Component to Layout
+        </button>
+      </div>
+      <div className="border border-purple-500 m-2 p-2">
+        <p>Component Direction:</p>
         <select
           value={props.flexDirection}
           onChange={(e) => {
@@ -205,6 +261,14 @@ function Layout(props: LayoutComponent) {
             </option>
           ))}
         </select>
+      </div>
+      <p>Components:</p>
+      <div
+        className={cx("flex", {
+          "flex-row": props.flexDirection === "row",
+          "flex-col": props.flexDirection === "col",
+        })}
+      >
         {props.components.map((component) => {
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
@@ -302,17 +366,19 @@ function BookList(props: {
       >
         {validOpts.map((opt) => (
           <option key={opt} value={opt}>
-            {opt}
+            {opt === ComponentContextType.None ? "USE PAGE CONTEXT" : opt}
           </option>
         ))}
       </select>
-      <input
-        value={sourceKeyState}
-        placeholder="Source Key"
-        onChange={(e) => {
-          setSourceKey(e.target.value);
-        }}
-      />
+      {sourceTypeState !== ComponentContextType.None && (
+        <input
+          value={sourceKeyState}
+          placeholder="Source Key"
+          onChange={(e) => {
+            setSourceKey(e.target.value);
+          }}
+        />
+      )}
       <button
         onClick={() => {
           updateBooklistComponent({
@@ -352,13 +418,11 @@ function Markdown(props: MarkdownComponent) {
         value={textState}
         ref={textareaRef}
         onChange={(e) => {
-          console.log("trigger change");
           updateText(e.target.value);
         }}
       />
       <button
         onClick={() => {
-          console.log("save markdown");
           updateMarkdownComponent({
             componentId: props.id,
             text: textState,
@@ -372,6 +436,7 @@ function Markdown(props: MarkdownComponent) {
 }
 
 const LayoutContext = createContext<{
+  createComponentMutation: (args: MutationCreateComponentInLayoutArgs) => void;
   updateLayoutMutation: (args: MutationUpdateLayoutComponentArgs) => void;
   removeComponentMutation: (args: MutationRemoveComponentInLayoutArgs) => void;
   updateMarkdownComponent: (args: MutationUpdateMarkdownComponentArgs) => void;
@@ -391,6 +456,9 @@ const EditLayout = ({ id }: { id: string }) => {
     id,
   });
 
+  const [createComponentMutation, { isPending: createComponentPending }] =
+    useMutation<boolean>(CREATE_COMPONENT_IN_LAYOUT_MUTATION);
+
   const [updateLayoutMutation, { isPending: updateLayoutPending }] =
     useMutation<boolean>(UPDATE_LAYOUT_COMPONENT_MUTATION);
 
@@ -405,6 +473,7 @@ const EditLayout = ({ id }: { id: string }) => {
 
   const isPending =
     getLayoutPending ||
+    createComponentPending ||
     updateLayoutPending ||
     removeComponentPending ||
     updateMarkdownPending ||
@@ -420,6 +489,8 @@ const EditLayout = ({ id }: { id: string }) => {
       >
         <LayoutContext.Provider
           value={{
+            createComponentMutation: (arg) =>
+              createComponentMutation(arg).then(refresh),
             updateLayoutMutation: (arg) =>
               updateLayoutMutation(arg).then(refresh),
             removeComponentMutation: (arg) =>
