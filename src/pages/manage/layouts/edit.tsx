@@ -3,7 +3,6 @@ import {
   Suspense,
   useContext,
   useEffect,
-  useReducer,
   useRef,
   useState,
 } from "react";
@@ -11,14 +10,13 @@ import { useRouter } from "next/router";
 import { useQuery, useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 import {
-  BookCarouselComponent,
-  BookGridComponent,
-  BookListComponent,
   MarkdownComponent,
+  ComponentContextType,
   type LayoutComponent,
   type MutationUpdateLayoutComponentArgs,
   type MutationRemoveComponentInLayoutArgs,
-  MutationUpdateMarkdownComponentArgs,
+  type MutationUpdateMarkdownComponentArgs,
+  MutationUpdateBooklistComponentArgs,
 } from "api/__generated__/resolvers-types";
 
 const LayoutComponentFragment = gql`
@@ -33,16 +31,8 @@ const BookCarouselComponentFragment = gql`
   fragment BookCarouselComponentFragment on BookCarouselComponent {
     id
     title
-    link {
-      title
-      href
-      variant
-    }
-    bookCards {
-      id
-      href
-      image
-    }
+    sourceType
+    sourceKey
   }
 `;
 
@@ -50,18 +40,8 @@ const BookGridComponentFragment = gql`
   fragment BookGridComponentFragment on BookGridComponent {
     id
     title
-    bookCards {
-      id
-      href
-      image
-    }
-  }
-`;
-
-const MarkdownComponentFragment = gql`
-  fragment MarkdownComponentFragment on MarkdownComponent {
-    id
-    text
+    sourceType
+    sourceKey
   }
 `;
 
@@ -69,11 +49,15 @@ const BookListComponentFragment = gql`
   fragment BookListComponentFragment on BookListComponent {
     id
     title
-    bookCards {
-      id
-      href
-      image
-    }
+    sourceType
+    sourceKey
+  }
+`;
+
+const MarkdownComponentFragment = gql`
+  fragment MarkdownComponentFragment on MarkdownComponent {
+    id
+    text
   }
 `;
 
@@ -150,6 +134,20 @@ const UPDATE_MARKDOWN_MUTATION = gql`
   }
 `;
 
+const UPDATE_BOOKLIST_COMPONENT_MUTATION = gql`
+  mutation UpdateBooklistComponent(
+    $componentId: ID!
+    $sourceType: ComponentContextType!
+    $sourceKey: String!
+  ) {
+    updateBooklistComponent(
+      componentId: $componentId
+      sourceType: $sourceType
+      sourceKey: $sourceKey
+    )
+  }
+`;
+
 const move = <T,>(origArr: T[], fromIndex: number, toIndex: number) => {
   const arr = [...origArr];
   var el = arr[fromIndex];
@@ -173,8 +171,8 @@ const getReorderedIds = (
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
-  BookCarouselComponent: BookCarousel,
-  BookGridComponent: BookGrid,
+  BookCarouselComponent: BookList,
+  BookGridComponent: BookList,
   BookListComponent: BookList,
   MarkdownComponent: Markdown,
 };
@@ -265,16 +263,69 @@ function Layout(props: LayoutComponent) {
   );
 }
 
-function BookCarousel(props: BookCarouselComponent) {
-  return <p>BookCarousel</p>;
-}
+function BookList(props: {
+  __typename: string;
+  id: string;
+  sourceType: ComponentContextType | null;
+  sourceKey: string | null;
+}) {
+  const { updateBooklistComponent } = useContext(LayoutContext);
+  const [sourceTypeState, setSourceType] = useState(
+    props.sourceType ?? ComponentContextType.None
+  );
+  const [sourceKeyState, setSourceKey] = useState(props.sourceKey ?? "");
 
-function BookGrid(props: BookGridComponent) {
-  return <p>BookGrid</p>;
-}
+  const validOpts = [
+    ComponentContextType.Author,
+    ComponentContextType.Category,
+    ComponentContextType.List,
+    ComponentContextType.None,
+  ];
 
-function BookList(props: BookListComponent) {
-  return <p>BookList</p>;
+  useEffect(() => {
+    setSourceType(props.sourceType ?? ComponentContextType.None);
+  }, [props.sourceType]);
+
+  useEffect(() => {
+    setSourceKey(props.sourceKey ?? "");
+  }, [props.sourceKey]);
+
+  return (
+    <div>
+      <p>{props.__typename}</p>
+      <select
+        value={sourceTypeState}
+        onChange={(e) => {
+          const opt = validOpts.find((o) => o === e.target.value);
+          setSourceType(opt ?? ComponentContextType.None);
+        }}
+      >
+        {validOpts.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      <input
+        value={sourceKeyState}
+        placeholder="Source Key"
+        onChange={(e) => {
+          setSourceKey(e.target.value);
+        }}
+      />
+      <button
+        onClick={() => {
+          updateBooklistComponent({
+            componentId: props.id,
+            sourceType: sourceTypeState,
+            sourceKey: sourceKeyState,
+          });
+        }}
+      >
+        Save changes
+      </button>
+    </div>
+  );
 }
 
 function Markdown(props: MarkdownComponent) {
@@ -289,6 +340,10 @@ function Markdown(props: MarkdownComponent) {
       forceUpdate((v) => v + 1);
     }
   }, [textareaRef]);
+
+  useEffect(() => {
+    updateText(props.text);
+  }, [props.text]);
 
   return (
     <div>
@@ -320,6 +375,7 @@ const LayoutContext = createContext<{
   updateLayoutMutation: (args: MutationUpdateLayoutComponentArgs) => void;
   removeComponentMutation: (args: MutationRemoveComponentInLayoutArgs) => void;
   updateMarkdownComponent: (args: MutationUpdateMarkdownComponentArgs) => void;
+  updateBooklistComponent: (args: MutationUpdateBooklistComponentArgs) => void;
 }>(
   // @ts-ignore
   null
@@ -344,11 +400,15 @@ const EditLayout = ({ id }: { id: string }) => {
   const [updateMarkdownComponent, { isPending: updateMarkdownPending }] =
     useMutation<boolean>(UPDATE_MARKDOWN_MUTATION);
 
+  const [updateBooklistComponent, { isPending: updateBooklistPending }] =
+    useMutation<boolean>(UPDATE_BOOKLIST_COMPONENT_MUTATION);
+
   const isPending =
     getLayoutPending ||
     updateLayoutPending ||
     removeComponentPending ||
-    updateMarkdownPending;
+    updateMarkdownPending ||
+    updateBooklistPending;
 
   return (
     <>
@@ -366,6 +426,8 @@ const EditLayout = ({ id }: { id: string }) => {
               removeComponentMutation(arg).then(refresh),
             updateMarkdownComponent: (arg) =>
               updateMarkdownComponent(arg).then(refresh),
+            updateBooklistComponent: (arg) =>
+              updateBooklistComponent(arg).then(refresh),
           }}
         >
           <Layout {...data.layout} />

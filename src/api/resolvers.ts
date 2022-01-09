@@ -48,6 +48,10 @@ export default {
       const finalSourceType = sourceType ?? contextType;
       const finalSourceKey = sourceKey ?? contextKey;
 
+      if (finalSourceType === ComponentContextType.None) {
+        return null;
+      }
+
       return loaders.bookListComponentsLoader
         .load({
           componentType,
@@ -232,6 +236,20 @@ export default {
         mutations.updateMarkdownComponent({
           componentId,
           text,
+          loggedInAs,
+        })
+    ),
+
+    updateBooklistComponent: authenticated(
+      (
+        parent,
+        { componentId, sourceKey, sourceType },
+        { mutations, loggedInAs }
+      ) =>
+        mutations.updateBooklistComponent({
+          componentId,
+          sourceKey,
+          sourceType,
           loggedInAs,
         })
     ),

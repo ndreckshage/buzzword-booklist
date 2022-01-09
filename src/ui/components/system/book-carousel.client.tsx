@@ -20,7 +20,7 @@ export default function BookCarousel(props: BookCarouselComponent) {
   return (
     <div className="container px-10">
       <p className="text-3xl">
-        {props.title} <Link {...props.link} />
+        {props.title} {props.link && <Link {...props.link} />}
       </p>
       <div
         className="relative w-full flex gap-6 overflow-x-auto pb-14 scroll-smooth snap-x snap-always snap-mandatory"
@@ -42,8 +42,12 @@ export default function BookCarousel(props: BookCarouselComponent) {
           </div>
         ))}
       </div>
-      <button onClick={advance(false)}>prev</button>
-      <button onClick={advance(true)}>next</button>
+      {props.bookCards.length > 0 && (
+        <>
+          <button onClick={advance(false)}>prev</button>
+          <button onClick={advance(true)}>next</button>
+        </>
+      )}
     </div>
   );
 }

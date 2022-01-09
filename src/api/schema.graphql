@@ -7,20 +7,26 @@ type BookCardComponent {
 type BookCarouselComponent {
   id: ID!
   title: String!
-  link: LinkComponent!
+  link: LinkComponent
   bookCards: [BookCardComponent!]!
+  sourceType: ComponentContextType
+  sourceKey: String
 }
 
 type BookGridComponent {
   id: ID!
   title: String!
   bookCards: [BookCardComponent!]!
+  sourceType: ComponentContextType
+  sourceKey: String
 }
 
 type BookListComponent {
   id: ID!
   title: String!
   bookCards: [BookCardComponent!]!
+  sourceType: ComponentContextType
+  sourceKey: String
 }
 
 type MarkdownComponent {
@@ -110,4 +116,9 @@ type Mutation {
   createComponentInLayout(layoutId: ID!, componentType: String!): Boolean!
   removeComponentInLayout(layoutId: ID!, componentId: ID!): Boolean!
   updateMarkdownComponent(componentId: ID!, text: String!): Boolean!
+  updateBooklistComponent(
+    componentId: ID!
+    sourceType: ComponentContextType!
+    sourceKey: String!
+  ): Boolean!
 }

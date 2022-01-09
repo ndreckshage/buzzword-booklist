@@ -1,3 +1,4 @@
+import { ComponentContextType } from "api/__generated__/resolvers-types";
 import { type Client, query as Q } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
@@ -19,6 +20,14 @@ export default function createComponentInLayout(client: Client) {
 
     const componentData = (() => {
       switch (componentType) {
+        case "BookCarouselComponent":
+        case "BookGridComponent":
+        case "BookListComponent":
+          return {
+            componentType,
+            createdBy: loggedInAs,
+          };
+
         case "MarkdownComponent":
           return {
             componentType,

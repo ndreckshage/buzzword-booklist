@@ -38,7 +38,9 @@ export type BookCarouselComponent = {
   __typename?: 'BookCarouselComponent';
   bookCards: Array<BookCardComponent>;
   id: Scalars['ID'];
-  link: LinkComponent;
+  link?: Maybe<LinkComponent>;
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
   title: Scalars['String'];
 };
 
@@ -46,6 +48,8 @@ export type BookGridComponent = {
   __typename?: 'BookGridComponent';
   bookCards: Array<BookCardComponent>;
   id: Scalars['ID'];
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
   title: Scalars['String'];
 };
 
@@ -53,6 +57,8 @@ export type BookListComponent = {
   __typename?: 'BookListComponent';
   bookCards: Array<BookCardComponent>;
   id: Scalars['ID'];
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
   title: Scalars['String'];
 };
 
@@ -117,6 +123,7 @@ export type Mutation = {
   createList?: Maybe<Scalars['Boolean']>;
   removeBookFromList: Scalars['Boolean'];
   removeComponentInLayout: Scalars['Boolean'];
+  updateBooklistComponent: Scalars['Boolean'];
   updateLayoutComponent: Scalars['Boolean'];
   updateMarkdownComponent: Scalars['Boolean'];
 };
@@ -153,6 +160,13 @@ export type MutationRemoveBookFromListArgs = {
 export type MutationRemoveComponentInLayoutArgs = {
   componentId: Scalars['ID'];
   layoutId: Scalars['ID'];
+};
+
+
+export type MutationUpdateBooklistComponentArgs = {
+  componentId: Scalars['ID'];
+  sourceKey: Scalars['String'];
+  sourceType: ComponentContextType;
 };
 
 
@@ -320,7 +334,9 @@ export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType
 export type BookCarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselComponent'] = ResolversParentTypes['BookCarouselComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  link?: Resolver<ResolversTypes['LinkComponent'], ParentType, ContextType>;
+  link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -328,6 +344,8 @@ export type BookCarouselComponentResolvers<ContextType = ResolverContext, Parent
 export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridComponent'] = ResolversParentTypes['BookGridComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -335,6 +353,8 @@ export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType
 export type BookListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListComponent'] = ResolversParentTypes['BookListComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -388,6 +408,7 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
   createList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateListArgs, 'title'>>;
   removeBookFromList?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listKey'>>;
   removeComponentInLayout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveComponentInLayoutArgs, 'componentId' | 'layoutId'>>;
+  updateBooklistComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateBooklistComponentArgs, 'componentId' | 'sourceKey' | 'sourceType'>>;
   updateLayoutComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateLayoutComponentArgs, 'layoutId'>>;
   updateMarkdownComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateMarkdownComponentArgs, 'componentId' | 'text'>>;
 };

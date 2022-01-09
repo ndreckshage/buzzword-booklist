@@ -42,6 +42,9 @@ import {
   updateMarkdownComponent,
   type UpdateMarkdownComponentInput,
   type UpdateMarkdownComponentOutput,
+  updateBooklistComponent,
+  type UpdateBooklistComponentInput,
+  type UpdateBooklistComponentOutput,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -103,6 +106,9 @@ export type ResolverContext = {
     updateMarkdownComponent: (
       input: UpdateMarkdownComponentInput
     ) => Promise<UpdateMarkdownComponentOutput>;
+    updateBooklistComponent: (
+      input: UpdateBooklistComponentInput
+    ) => Promise<UpdateBooklistComponentOutput>;
   };
 };
 
@@ -137,6 +143,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       createComponentInLayout: createComponentInLayout(client),
       removeComponentInLayout: removeComponentInLayout(client),
       updateMarkdownComponent: updateMarkdownComponent(client),
+      updateBooklistComponent: updateBooklistComponent(client),
     },
   };
 }

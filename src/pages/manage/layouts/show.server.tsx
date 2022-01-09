@@ -4,7 +4,7 @@ import { ComponentContextType } from "api/__generated__/resolvers-types";
 type Props = {
   router: {
     query: {
-      layoutId: string;
+      layout: string;
       contextType: ComponentContextType;
       contextKey: string;
     };
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function ShowLayout(props: Props) {
-  const { layoutId, contextType, contextKey } = props.router.query;
+  const { layout: layoutId, contextType, contextKey } = props.router.query;
 
   // @NOTE next params dont work with streaming / nextjs yet
   // @NOTE AND dynamic routes dont work client side, so adjusting to query params
@@ -21,9 +21,15 @@ export default function ShowLayout(props: Props) {
   //   return <>Bad Route Match: {router.asPath}</>;
   // }
 
-  // return <>Show Layout: {pid}</>;
+  if (typeof layoutId !== "string") {
+    return <p>No layout!</p>;
+  }
 
   return (
-    <Layout id={layoutId} contextType={contextType} contextKey={contextKey} />
+    <Layout
+      id={layoutId}
+      contextType={contextType ?? ComponentContextType.None}
+      contextKey={contextKey ?? ""}
+    />
   );
 }

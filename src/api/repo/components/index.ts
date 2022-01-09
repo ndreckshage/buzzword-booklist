@@ -60,3 +60,9 @@ export {
   type UpdateMarkdownComponentInput,
   type UpdateMarkdownComponentOutput,
 } from "./update-markdown-component";
+
+export {
+  default as updateBooklistComponent,
+  type UpdateBooklistComponentInput,
+  type UpdateBooklistComponentOutput,
+} from "./update-booklist-component";
