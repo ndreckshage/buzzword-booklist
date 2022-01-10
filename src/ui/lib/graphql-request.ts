@@ -2,8 +2,8 @@ import { print } from "graphql/language/printer";
 import { DocumentNode } from "graphql/language/ast";
 import gql from "graphql-tag";
 
-const baseUrl = process.env.GRAPHQL_HOST
-  ? `https://${process.env.GRAPHQL_HOST}`
+const baseUrl = process.env.VERCEL
+  ? "https://buzzword-booklist.vercel.app"
   : `http://localhost:3000`;
 
 async function request<D>(
