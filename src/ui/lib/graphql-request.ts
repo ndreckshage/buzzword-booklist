@@ -2,7 +2,7 @@ import { print } from "graphql/language/printer";
 import { DocumentNode } from "graphql/language/ast";
 import gql from "graphql-tag";
 
-const baseUrl = process.env.VERCEL
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_ENV
   ? "https://buzzword-booklist.vercel.app"
   : `http://localhost:3000`;
 
