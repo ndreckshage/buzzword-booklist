@@ -280,7 +280,11 @@ function Layout(props: LayoutComponent) {
   return (
     <div className="border border-red-500 m-2 p-2">
       <p>Layout Component: {props.title}</p>
-      <a href={`/manage/layouts/show?layout=${props.id}`} target="_blank">
+      <a
+        href={`/manage/layouts/show?layout=${props.id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         View in new tab
       </a>
       <div className="border border-purple-500 m-2 p-2">

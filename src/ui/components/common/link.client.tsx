@@ -11,7 +11,7 @@ const linkClass = cx({
 
 export default function CustomLink(props: LinkProps & { children: ReactNode }) {
   const target = props.href.toString().match(/https?:\/\//)
-    ? { target: "_blank" }
+    ? { target: "_blank", rel: "noreferrer" }
     : {};
 
   return (
