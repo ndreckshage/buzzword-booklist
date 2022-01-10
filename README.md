@@ -4,11 +4,12 @@ Experimental application that uses:
 
 - Serverless frontend + graphql with Vercel/Next.js
 - Serverless database with Fauna
-- Server Driven UI system (maps catalog data to components in the graph ... CMS like)
+- Server Driven UI system (Catalog data maps to **Component types** in the Graph)
 - React Server Components, Streaming
 - React Server Side Suspense for Data Fetching, Streaming
+- Tailwind CSS
 
-## What you can do...
+## What does this app do...
 
 -
 

@@ -11,6 +11,12 @@ async function request<D>(
   variables?: object,
   extraHeaders?: object
 ) {
+  console.log(
+    `DEBUG: ${baseUrl}/api/graphql ; server? ${
+      typeof window === "undefined"
+    } ; ${JSON.stringify(variables)}`
+  );
+
   const response = await fetch(`${baseUrl}/api/graphql`, {
     method: "POST",
     headers: {
