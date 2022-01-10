@@ -24,6 +24,7 @@ async function request<D>(
     }),
   })
     .then((r) => r.json())
+    .then(({ data }) => data)
     .catch((err) => err) as Promise<D>;
 }
 
