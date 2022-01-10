@@ -34,7 +34,7 @@ async function request<D>(
     return (await response.json().then(({ data }) => data)) as D;
   } catch (e) {
     console.error(e);
-    return {};
+    return {} as D;
   }
 }
 
