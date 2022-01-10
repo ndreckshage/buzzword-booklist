@@ -10,9 +10,15 @@ const linkClass = cx({
 });
 
 export default function CustomLink(props: LinkProps & { children: ReactNode }) {
+  const target = props.href.toString().match(/https?:\/\//)
+    ? { target: "_blank" }
+    : {};
+
   return (
     <Link href={props.href}>
-      <a className={linkClass}>{props.children}</a>
+      <a className={linkClass} {...target}>
+        {props.children}
+      </a>
     </Link>
   );
 }

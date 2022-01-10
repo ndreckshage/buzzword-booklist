@@ -38,6 +38,8 @@ export type BookComponentModel = {
   image: string;
   authorLinks: LinkComponent[];
   categoryLinks: LinkComponent[];
+  actionLink: LinkComponent;
+  detailsMarkdown: string;
 };
 
 export { default as getComponentsByIds } from "./get-components-by-ids";

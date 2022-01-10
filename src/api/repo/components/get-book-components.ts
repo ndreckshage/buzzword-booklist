@@ -1,5 +1,6 @@
 import { type Client, query as Q } from "faunadb";
 import { LinkComponentVariant } from "api/__generated__/resolvers-types";
+import slugify from "slugify";
 
 export default function getBookListComponents(client: Client) {
   return async (googleBooksVolumeIds: readonly string[]) => {
@@ -76,13 +77,23 @@ export default function getBookListComponents(client: Client) {
                 }
               ),
               {
+                googleBooksVolumeId: Q.Var("googleBooksVolumeId"),
                 title: "Book ID not found.",
+                image: "",
+                authors: [],
+                categories: [],
+                isbn: "",
+                pageCount: null,
+                publisher: "",
+                publishedDate: "",
+                description: "",
               }
             )
           )
         )
       )
     )) as {
+      googleBooksVolumeId: string;
       title: string;
       image: string;
       authors: {
@@ -114,7 +125,10 @@ export default function getBookListComponents(client: Client) {
         variant: LinkComponentVariant.Default,
       })),
       actionLink: {
-        href: "/anyhting",
+        href: `https://bookshop.org/books?keywords=${slugify(result.title, {
+          lower: true,
+          strict: true,
+        })}`,
         title: "Buy on Bookshop.org!",
         variant: LinkComponentVariant.Default,
       },
