@@ -2,9 +2,9 @@ import { print } from "graphql/language/printer";
 import { DocumentNode } from "graphql/language/ast";
 import gql from "graphql-tag";
 
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : `http://localhost:${process.env.NEXT_PUBLIC_PORT ?? "3000"}`;
+const baseUrl = process.env.GRAPHQL_HOST
+  ? `https://${process.env.GRAPHQL_HOST}`
+  : `http://localhost:3000`;
 
 async function request<D>(
   document: DocumentNode,
