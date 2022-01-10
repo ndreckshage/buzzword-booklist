@@ -24,7 +24,7 @@ async function request<D>(
         "Content-Type": "application/json",
         ...extraHeaders,
       },
-      // credentials: "include",
+      credentials: "include",
       body: JSON.stringify({
         query: print(document),
         variables,
