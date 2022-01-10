@@ -1,3 +1,6 @@
+import Layout from "ui/components/system/layout.server";
+import { ComponentContextType } from "api/__generated__/resolvers-types";
+
 type Props = {
   router: {
     query: {
@@ -21,10 +24,10 @@ export default function BookShow(props: Props) {
   }
 
   return (
-    <>
-      <h2 className="text-xl m-5 p-5 text-purple-500">
-        Book: {googleBooksVolumeId}
-      </h2>
-    </>
+    <Layout
+      id="320326508822396997"
+      contextType={ComponentContextType.Book}
+      contextKey={googleBooksVolumeId}
+    />
   );
 }

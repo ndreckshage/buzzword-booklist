@@ -143,6 +143,42 @@ export default {
         })
         .then(({ bookCards }) => bookCards),
   },
+  BookImageComponent: {
+    image: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ image }) => image),
+  },
+  BookTitleComponent: {
+    title: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ title }) => title),
+  },
+  BookActionComponent: {
+    link: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ actionLink }) => actionLink),
+  },
+  BookAuthorsComponent: {
+    links: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ authorLinks }) => authorLinks),
+  },
+  BookCategoriesComponent: {
+    links: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ categoryLinks }) => categoryLinks),
+  },
+  BookDetailsComponent: {
+    text: ({ contextKey, sourceKey }, args, { loaders }) =>
+      loaders.bookComponentsByKeysLoader
+        .load(sourceKey ?? contextKey)
+        .then(({ detailsMarkdown }) => detailsMarkdown),
+  },
   Component: {
     __resolveType: (obj) => obj.componentType,
   },

@@ -11,6 +11,18 @@ import BookCarousel, {
 } from "./book-carousel.server";
 import BookGrid, { BookGridComponentFragment } from "./book-grid.server";
 import BookList, { BookListComponentFragment } from "./book-list.server";
+import BookAuthors, {
+  BookAuthorsComponentFragment,
+} from "./book-authors.server";
+import BookCategories, {
+  BookCategoriesComponentFragment,
+} from "./book-categories.server";
+import BookDetails, {
+  BookDetailsComponentFragment,
+} from "./book-details.server";
+import BookImage, { BookImageComponentFragment } from "./book-image.server";
+import BookTitle, { BookTitleComponentFragment } from "./book-title.server";
+import BookAction, { BookActionComponentFragment } from "./book-action.server";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
@@ -28,6 +40,12 @@ const ComponentFragment = gql`
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
     ...BookListComponentFragment
+    ...BookAuthorsComponentFragment
+    ...BookCategoriesComponentFragment
+    ...BookDetailsComponentFragment
+    ...BookImageComponentFragment
+    ...BookTitleComponentFragment
+    ...BookActionComponentFragment
   }
 `;
 
@@ -69,6 +87,12 @@ const LAYOUT_QUERY = gql`
   ${BookCarouselComponentFragment}
   ${BookGridComponentFragment}
   ${BookListComponentFragment}
+  ${BookTitleComponentFragment}
+  ${BookImageComponentFragment}
+  ${BookAuthorsComponentFragment}
+  ${BookCategoriesComponentFragment}
+  ${BookDetailsComponentFragment}
+  ${BookActionComponentFragment}
 `;
 
 const COMPONENT_MAP = {
@@ -76,6 +100,12 @@ const COMPONENT_MAP = {
   BookCarouselComponent: BookCarousel,
   BookGridComponent: BookGrid,
   BookListComponent: BookList,
+  BookAuthorsComponent: BookAuthors,
+  BookCategoriesComponent: BookCategories,
+  BookDetailsComponent: BookDetails,
+  BookImageComponent: BookImage,
+  BookTitleComponent: BookTitle,
+  BookActionComponent: BookAction,
   MarkdownComponent: Markdown,
 };
 

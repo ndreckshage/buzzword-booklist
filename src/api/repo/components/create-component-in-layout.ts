@@ -29,6 +29,17 @@ export default function createComponentInLayout(client: Client) {
             componentRefs: [],
           };
 
+        case "BookImageComponent":
+        case "BookTitleComponent":
+        case "BookActionComponent":
+        case "BookAuthorsComponent":
+        case "BookCategoriesComponent":
+        case "BookDetailsComponent":
+          return {
+            componentType,
+            createdBy: loggedInAs,
+          };
+
         case "BookCarouselComponent":
         case "BookGridComponent":
         case "BookListComponent":

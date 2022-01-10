@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link, { type LinkProps } from "next/link";
 import { type ReactNode } from "react";
 import cx from "classnames";
 
@@ -9,12 +9,7 @@ const linkClass = cx({
   "visited:text-purple-600": true,
 });
 
-type Props = {
-  children: ReactNode;
-  href: string;
-};
-
-export default function CustomLink(props: Props) {
+export default function CustomLink(props: LinkProps & { children: ReactNode }) {
   return (
     <Link href={props.href}>
       <a className={linkClass}>{props.children}</a>

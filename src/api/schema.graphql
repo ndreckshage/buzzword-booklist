@@ -23,12 +23,17 @@ type BookGridComponent {
 
 type BookImageComponent {
   id: ID!
-  href: String!
+  image: String!
 }
 
 type BookTitleComponent {
   id: ID!
   title: String!
+}
+
+type BookActionComponent {
+  id: ID!
+  link: LinkComponent
 }
 
 type BookAuthorsComponent {
@@ -86,6 +91,7 @@ union Component =
   | BookListComponent
   | BookImageComponent
   | BookTitleComponent
+  | BookActionComponent
   | BookAuthorsComponent
   | BookCategoriesComponent
   | BookDetailsComponent

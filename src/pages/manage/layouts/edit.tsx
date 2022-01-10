@@ -56,6 +56,41 @@ const BookListComponentFragment = gql`
   }
 `;
 
+const BookImageComponentFragment = gql`
+  fragment BookImageComponentFragment on BookImageComponent {
+    id
+  }
+`;
+
+const BookActionComponentFragment = gql`
+  fragment BookActionComponentFragment on BookActionComponent {
+    id
+  }
+`;
+
+const BookTitleComponentFragment = gql`
+  fragment BookTitleComponentFragment on BookTitleComponent {
+    id
+  }
+`;
+const BookAuthorsComponentFragment = gql`
+  fragment BookAuthorsComponentFragment on BookAuthorsComponent {
+    id
+  }
+`;
+
+const BookCategoriesComponentFragment = gql`
+  fragment BookCategoriesComponentFragment on BookCategoriesComponent {
+    id
+  }
+`;
+
+const BookDetailsComponentFragment = gql`
+  fragment BookDetailsComponentFragment on BookDetailsComponent {
+    id
+  }
+`;
+
 const MarkdownComponentFragment = gql`
   fragment MarkdownComponentFragment on MarkdownComponent {
     id
@@ -70,6 +105,12 @@ const ComponentFragment = gql`
     ...BookCarouselComponentFragment
     ...BookGridComponentFragment
     ...BookListComponentFragment
+    ...BookImageComponentFragment
+    ...BookActionComponentFragment
+    ...BookTitleComponentFragment
+    ...BookAuthorsComponentFragment
+    ...BookCategoriesComponentFragment
+    ...BookDetailsComponentFragment
     ...MarkdownComponentFragment
   }
 `;
@@ -104,10 +145,16 @@ const LAYOUT_QUERY = gql`
 
   ${LayoutComponentFragment}
   ${ComponentFragment}
-  ${MarkdownComponentFragment}
   ${BookCarouselComponentFragment}
   ${BookGridComponentFragment}
   ${BookListComponentFragment}
+  ${BookImageComponentFragment}
+  ${BookActionComponentFragment}
+  ${BookTitleComponentFragment}
+  ${BookAuthorsComponentFragment}
+  ${BookCategoriesComponentFragment}
+  ${BookDetailsComponentFragment}
+  ${MarkdownComponentFragment}
 `;
 
 const CREATE_COMPONENT_IN_LAYOUT_MUTATION = gql`
@@ -182,6 +229,12 @@ const COMPONENT_MAP = {
   BookCarouselComponent: BookList,
   BookGridComponent: BookList,
   BookListComponent: BookList,
+  BookImageComponent: BookComponent,
+  BookTitleComponent: BookComponent,
+  BookActionComponent: BookComponent,
+  BookAuthorsComponent: BookComponent,
+  BookCategoriesComponent: BookComponent,
+  BookDetailsComponent: BookComponent,
   MarkdownComponent: Markdown,
 };
 
@@ -190,6 +243,12 @@ enum ComponentTypes {
   BookCarouselComponent = "BookCarouselComponent",
   BookGridComponent = "BookGridComponent",
   BookListComponent = "BookListComponent",
+  BookImageComponent = "BookImageComponent",
+  BookTitleComponent = "BookTitleComponent",
+  BookActionComponent = "BookActionComponent",
+  BookAuthorsComponent = "BookAuthorsComponent",
+  BookCategoriesComponent = "BookCategoriesComponent",
+  BookDetailsComponent = "BookDetailsComponent",
   MarkdownComponent = "MarkdownComponent",
 }
 
@@ -209,6 +268,12 @@ function Layout(props: LayoutComponent) {
     ComponentTypes.BookCarouselComponent,
     ComponentTypes.BookGridComponent,
     ComponentTypes.BookListComponent,
+    ComponentTypes.BookImageComponent,
+    ComponentTypes.BookTitleComponent,
+    ComponentTypes.BookActionComponent,
+    ComponentTypes.BookAuthorsComponent,
+    ComponentTypes.BookCategoriesComponent,
+    ComponentTypes.BookDetailsComponent,
     ComponentTypes.MarkdownComponent,
   ];
 
@@ -273,7 +338,11 @@ function Layout(props: LayoutComponent) {
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
           if (!Component) {
-            return null;
+            return (
+              <p key={component.id}>
+                Missing component! {component.__typename}
+              </p>
+            );
           }
 
           return (
@@ -390,6 +459,14 @@ function BookList(props: {
       >
         Save changes
       </button>
+    </div>
+  );
+}
+
+function BookComponent(props: { __typename: string; id: string }) {
+  return (
+    <div>
+      <p>{props.__typename}</p>
     </div>
   );
 }

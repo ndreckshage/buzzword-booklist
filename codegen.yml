@@ -8,6 +8,12 @@ generates:
         BookCarouselComponent: ../repo/components#RootBookListComponentModel
         BookGridComponent: ../repo/components#RootBookListComponentModel
         BookListComponent: ../repo/components#RootBookListComponentModel
+        BookActionComponent: ../repo/components#RootBookComponentModel
+        BookAuthorsComponent: ../repo/components#RootBookComponentModel
+        BookCategoriesComponent: ../repo/components#RootBookComponentModel
+        BookDetailsComponent: ../repo/components#RootBookComponentModel
+        BookImageComponent: ../repo/components#RootBookComponentModel
+        BookTitleComponent: ../repo/components#RootBookComponentModel
         Component: ../repo/components#RootComponentModel
         MarkdownComponent: ../repo/components#RootComponentModel
         LayoutComponent: ../repo/components#RootLayoutComponentModel
