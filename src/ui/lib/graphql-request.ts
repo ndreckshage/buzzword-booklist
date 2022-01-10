@@ -17,20 +17,25 @@ async function request<D>(
     } ; ${JSON.stringify(variables)}`
   );
 
-  const response = await fetch(`${baseUrl}/api/graphql`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...extraHeaders,
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      query: print(document),
-      variables,
-    }),
-  });
+  try {
+    const response = await fetch(`${baseUrl}/api/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...extraHeaders,
+      },
+      // credentials: "include",
+      body: JSON.stringify({
+        query: print(document),
+        variables,
+      }),
+    });
 
-  return (await response.json().then(({ data }) => data)) as D;
+    return (await response.json().then(({ data }) => data)) as D;
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
 }
 
 export { request, gql };
