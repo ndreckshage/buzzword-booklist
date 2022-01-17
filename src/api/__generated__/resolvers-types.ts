@@ -44,6 +44,7 @@ export type BookCardComponent = {
   href: Scalars['String'];
   id: Scalars['ID'];
   image: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type BookCarouselComponent = {
@@ -391,6 +392,7 @@ export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType
   href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

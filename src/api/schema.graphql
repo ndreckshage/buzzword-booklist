@@ -2,6 +2,7 @@ type BookCardComponent {
   id: ID!
   href: String!
   image: String!
+  title: String!
 }
 
 type BookCarouselComponent {

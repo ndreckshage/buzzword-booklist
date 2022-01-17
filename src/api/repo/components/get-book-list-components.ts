@@ -131,6 +131,10 @@ export default function getBookListComponents(client: Client) {
                                     ["data", "image"],
                                     Q.Var("bookDoc")
                                   ),
+                                  title: Q.Select(
+                                    ["data", "title"],
+                                    Q.Var("bookDoc")
+                                  ),
                                 }
                               )
                             )

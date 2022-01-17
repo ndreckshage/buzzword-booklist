@@ -26,7 +26,7 @@ export default function CollectionsAuthorsShow(props: Props) {
 
   return (
     <Layout
-      id="319426381823868993"
+      id="319636692388544577"
       contextType={ComponentContextType.Author}
       contextKey={sourceKey}
     />

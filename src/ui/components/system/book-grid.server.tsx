@@ -3,7 +3,11 @@ import { type BookGridComponent } from "api/__generated__/resolvers-types";
 import BookGrid from "./book-grid.client";
 
 export default function BookGridServer(props: BookGridComponent) {
-  return <BookGrid {...props} />;
+  return (
+    <div className="container mx-auto my-10">
+      <BookGrid {...props} />
+    </div>
+  );
 }
 
 export const BookGridComponentFragment = gql`
@@ -14,6 +18,7 @@ export const BookGridComponentFragment = gql`
       id
       href
       image
+      title
     }
   }
 `;

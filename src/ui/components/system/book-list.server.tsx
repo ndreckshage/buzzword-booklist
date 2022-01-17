@@ -3,7 +3,11 @@ import { type BookListComponent } from "api/__generated__/resolvers-types";
 import BookList from "./book-list.client";
 
 export default function BookListServer(props: BookListComponent) {
-  return <BookList {...props} />;
+  return (
+    <div className="container mx-auto my-10">
+      <BookList {...props} />
+    </div>
+  );
 }
 
 export const BookListComponentFragment = gql`
@@ -14,6 +18,7 @@ export const BookListComponentFragment = gql`
       id
       href
       image
+      title
     }
   }
 `;
