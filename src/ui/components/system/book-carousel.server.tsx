@@ -3,7 +3,11 @@ import BookCarousel from "./book-carousel.client";
 import { type BookCarouselComponent } from "api/__generated__/resolvers-types";
 
 export default function BookCarouselServer(props: BookCarouselComponent) {
-  return <BookCarousel {...props} />;
+  return (
+    <div className="container mx-auto">
+      <BookCarousel {...props} />
+    </div>
+  );
 }
 
 export const BookCarouselComponentFragment = gql`
@@ -20,5 +24,6 @@ export const BookCarouselComponentFragment = gql`
       href
       image
     }
+    bookListCreatedBy
   }
 `;

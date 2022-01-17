@@ -95,6 +95,7 @@ const MarkdownComponentFragment = gql`
   fragment MarkdownComponentFragment on MarkdownComponent {
     id
     text
+    backgroundColor
   }
 `;
 
@@ -184,8 +185,16 @@ const REMOVE_COMPONENT_MUTATION = gql`
 `;
 
 const UPDATE_MARKDOWN_MUTATION = gql`
-  mutation UpdateMarkdownComponent($componentId: ID!, $text: String!) {
-    updateMarkdownComponent(componentId: $componentId, text: $text)
+  mutation UpdateMarkdownComponent(
+    $componentId: ID!
+    $text: String!
+    $backgroundColor: String!
+  ) {
+    updateMarkdownComponent(
+      componentId: $componentId
+      text: $text
+      backgroundColor: $backgroundColor
+    )
   }
 `;
 
@@ -478,6 +487,9 @@ function BookComponent(props: { __typename: string; id: string }) {
 function Markdown(props: MarkdownComponent) {
   const { updateMarkdownComponent } = useContext(LayoutContext);
   const [textState, updateText] = useState(props.text);
+  const [backgroundColor, updateBackgroundColor] = useState(
+    props.backgroundColor
+  );
   const [, forceUpdate] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -498,20 +510,37 @@ function Markdown(props: MarkdownComponent) {
       <textarea
         value={textState}
         ref={textareaRef}
+        className="resize"
         onChange={(e) => {
           updateText(e.target.value);
         }}
       />
-      <button
-        onClick={() => {
-          updateMarkdownComponent({
-            componentId: props.id,
-            text: textState,
-          });
+      <p>Background color:</p>
+      <select
+        value={backgroundColor}
+        onChange={(e) => {
+          updateBackgroundColor(e.target.value);
         }}
       >
-        Save
-      </button>
+        {["inherit", "emerald-500", "indigo-500"].map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      <div className="border border-purple-500 m-2 p-2">
+        <button
+          onClick={() => {
+            updateMarkdownComponent({
+              componentId: props.id,
+              text: textState,
+              backgroundColor,
+            });
+          }}
+        >
+          Save
+        </button>
+      </div>
     </div>
   );
 }

@@ -52,6 +52,7 @@ export default function createComponentInLayout(client: Client) {
           return {
             componentType,
             text: "",
+            backgroundColor: "inherit",
             createdBy: loggedInAs,
           };
 

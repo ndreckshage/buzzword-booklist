@@ -9,6 +9,7 @@ type BookCarouselComponent {
   title: String!
   link: LinkComponent
   bookCards: [BookCardComponent!]!
+  bookListCreatedBy: String!
   sourceType: ComponentContextType
   sourceKey: String
 }
@@ -62,6 +63,7 @@ type BookListComponent {
 type MarkdownComponent {
   id: ID!
   text: String!
+  backgroundColor: String!
 }
 
 enum LinkComponentVariant {
@@ -151,7 +153,11 @@ type Mutation {
   ): Boolean!
   createComponentInLayout(layoutId: ID!, componentType: String!): Boolean!
   removeComponentInLayout(layoutId: ID!, componentId: ID!): Boolean!
-  updateMarkdownComponent(componentId: ID!, text: String!): Boolean!
+  updateMarkdownComponent(
+    componentId: ID!
+    text: String!
+    backgroundColor: String!
+  ): Boolean!
   updateBooklistComponent(
     componentId: ID!
     sourceType: ComponentContextType!

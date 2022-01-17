@@ -3,6 +3,7 @@ import { type MarkdownComponent } from "api/__generated__/resolvers-types";
 import React from "react";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import cx from "classnames";
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
   "img",
@@ -18,11 +19,18 @@ const allowedAttributes = Object.assign(
   }
 );
 
-export default function Markdown({ id, text }: MarkdownComponent) {
+export default function Markdown({ text, backgroundColor }: MarkdownComponent) {
   return (
-    <>
-      <p>Markdown!: {id}</p>
+    <div
+      className={cx("markdown-component py-10", {
+        "bg-inherit": backgroundColor === "inherit",
+        "bg-emerald-500": backgroundColor === "emerald-500",
+        "bg-indigo-500": backgroundColor === "indigo-500",
+        "text-white": backgroundColor === "indigo-500" || "emerald-500",
+      })}
+    >
       <div
+        className="container mx-auto"
         dangerouslySetInnerHTML={{
           __html: sanitizeHtml(marked(text || ""), {
             allowedTags,
@@ -30,7 +38,7 @@ export default function Markdown({ id, text }: MarkdownComponent) {
           }),
         }}
       />
-    </>
+    </div>
   );
 }
 
@@ -38,5 +46,6 @@ export const MarkdownComponentFragment = gql`
   fragment MarkdownComponentFragment on MarkdownComponent {
     id
     text
+    backgroundColor
   }
 `;

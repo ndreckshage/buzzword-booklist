@@ -88,6 +88,19 @@ export default {
           sourceKey: sourceKey ?? contextKey,
         })
         .then(({ bookCards }) => bookCards),
+
+    bookListCreatedBy: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
+        .then(({ bookListCreatedBy }) => bookListCreatedBy),
   },
   BookGridComponent: {
     title: (
@@ -268,11 +281,16 @@ export default {
     ),
 
     updateMarkdownComponent: authenticated(
-      (parent, { componentId, text }, { mutations, loggedInAs }) =>
+      (
+        parent,
+        { componentId, text, backgroundColor },
+        { mutations, loggedInAs }
+      ) =>
         mutations.updateMarkdownComponent({
           componentId,
           text,
           loggedInAs,
+          backgroundColor,
         })
     ),
 

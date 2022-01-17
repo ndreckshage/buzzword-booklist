@@ -136,6 +136,11 @@ export default function getBookListComponents(client: Client) {
                             )
                           )
                         ),
+                        bookListCreatedBy: Q.If(
+                          Q.Equals(Q.Var("sourceType"), "LIST"),
+                          Q.Select(["data", "createdBy"], Q.Var("sourceDoc")),
+                          ""
+                        ),
                       }
                     )
                   ),
@@ -146,6 +151,7 @@ export default function getBookListComponents(client: Client) {
                         "Data source not found. Ensure valid context / source entered.",
                       totalBookCards: 0,
                       bookCards: [],
+                      bookListCreatedBy: "",
                     }
                   )
                 )
@@ -161,6 +167,7 @@ export default function getBookListComponents(client: Client) {
           googleBooksVolumeId: string;
           image: string;
         }[];
+        bookListCreatedBy: string;
       }[];
 
       return result.map((bookListComponent) => ({

@@ -21,7 +21,16 @@
     @apply text-lg;
   }
 
+  ul {
+    @apply list-disc ml-5;
+  }
+
   a {
     @apply text-indigo-500 underline;
+  }
+
+  .markdown-component h1,
+  .markdown-component h2 {
+    @apply mb-5;
   }
 }

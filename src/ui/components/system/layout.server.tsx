@@ -23,6 +23,7 @@ import BookDetails, {
 import BookImage, { BookImageComponentFragment } from "./book-image.server";
 import BookTitle, { BookTitleComponentFragment } from "./book-title.server";
 import BookAction, { BookActionComponentFragment } from "./book-action.server";
+import CreatedBy from "../common/created-by";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
@@ -109,33 +110,18 @@ const COMPONENT_MAP = {
   MarkdownComponent: Markdown,
 };
 
-const CreatedBy = ({ user }: { user: string }) => (
-  <div>
-    Created by:
-    <img
-      src={`https://avatars.githubusercontent.com/${user}?s=50`}
-      width={50}
-      height={50}
-    />
-    <a href={`https://github.com/${user}`} target="_blank">
-      {user}
-    </a>
-  </div>
-);
-
 type LayoutProps = LayoutComponent & { root: boolean };
 
-function Layout({
-  id,
-  createdBy,
-  root,
-  flexDirection,
-  components,
-}: LayoutProps) {
+function Layout({ createdBy, root, flexDirection, components }: LayoutProps) {
   return (
-    <div className="m-5 p-5 border border-violet-500">
-      <p>Layout: {id}</p>
-      {root && <CreatedBy user={createdBy} />}
+    <>
+      {root && (
+        <div className="border-b border-slate-100 py-2">
+          <div className="container mx-auto flex justify-end">
+            <CreatedBy createdByType="Layout" createdBy={createdBy} />
+          </div>
+        </div>
+      )}
       <div
         className={cx("flex", {
           "flex-row": flexDirection === "row",
@@ -149,14 +135,10 @@ function Layout({
             return null;
           }
 
-          return (
-            <div key={component.id} className="m-5 p-5 border border-green-500">
-              <Component key={component.id} {...component} />
-            </div>
-          );
+          return <Component key={component.id} {...component} />;
         })}
       </div>
-    </div>
+    </>
   );
 }
 

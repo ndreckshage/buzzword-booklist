@@ -49,6 +49,7 @@ export type BookCardComponent = {
 export type BookCarouselComponent = {
   __typename?: 'BookCarouselComponent';
   bookCards: Array<BookCardComponent>;
+  bookListCreatedBy: Scalars['String'];
   id: Scalars['ID'];
   link?: Maybe<LinkComponent>;
   sourceKey?: Maybe<Scalars['String']>;
@@ -147,6 +148,7 @@ export type List = {
 
 export type MarkdownComponent = {
   __typename?: 'MarkdownComponent';
+  backgroundColor: Scalars['String'];
   id: Scalars['ID'];
   text: Scalars['String'];
 };
@@ -214,6 +216,7 @@ export type MutationUpdateLayoutComponentArgs = {
 
 
 export type MutationUpdateMarkdownComponentArgs = {
+  backgroundColor: Scalars['String'];
   componentId: Scalars['ID'];
   text: Scalars['String'];
 };
@@ -393,6 +396,7 @@ export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType
 
 export type BookCarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselComponent'] = ResolversParentTypes['BookCarouselComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
+  bookListCreatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
   sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -480,6 +484,7 @@ export type ListResolvers<ContextType = ResolverContext, ParentType extends Reso
 };
 
 export type MarkdownComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['MarkdownComponent'] = ResolversParentTypes['MarkdownComponent']> = {
+  backgroundColor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -494,7 +499,7 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
   removeComponentInLayout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveComponentInLayoutArgs, 'componentId' | 'layoutId'>>;
   updateBooklistComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateBooklistComponentArgs, 'componentId' | 'sourceKey' | 'sourceType'>>;
   updateLayoutComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateLayoutComponentArgs, 'layoutId'>>;
-  updateMarkdownComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateMarkdownComponentArgs, 'componentId' | 'text'>>;
+  updateMarkdownComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateMarkdownComponentArgs, 'backgroundColor' | 'componentId' | 'text'>>;
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

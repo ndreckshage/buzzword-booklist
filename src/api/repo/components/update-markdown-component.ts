@@ -5,6 +5,7 @@ export type UpdateMarkdownComponentInput = {
   componentId: string;
   text: string;
   loggedInAs: string;
+  backgroundColor: string;
 };
 
 export type UpdateMarkdownComponentOutput = boolean;
@@ -13,6 +14,7 @@ export default function updateMarkdownComponent(client: Client) {
   return async ({
     componentId,
     text,
+    backgroundColor,
     loggedInAs,
   }: UpdateMarkdownComponentInput) => {
     console.log("updateMarkdownComponent", componentId, text, loggedInAs);
@@ -29,6 +31,7 @@ export default function updateMarkdownComponent(client: Client) {
             execExpr: Q.Update(Q.Select("ref", Q.Var("componentDoc")), {
               data: {
                 text,
+                backgroundColor,
               },
             }),
           })

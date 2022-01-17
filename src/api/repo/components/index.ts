@@ -30,6 +30,7 @@ export type BookListComponentModel = {
   key: string;
   totalBookCards: number;
   bookCards: BookCardComponent[];
+  bookListCreatedBy: string;
 };
 
 export type BookComponentModel = {
