@@ -1,14 +1,6 @@
 import Link from "next/link";
-import cx from "classnames";
 import { useQuery, gql } from "ui/lib/use-data.client";
 import { Suspense } from "react";
-
-const linkClass = cx({
-  underline: true,
-  "text-blue-600": true,
-  "hover:text-blue-800": true,
-  "visited:text-purple-600": true,
-});
 
 const GET_LISTS_QUERY = gql`
   query GetLists {
@@ -37,14 +29,14 @@ function ManageLists() {
     <>
       <p>Manage Lists</p>
       <Link href="/manage/lists/create">
-        <a className={linkClass}>Create List</a>
+        <a>Create List</a>
       </Link>
       <hr className="my-5" />
       <ul>
         {data.currentUser?.lists.map((list) => (
           <li key={list.id}>
             <Link href={`/manage/lists/edit?list=${list.key}`}>
-              <a className={linkClass}>Edit {list.title}</a>
+              <a>Edit {list.title}</a>
             </Link>
           </li>
         ))}

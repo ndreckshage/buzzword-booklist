@@ -4,7 +4,10 @@ module.exports = {
     "./src/ui/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      display: ['"Merriweather"', "serif"],
+      body: ['"Montserrat"', "sans-serif"],
+    },
   },
   plugins: [],
 };

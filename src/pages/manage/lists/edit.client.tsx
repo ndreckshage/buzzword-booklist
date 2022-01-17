@@ -79,6 +79,8 @@ const EditList = ({ listKey }: { listKey: string }) => {
     return <p>Not Authorized</p>;
   }
 
+  console.log(data.list);
+
   return (
     <>
       <>
