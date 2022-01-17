@@ -6,7 +6,7 @@ export default function BookList(props: BookListComponent) {
   return (
     <div>
       {props.bookCards.map((bookCard) => (
-        <div key={bookCard.id} className="border-b border-slate-100 py-5">
+        <div key={bookCard.id} className="border-b border-slate-100 pb-5 mb-5">
           <NextLink href={bookCard.href}>
             <a className="flex text-inherit text-xl no-underline items-center space-x-5">
               <Image

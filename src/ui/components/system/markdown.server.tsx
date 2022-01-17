@@ -19,10 +19,14 @@ const allowedAttributes = Object.assign(
   }
 );
 
-export default function Markdown({ text, backgroundColor }: MarkdownComponent) {
+export default function Markdown({
+  __typename,
+  text,
+  backgroundColor,
+}: MarkdownComponent) {
   return (
     <div
-      className={cx("markdown-component py-10", {
+      className={cx(__typename, "py-10", {
         "bg-inherit": backgroundColor === "inherit",
         "bg-emerald-500": backgroundColor === "emerald-500",
         "bg-indigo-500": backgroundColor === "indigo-500",

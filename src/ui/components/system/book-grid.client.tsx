@@ -6,7 +6,7 @@ export default function BookGrid(props: BookGridComponent) {
   return (
     <div className="grid grid-cols-5 gap-4">
       {props.bookCards.map((bookCard) => (
-        <div key={bookCard.id} className="flex justify-center m-5">
+        <div key={bookCard.id} className="flex m-5">
           <NextLink href={bookCard.href}>
             <a className="text-inherit text-lg no-underline">
               <Image

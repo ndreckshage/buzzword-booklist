@@ -7,7 +7,11 @@ export default function BookImageServer(props: BookImageComponent) {
     return null;
   }
 
-  return <Image src={props.image} width={200} height={300} />;
+  return (
+    <div className="shrink-0 mx-5">
+      <Image src={props.image} width={200} height={300} />
+    </div>
+  );
 }
 
 export const BookImageComponentFragment = gql`

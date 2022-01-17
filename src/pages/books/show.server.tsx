@@ -28,6 +28,7 @@ export default function BookShow(props: Props) {
       id="320326508822396997"
       contextType={ComponentContextType.Book}
       contextKey={googleBooksVolumeId}
+      className="container mx-auto my-10 px-60"
     />
   );
 }

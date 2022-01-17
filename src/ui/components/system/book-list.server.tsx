@@ -4,7 +4,7 @@ import BookList from "./book-list.client";
 
 export default function BookListServer(props: BookListComponent) {
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto my-5">
       <BookList {...props} />
     </div>
   );

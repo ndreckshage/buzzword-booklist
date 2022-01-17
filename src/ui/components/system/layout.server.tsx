@@ -110,11 +110,21 @@ const COMPONENT_MAP = {
   MarkdownComponent: Markdown,
 };
 
-type LayoutProps = LayoutComponent & { root: boolean };
+type LayoutProps = LayoutComponent & {
+  root: boolean;
+  className?: string;
+};
 
-function Layout({ createdBy, root, flexDirection, components }: LayoutProps) {
+function Layout({
+  __typename,
+  createdBy,
+  root,
+  flexDirection,
+  components,
+  className,
+}: LayoutProps) {
   return (
-    <>
+    <div className={__typename}>
       {root && (
         <div className="border-b border-slate-100 py-2">
           <div className="container mx-auto flex justify-end">
@@ -123,7 +133,7 @@ function Layout({ createdBy, root, flexDirection, components }: LayoutProps) {
         </div>
       )}
       <div
-        className={cx("flex", {
+        className={cx("flex", className, {
           "flex-row": flexDirection === "row",
           "flex-col": flexDirection === "col",
         })}
@@ -138,7 +148,7 @@ function Layout({ createdBy, root, flexDirection, components }: LayoutProps) {
           return <Component key={component.id} {...component} />;
         })}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -146,10 +156,12 @@ export default function LayoutContainer({
   id,
   contextType,
   contextKey,
+  className,
 }: {
   id: string;
   contextType: ComponentContextType;
   contextKey: string;
+  className?: string;
 }) {
   const data = useQuery<{ layout: LayoutComponent }>(
     `Component::${id}`,
@@ -157,5 +169,5 @@ export default function LayoutContainer({
     { id, contextType, contextKey }
   );
 
-  return <Layout {...data.layout} root />;
+  return <Layout {...data.layout} className={className ?? ""} root />;
 }

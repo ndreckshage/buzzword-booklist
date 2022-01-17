@@ -29,8 +29,8 @@
     @apply text-indigo-500 underline;
   }
 
-  .markdown-component h1,
-  .markdown-component h2 {
+  .MarkdownComponent h1,
+  .MarkdownComponent h2 {
     @apply mb-5;
   }
 }
