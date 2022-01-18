@@ -46,6 +46,7 @@ export type BookComponentModel = {
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
 export { default as getBookListComponents } from "./get-book-list-components";
+export { default as getBookListLinksComponents } from "./get-book-list-links-components";
 export { default as getBookComponents } from "./get-book-components";
 
 export {

@@ -142,7 +142,14 @@ function Layout({
           // @ts-ignore
           const Component = COMPONENT_MAP[component.__typename];
           if (!Component) {
-            return null;
+            return (
+              <div
+                key={component.__typename}
+                className="container mx-auto my-5"
+              >
+                <p>Component for {component.__typename} not found</p>
+              </div>
+            );
           }
 
           return <Component key={component.id} {...component} />;

@@ -28,6 +28,7 @@ import {
   getLayoutComponentsByCreators,
   getComponentsByIds,
   getBookListComponents,
+  getBookListLinksComponents,
   getBookComponents,
   createLayoutComponent,
   type CreateLayoutComponentInput,
@@ -86,6 +87,7 @@ export type ResolverContext = {
       BookListComponentModel,
       string
     >;
+    bookListLinksComponentsLoader: DataLoader<string, null, string>;
     bookComponentsByKeysLoader: DataLoader<string, BookComponentModel, string>;
   };
   mutations: {
@@ -136,6 +138,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       bookListComponentsLoader: new DataLoader(getBookListComponents(client), {
         cacheKeyFn: JSON.stringify,
       }),
+      bookListLinksComponentsLoader: new DataLoader(
+        getBookListLinksComponents(client)
+      ),
       bookComponentsByKeysLoader: new DataLoader(getBookComponents(client)),
     },
     mutations: {

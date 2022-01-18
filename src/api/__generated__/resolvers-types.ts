@@ -50,7 +50,7 @@ export type BookCardComponent = {
 export type BookCarouselComponent = {
   __typename?: 'BookCarouselComponent';
   bookCards: Array<BookCardComponent>;
-  bookListCreatedBy: Scalars['String'];
+  bookListCreatedBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   link?: Maybe<LinkComponent>;
   sourceKey?: Maybe<Scalars['String']>;
@@ -73,6 +73,7 @@ export type BookDetailsComponent = {
 export type BookGridComponent = {
   __typename?: 'BookGridComponent';
   bookCards: Array<BookCardComponent>;
+  bookListCreatedBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   sourceKey?: Maybe<Scalars['String']>;
   sourceType?: Maybe<ComponentContextType>;
@@ -88,6 +89,7 @@ export type BookImageComponent = {
 export type BookListComponent = {
   __typename?: 'BookListComponent';
   bookCards: Array<BookCardComponent>;
+  bookListCreatedBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   sourceKey?: Maybe<Scalars['String']>;
   sourceType?: Maybe<ComponentContextType>;
@@ -104,9 +106,13 @@ export type Component = BookActionComponent | BookAuthorsComponent | BookCardCom
 
 export enum ComponentContextType {
   Author = 'AUTHOR',
+  Authors = 'AUTHORS',
   Book = 'BOOK',
+  Books = 'BOOKS',
+  Categories = 'CATEGORIES',
   Category = 'CATEGORY',
   List = 'LIST',
+  Lists = 'LISTS',
   None = 'NONE'
 }
 
@@ -398,7 +404,7 @@ export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType
 
 export type BookCarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselComponent'] = ResolversParentTypes['BookCarouselComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
-  bookListCreatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
   sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -421,6 +427,7 @@ export type BookDetailsComponentResolvers<ContextType = ResolverContext, ParentT
 
 export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridComponent'] = ResolversParentTypes['BookGridComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
+  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
@@ -436,6 +443,7 @@ export type BookImageComponentResolvers<ContextType = ResolverContext, ParentTyp
 
 export type BookListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListComponent'] = ResolversParentTypes['BookListComponent']> = {
   bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
+  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;

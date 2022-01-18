@@ -17,12 +17,22 @@ const createBooks = () =>
       {
         collectionRef: Q.Select(["ref"], Q.CreateCollection({ name: "Books" })),
       },
-      Q.CreateIndex({
-        name: "unique_books_by_googleBooksVolumeId",
-        source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "googleBooksVolumeId"] }],
-        unique: true,
-      })
+      Q.Do(
+        Q.CreateIndex({
+          name: "unique_books_by_googleBooksVolumeId",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "googleBooksVolumeId"] }],
+          unique: true,
+        }),
+        Q.CreateIndex({
+          name: "books_by_listCount",
+          source: Q.Var("collectionRef"),
+          values: [
+            { field: ["data", "listCount"], reverse: true },
+            { field: ["ref"] },
+          ],
+        })
+      )
     )
   );
 
@@ -35,12 +45,22 @@ const createAuthors = () =>
           Q.CreateCollection({ name: "Authors" })
         ),
       },
-      Q.CreateIndex({
-        name: "unique_authors_by_key",
-        source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "key"] }],
-        unique: true,
-      })
+      Q.Do(
+        Q.CreateIndex({
+          name: "unique_authors_by_key",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "key"] }],
+          unique: true,
+        }),
+        Q.CreateIndex({
+          name: "authors_by_listCount",
+          source: Q.Var("collectionRef"),
+          values: [
+            { field: ["data", "listCount"], reverse: true },
+            { field: ["ref"] },
+          ],
+        })
+      )
     )
   );
 
@@ -53,12 +73,22 @@ const createCategories = () =>
           Q.CreateCollection({ name: "Categories" })
         ),
       },
-      Q.CreateIndex({
-        name: "unique_categories_by_key",
-        source: Q.Var("collectionRef"),
-        terms: [{ field: ["data", "key"] }],
-        unique: true,
-      })
+      Q.Do(
+        Q.CreateIndex({
+          name: "unique_categories_by_key",
+          source: Q.Var("collectionRef"),
+          terms: [{ field: ["data", "key"] }],
+          unique: true,
+        }),
+        Q.CreateIndex({
+          name: "categories_by_listCount",
+          source: Q.Var("collectionRef"),
+          values: [
+            { field: ["data", "listCount"], reverse: true },
+            { field: ["ref"] },
+          ],
+        })
+      )
     )
   );
 

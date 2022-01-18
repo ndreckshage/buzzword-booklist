@@ -19,11 +19,11 @@ export const BookCarouselComponentFragment = gql`
       href
       variant
     }
+    bookListCreatedBy
     bookCards {
       id
       href
       image
     }
-    bookListCreatedBy
   }
 `;

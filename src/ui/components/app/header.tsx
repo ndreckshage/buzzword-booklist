@@ -61,11 +61,11 @@ export default function Header() {
           </div>
         </div>
         <div className="space-x-2">
-          <Link href="/lists">Lists</Link>
-          <Link href="/authors">Authors</Link>
-          <Link href="/categories">Categories</Link>
-          <Link href="/layouts">Layouts</Link>
-          <Link href="/demos">React 18 Demos</Link>
+          <Link href="/lists">Recent Lists</Link>
+          <Link href="/books">Top Books</Link>
+          <Link href="/authors">Top Authors</Link>
+          <Link href="/categories">Top Categories</Link>
+          <Link href="/react-18-demos">React 18 Demos</Link>
         </div>
       </div>
     </div>

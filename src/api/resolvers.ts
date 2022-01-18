@@ -128,6 +128,19 @@ export default {
           sourceKey: sourceKey ?? contextKey,
         })
         .then(({ bookCards }) => bookCards),
+
+    bookListCreatedBy: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
+        .then(({ bookListCreatedBy }) => bookListCreatedBy),
   },
   BookListComponent: {
     title: (
@@ -155,6 +168,19 @@ export default {
           sourceKey: sourceKey ?? contextKey,
         })
         .then(({ bookCards }) => bookCards),
+
+    bookListCreatedBy: (
+      { componentType, contextType, contextKey, sourceType, sourceKey },
+      args,
+      { loaders }
+    ) =>
+      loaders.bookListComponentsLoader
+        .load({
+          componentType,
+          sourceType: sourceType ?? contextType,
+          sourceKey: sourceKey ?? contextKey,
+        })
+        .then(({ bookListCreatedBy }) => bookListCreatedBy),
   },
   BookImageComponent: {
     image: ({ contextKey, sourceKey }, args, { loaders }) =>
@@ -219,6 +245,18 @@ export default {
   List: {
     books: ({ id }, args, { loaders }) => loaders.booksByListIdsLoader.load(id),
   },
+  // ListLinksComponent: {
+  //   links: async ({ contextType, sourceType }, args, { loaders }) => {
+  //     const x = await loaders.bookListLinksComponentsLoader.load(
+  //       sourceType ?? contextType
+  //     );
+
+  //     console.log("x", x);
+
+  //     return x;
+  //     // return [];
+  //   },
+  // },
   Mutation: {
     createList: authenticated((parent, { title }, { mutations, loggedInAs }) =>
       mutations.createList({ title, loggedInAs })

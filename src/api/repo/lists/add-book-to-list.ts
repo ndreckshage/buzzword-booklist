@@ -1,5 +1,7 @@
 import { type Client } from "faunadb";
 import createBookAuthorsAndCategories from "api/repo/books/create-book-authors-and-categories";
+import incrementBookAuthorsAndCategoriesCount from "api/repo/books/increment-book-authors-and-categories-count";
+
 import appendConnectionToDocumentIfUnique from "api/repo/fql-helpers/append-connection-to-document-if-unique";
 import ifListOwner from "api/repo/fql-helpers/exec-if-list-owner";
 
@@ -25,6 +27,7 @@ export default function addBookToList(client: Client) {
 
     try {
       await createBookAuthorsAndCategories(client, googleBooksVolumeId);
+
       await client.query(
         ifListOwner({
           listKey,
@@ -37,6 +40,12 @@ export default function addBookToList(client: Client) {
             edgeIndexTerms: [googleBooksVolumeId],
           }),
         })
+      );
+
+      await incrementBookAuthorsAndCategoriesCount(
+        client,
+        googleBooksVolumeId,
+        true
       );
 
       return true as AddBookToListOutput;

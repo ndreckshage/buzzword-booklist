@@ -14,6 +14,7 @@ export const BookGridComponentFragment = gql`
   fragment BookGridComponentFragment on BookGridComponent {
     id
     title
+    bookListCreatedBy
     bookCards {
       id
       href

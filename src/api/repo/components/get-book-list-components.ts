@@ -40,13 +40,7 @@ const selectTitle = ({
     Q.Select(["data", "name"], sourceDoc)
   );
 
-const selectIndex = ({
-  sourceDoc,
-  sourceType,
-}: {
-  sourceDoc: Expr;
-  sourceType: Expr;
-}) =>
+const selectIndex = ({ sourceType }: { sourceType: Expr }) =>
   Q.If(
     Q.Equals(sourceType, "LIST"),
     Q.Index("unique_lists_by_key"),
@@ -83,10 +77,7 @@ export default function getBookListComponents(client: Client) {
               Q.Let(
                 {
                   sourceMatch: Q.Match(
-                    selectIndex({
-                      sourceDoc: Q.Var("sourceDoc"),
-                      sourceType: Q.Var("sourceType"),
-                    }),
+                    selectIndex({ sourceType: Q.Var("sourceType") }),
                     Q.Var("sourceKey")
                   ),
                 },

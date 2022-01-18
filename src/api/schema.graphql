@@ -10,7 +10,7 @@ type BookCarouselComponent {
   title: String!
   link: LinkComponent
   bookCards: [BookCardComponent!]!
-  bookListCreatedBy: String!
+  bookListCreatedBy: String
   sourceType: ComponentContextType
   sourceKey: String
 }
@@ -19,6 +19,7 @@ type BookGridComponent {
   id: ID!
   title: String!
   bookCards: [BookCardComponent!]!
+  bookListCreatedBy: String
   sourceType: ComponentContextType
   sourceKey: String
 }
@@ -57,6 +58,7 @@ type BookListComponent {
   id: ID!
   title: String!
   bookCards: [BookCardComponent!]!
+  bookListCreatedBy: String
   sourceType: ComponentContextType
   sourceKey: String
 }
@@ -122,9 +124,13 @@ type CurrentUser {
 }
 
 enum ComponentContextType {
+  AUTHORS
   AUTHOR
+  BOOKS
   BOOK
+  CATEGORIES
   CATEGORY
+  LISTS
   LIST
   NONE
 }
