@@ -2,12 +2,15 @@ export default function CreatedBy({
   createdByType,
   createdBy,
 }: {
-  createdByType: string;
+  createdByType?: string;
   createdBy: string;
 }) {
   return (
     <div className="flex space-x-1 items-center">
-      <span>{createdByType} created by:</span>
+      <span>
+        {createdByType}
+        {createdByType && " "}created by:
+      </span>
       <a
         href={`https://github.com/${createdBy}`}
         className="no-underline items-center flex border py-1 px-2 mx-2 rounded-lg space-x-1"

@@ -15,19 +15,27 @@ export default function BookList(props: ListComponent) {
           </>
         )}
       </div>
-      {props.cards.map((bookCard) => (
-        <div key={bookCard.id} className="border-b border-slate-100 pb-5 mb-5">
-          <NextLink href={bookCard.href}>
+      {props.cards.map((card) => (
+        <div key={card.id} className="flex border-b border-slate-100 pb-5 mb-5">
+          <NextLink href={card.href}>
             <a className="flex text-inherit text-xl no-underline items-center space-x-5">
-              <Image
-                alt="demo image"
-                src={bookCard.image}
-                width={75}
-                height={100}
-              />
-              <p>{bookCard.title}</p>
+              {card.image && (
+                <Image
+                  alt="demo image"
+                  src={card.image}
+                  width={75}
+                  height={100}
+                />
+              )}
+              <p>{card.title}</p>
             </a>
           </NextLink>
+          {card.createdBy && (
+            <div className="flex items-center space-x-5 ml-5">
+              <span>&mdash;</span>
+              <CreatedBy createdBy={card.createdBy} />
+            </div>
+          )}
         </div>
       ))}
     </>

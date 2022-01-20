@@ -6,11 +6,9 @@ import {
 import cx from "classnames";
 
 import Markdown, { MarkdownComponentFragment } from "./markdown.server";
-import BookCarousel, {
-  CarouselComponentFragment,
-} from "./book-carousel.server";
-import BookGrid, { GridComponentFragment } from "./book-grid.server";
-import BookList, { ListComponentFragment } from "./book-list.server";
+import Carousel, { CarouselComponentFragment } from "./carousel.server";
+import Grid, { GridComponentFragment } from "./grid.server";
+import List, { ListComponentFragment } from "./list.server";
 import BookAuthors, {
   BookAuthorsComponentFragment,
 } from "./book-authors.server";
@@ -28,7 +26,7 @@ import CreatedBy from "../common/created-by";
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
     id
-    createdBy
+    layoutCreatedBy: createdBy
     flexDirection
   }
 `;
@@ -98,9 +96,9 @@ const LAYOUT_QUERY = gql`
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
-  CarouselComponent: BookCarousel,
-  GridComponent: BookGrid,
-  ListComponent: BookList,
+  CarouselComponent: Carousel,
+  GridComponent: Grid,
+  ListComponent: List,
   BookAuthorsComponent: BookAuthors,
   BookCategoriesComponent: BookCategories,
   BookDetailsComponent: BookDetails,
@@ -117,18 +115,18 @@ type LayoutProps = LayoutComponent & {
 
 function Layout({
   __typename,
-  createdBy,
+  layoutCreatedBy,
   root,
   flexDirection,
   components,
   className,
-}: LayoutProps) {
+}: LayoutProps & { layoutCreatedBy: string }) {
   return (
     <div className={__typename}>
       {root && (
         <div className="border-b border-slate-100 py-2">
           <div className="container mx-auto flex justify-end">
-            <CreatedBy createdByType="Layout" createdBy={createdBy} />
+            <CreatedBy createdByType="Layout" createdBy={layoutCreatedBy} />
           </div>
         </div>
       )}
@@ -170,11 +168,9 @@ export default function LayoutContainer({
   contextKey: string;
   className?: string;
 }) {
-  const data = useQuery<{ layout: LayoutComponent }>(
-    `Component::${id}`,
-    LAYOUT_QUERY,
-    { id, contextType, contextKey }
-  );
+  const data = useQuery<{
+    layout: LayoutComponent & { layoutCreatedBy: string };
+  }>(`Component::${id}`, LAYOUT_QUERY, { id, contextType, contextKey });
 
   return <Layout {...data.layout} className={className ?? ""} root />;
 }

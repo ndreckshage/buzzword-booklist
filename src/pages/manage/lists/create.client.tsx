@@ -23,8 +23,8 @@ export default function CreateList() {
   };
 
   const listKey = slugify(listTitle, { lower: true, strict: true });
-  // const expectedUrl = `/collections/lists/${listKey}`;
-  const expectedUrl = `/collections/lists?list=${listKey}`;
+  // const expectedUrl = `/lists/${listKey}`;
+  const expectedUrl = `/lists?list=${listKey}`;
   // const manageUrl = `/manage/lists/${listKey}/edit`;
   const manageUrl = `/manage/lists/edit?list=${listKey}`;
 

@@ -1,11 +1,11 @@
 import gql from "graphql-tag";
-import BookCarousel from "./book-carousel.client";
+import Carousel from "./carousel.client";
 import { type CarouselComponent } from "api/__generated__/resolvers-types";
 
-export default function BookCarouselServer(props: CarouselComponent) {
+export default function CarouselServer(props: CarouselComponent) {
   return (
     <div className="container mx-auto">
-      <BookCarousel {...props} />
+      <Carousel {...props} />
     </div>
   );
 }

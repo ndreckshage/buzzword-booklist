@@ -115,12 +115,12 @@ export default function getListComponents(client: Client) {
       title: result.title,
       image: result.image,
       authorLinks: result.authors.map((author) => ({
-        href: `/collections/authors/show?sourceKey=${author.key}`,
+        href: `/authors/show?sourceKey=${author.key}`,
         title: author.name,
         variant: LinkComponentVariant.Default,
       })),
       categoryLinks: result.categories.map((category) => ({
-        href: `/collections/categories/show?sourceKey=${category.key}`,
+        href: `/categories/show?sourceKey=${category.key}`,
         title: category.name,
         variant: LinkComponentVariant.Default,
       })),

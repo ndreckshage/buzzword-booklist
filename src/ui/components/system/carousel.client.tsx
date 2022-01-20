@@ -64,27 +64,28 @@ export default function BookCarousel(props: CarouselComponent) {
             </span>
           )}
         </p>
-        <CreatedBy createdByType="List" createdBy={props.createdBy} />
+        {props.createdBy && (
+          <CreatedBy createdByType="List" createdBy={props.createdBy} />
+        )}
       </div>
       <div className="relative">
         <div
           className="relative w-full flex gap-6 overflow-x-auto scroll-smooth snap-x snap-always snap-mandatory p-5"
           ref={containerRef}
         >
-          {props.cards.map((bookCard) => (
-            <div
-              key={bookCard.id}
-              className="snap-start shrink-0 drop-shadow-lg"
-            >
-              <NextLink href={bookCard.href}>
+          {props.cards.map((card) => (
+            <div key={card.id} className="snap-start shrink-0 drop-shadow-lg">
+              <NextLink href={card.href}>
                 <a>
-                  <Image
-                    alt="demo image"
-                    src={bookCard.image}
-                    className="shrink-0 w-80 h-40 rounded-lg shadow-xl bg-white"
-                    width={200}
-                    height={300}
-                  />
+                  {card.image && (
+                    <Image
+                      alt="demo image"
+                      src={card.image}
+                      className="shrink-0 w-80 h-40 rounded-lg shadow-xl bg-white"
+                      width={200}
+                      height={300}
+                    />
+                  )}
                 </a>
               </NextLink>
             </div>

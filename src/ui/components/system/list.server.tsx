@@ -1,11 +1,11 @@
 import gql from "graphql-tag";
 import { type ListComponent } from "api/__generated__/resolvers-types";
-import BookList from "./book-list.client";
+import List from "./list.client";
 
-export default function BookListServer(props: ListComponent) {
+export default function ListServer(props: ListComponent) {
   return (
     <div className="container mx-auto my-5">
-      <BookList {...props} />
+      <List {...props} />
     </div>
   );
 }
@@ -20,6 +20,7 @@ export const ListComponentFragment = gql`
       href
       image
       title
+      createdBy
     }
   }
 `;

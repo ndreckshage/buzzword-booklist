@@ -1,11 +1,11 @@
 import gql from "graphql-tag";
 import { type GridComponent } from "api/__generated__/resolvers-types";
-import BookGrid from "./book-grid.client";
+import Grid from "./grid.client";
 
-export default function BookGridServer(props: GridComponent) {
+export default function GridServer(props: GridComponent) {
   return (
     <div className="container mx-auto my-10">
-      <BookGrid {...props} />
+      <Grid {...props} />
     </div>
   );
 }

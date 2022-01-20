@@ -4,10 +4,7 @@ import { LinkComponentVariant } from "api/__generated__/resolvers-types";
 
 const authorLink = (authorDoc: Expr) =>
   q.Concat(
-    [
-      "/collections/authors/show?sourceKey=",
-      q.Select(["data", "key"], authorDoc),
-    ],
+    ["/authors/show?sourceKey=", q.Select(["data", "key"], authorDoc)],
     ""
   );
 
@@ -22,18 +19,12 @@ const bookLink = (bookDoc: Expr) =>
 
 const categoryLink = (categoryDoc: Expr) =>
   q.Concat(
-    [
-      "/collections/categories/show?sourceKey=",
-      q.Select(["data", "key"], categoryDoc),
-    ],
+    ["/categories/show?sourceKey=", q.Select(["data", "key"], categoryDoc)],
     ""
   );
 
 const listLink = (listDoc: Expr) =>
-  q.Concat(
-    ["/collections/lists/show?sourceKey=", q.Select(["data", "key"], listDoc)],
-    ""
-  );
+  q.Concat(["/lists/show?sourceKey=", q.Select(["data", "key"], listDoc)], "");
 
 const selectNumberWanted = ({ componentType }: { componentType: Expr }) =>
   q.If(q.Equals(componentType, "CarouselComponent"), 10, 64);

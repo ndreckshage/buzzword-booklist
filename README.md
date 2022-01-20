@@ -16,9 +16,9 @@ Experimental application that uses:
 These pages use server components, and are served via a [Server driven ui inspired schema](https://github.com/ndreckshage/buzzword-booklist/blob/main/src/api/schema.graphql#L86). This maps catalog data to component types.
 
 - Homepage: https://buzzword-booklist.vercel.app/
-- Example List Page: https://buzzword-booklist.vercel.app/collections/lists/show?sourceKey=nicks-recent-reads
-- Example Author Page: https://buzzword-booklist.vercel.app/collections/authors/show?sourceKey=haruki-murakami
-- Example Category Page: https://buzzword-booklist.vercel.app/collections/categories/show?sourceKey=fiction-literary
+- Example List Page: https://buzzword-booklist.vercel.app/lists/show?sourceKey=nicks-recent-reads
+- Example Author Page: https://buzzword-booklist.vercel.app/authors/show?sourceKey=haruki-murakami
+- Example Category Page: https://buzzword-booklist.vercel.app/categories/show?sourceKey=fiction-literary
 - Example Book Page: https://buzzword-booklist.vercel.app/books/show?googleBooksVolumeId=A08c2Ep7QbYC
 
 ### Management Pages
@@ -29,7 +29,7 @@ Replace "nicks-test-list" with your own in the various links.
 
 - https://buzzword-booklist.vercel.app/manage/lists/create >> create a list (example: "nicks-test-list")
 - https://buzzword-booklist.vercel.app/manage/lists/edit?list=nicks-test-list >> add a few books (for example I added "the martian" and "cloud cuckoo land")
-- https://buzzword-booklist.vercel.app/collections/lists/show?sourceKey=nicks-test-list >> view your list (customer page from above)
+- https://buzzword-booklist.vercel.app/lists/show?sourceKey=nicks-test-list >> view your list (customer page from above)
 - https://buzzword-booklist.vercel.app/manage/layouts/create >> create a layout! (example: "nicks-test-layout")
 - https://buzzword-booklist.vercel.app/manage/layouts >> click edit on your layout (refresh if needed ... still working on bugs)
 - https://buzzword-booklist.vercel.app/manage/layouts/edit?layout=320377732958519360 >>

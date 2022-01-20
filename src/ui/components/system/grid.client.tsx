@@ -16,17 +16,19 @@ export default function BookGrid(props: GridComponent) {
         )}
       </div>
       <div className="grid grid-cols-5 gap-4">
-        {props.cards.map((bookCard) => (
-          <div key={bookCard.id} className="flex m-5">
-            <NextLink href={bookCard.href}>
+        {props.cards.map((card) => (
+          <div key={card.id} className="flex m-5">
+            <NextLink href={card.href}>
               <a className="text-inherit text-lg no-underline">
-                <Image
-                  alt="demo image"
-                  src={bookCard.image}
-                  width={200}
-                  height={300}
-                />
-                <p>{bookCard.title}</p>
+                {card.image && (
+                  <Image
+                    alt="demo image"
+                    src={card.image}
+                    width={200}
+                    height={300}
+                  />
+                )}
+                <p>{card.title}</p>
               </a>
             </NextLink>
           </div>
