@@ -1,5 +1,5 @@
 import { ComponentContextType } from "api/__generated__/resolvers-types";
-import { query as Q, type Client } from "faunadb";
+import { query as q, type Client } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type UpdateBooklistComponentInput = {
@@ -42,22 +42,22 @@ export default function updateBooklistComponent(client: Client) {
 
     try {
       await client.query(
-        Q.Let(
+        q.Let(
           {
-            componentDoc: Q.Get(Q.Ref(Q.Collection("Components"), componentId)),
+            componentDoc: q.Get(q.Ref(q.Collection("Components"), componentId)),
           },
           execIfComponentOwner({
-            componentDoc: Q.Var("componentDoc"),
+            componentDoc: q.Var("componentDoc"),
             loggedInAs,
-            execExpr: Q.Replace(Q.Select("ref", Q.Var("componentDoc")), {
+            execExpr: q.Replace(q.Select("ref", q.Var("componentDoc")), {
               data: {
-                componentType: Q.Select(
+                componentType: q.Select(
                   ["data", "componentType"],
-                  Q.Var("componentDoc")
+                  q.Var("componentDoc")
                 ),
-                createdBy: Q.Select(
+                createdBy: q.Select(
                   ["data", "createdBy"],
-                  Q.Var("componentDoc")
+                  q.Var("componentDoc")
                 ),
                 ...data,
               },

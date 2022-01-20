@@ -1,51 +1,51 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import { type BookModel } from ".";
 
 export default function getBooksByListIds(client: Client) {
   return async (listIds: readonly string[]) => {
     try {
       return (await client.query(
-        Q.Map(
+        q.Map(
           listIds,
-          Q.Lambda(
+          q.Lambda(
             "listId",
-            Q.Let(
+            q.Let(
               {
-                listDoc: Q.Get(Q.Ref(Q.Collection("Lists"), Q.Var("listId"))),
+                listDoc: q.Get(q.Ref(q.Collection("Lists"), q.Var("listId"))),
               },
-              Q.Map(
-                Q.Select(["data", "bookRefs"], Q.Var("listDoc")),
-                Q.Lambda(
+              q.Map(
+                q.Select(["data", "bookRefs"], q.Var("listDoc")),
+                q.Lambda(
                   "bookRef",
-                  Q.Let(
+                  q.Let(
                     {
-                      bookDoc: Q.Get(Q.Var("bookRef")),
+                      bookDoc: q.Get(q.Var("bookRef")),
                     },
                     {
-                      id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
-                      googleBooksVolumeId: Q.Select(
+                      id: q.Select(["ref", "id"], q.Var("bookDoc")),
+                      googleBooksVolumeId: q.Select(
                         ["data", "googleBooksVolumeId"],
-                        Q.Var("bookDoc")
+                        q.Var("bookDoc")
                       ),
-                      title: Q.Select(["data", "title"], Q.Var("bookDoc")),
-                      publisher: Q.Select(
+                      title: q.Select(["data", "title"], q.Var("bookDoc")),
+                      publisher: q.Select(
                         ["data", "publisher"],
-                        Q.Var("bookDoc")
+                        q.Var("bookDoc")
                       ),
-                      publishedDate: Q.Select(
+                      publishedDate: q.Select(
                         ["data", "publishedDate"],
-                        Q.Var("bookDoc")
+                        q.Var("bookDoc")
                       ),
-                      description: Q.Select(
+                      description: q.Select(
                         ["data", "description"],
-                        Q.Var("bookDoc")
+                        q.Var("bookDoc")
                       ),
-                      isbn: Q.Select(["data", "isbn"], Q.Var("bookDoc")),
-                      pageCount: Q.Select(
+                      isbn: q.Select(["data", "isbn"], q.Var("bookDoc")),
+                      pageCount: q.Select(
                         ["data", "pageCount"],
-                        Q.Var("bookDoc")
+                        q.Var("bookDoc")
                       ),
-                      image: Q.Select(["data", "image"], Q.Var("bookDoc")),
+                      image: q.Select(["data", "image"], q.Var("bookDoc")),
                     }
                   )
                 )

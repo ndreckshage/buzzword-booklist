@@ -7,10 +7,10 @@ import cx from "classnames";
 
 import Markdown, { MarkdownComponentFragment } from "./markdown.server";
 import BookCarousel, {
-  BookCarouselComponentFragment,
+  CarouselComponentFragment,
 } from "./book-carousel.server";
-import BookGrid, { BookGridComponentFragment } from "./book-grid.server";
-import BookList, { BookListComponentFragment } from "./book-list.server";
+import BookGrid, { GridComponentFragment } from "./book-grid.server";
+import BookList, { ListComponentFragment } from "./book-list.server";
 import BookAuthors, {
   BookAuthorsComponentFragment,
 } from "./book-authors.server";
@@ -38,9 +38,9 @@ const ComponentFragment = gql`
     __typename
     ...LayoutComponentFragment
     ...MarkdownComponentFragment
-    ...BookCarouselComponentFragment
-    ...BookGridComponentFragment
-    ...BookListComponentFragment
+    ...CarouselComponentFragment
+    ...GridComponentFragment
+    ...ListComponentFragment
     ...BookAuthorsComponentFragment
     ...BookCategoriesComponentFragment
     ...BookDetailsComponentFragment
@@ -85,9 +85,9 @@ const LAYOUT_QUERY = gql`
   ${LayoutComponentFragment}
   ${ComponentFragment}
   ${MarkdownComponentFragment}
-  ${BookCarouselComponentFragment}
-  ${BookGridComponentFragment}
-  ${BookListComponentFragment}
+  ${CarouselComponentFragment}
+  ${GridComponentFragment}
+  ${ListComponentFragment}
   ${BookTitleComponentFragment}
   ${BookImageComponentFragment}
   ${BookAuthorsComponentFragment}
@@ -98,9 +98,9 @@ const LAYOUT_QUERY = gql`
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
-  BookCarouselComponent: BookCarousel,
-  BookGridComponent: BookGrid,
-  BookListComponent: BookList,
+  CarouselComponent: BookCarousel,
+  GridComponent: BookGrid,
+  ListComponent: BookList,
   BookAuthorsComponent: BookAuthors,
   BookCategoriesComponent: BookCategories,
   BookDetailsComponent: BookDetails,

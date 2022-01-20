@@ -1,4 +1,4 @@
-import { type Client, query as Q, Add } from "faunadb";
+import { type Client, query as q, Add } from "faunadb";
 
 export default async function incrementBookAuthorsAndCategoriesCount(
   client: Client,
@@ -7,52 +7,52 @@ export default async function incrementBookAuthorsAndCategoriesCount(
 ) {
   try {
     await client.query(
-      Q.Let(
+      q.Let(
         {
-          bookDoc: Q.Get(
-            Q.Match(
-              Q.Index("unique_books_by_googleBooksVolumeId"),
+          bookDoc: q.Get(
+            q.Match(
+              q.Index("unique_books_by_googleBooksVolumeId"),
               googleBooksVolumeId
             )
           ),
         },
-        Q.Let(
+        q.Let(
           {
-            bookRef: Q.Select(["ref"], Q.Var("bookDoc")),
-            authorRefs: Q.Select(["data", "authorRefs"], Q.Var("bookDoc")),
-            categoryRefs: Q.Select(["data", "categoryRefs"], Q.Var("bookDoc")),
+            bookRef: q.Select(["ref"], q.Var("bookDoc")),
+            authorRefs: q.Select(["data", "authorRefs"], q.Var("bookDoc")),
+            categoryRefs: q.Select(["data", "categoryRefs"], q.Var("bookDoc")),
           },
-          Q.Do(
-            Q.Update(Q.Var("bookRef"), {
+          q.Do(
+            q.Update(q.Var("bookRef"), {
               data: {
                 listCount: Add(
                   increment ? 1 : -1,
-                  Q.If(
-                    Q.ContainsPath(["data", "listCount"], Q.Var("bookDoc")),
-                    Q.Select(["data", "listCount"], Q.Var("bookDoc")),
+                  q.If(
+                    q.ContainsPath(["data", "listCount"], q.Var("bookDoc")),
+                    q.Select(["data", "listCount"], q.Var("bookDoc")),
                     0
                   )
                 ),
               },
             }),
-            Q.Map(
-              Q.Var("authorRefs"),
-              Q.Lambda(
+            q.Map(
+              q.Var("authorRefs"),
+              q.Lambda(
                 "authorRef",
-                Q.Let(
+                q.Let(
                   {
-                    authorDoc: Q.Get(Q.Var("authorRef")),
+                    authorDoc: q.Get(q.Var("authorRef")),
                   },
-                  Q.Update(Q.Var("authorRef"), {
+                  q.Update(q.Var("authorRef"), {
                     data: {
                       listCount: Add(
                         increment ? 1 : -1,
-                        Q.If(
-                          Q.ContainsPath(
+                        q.If(
+                          q.ContainsPath(
                             ["data", "listCount"],
-                            Q.Var("authorDoc")
+                            q.Var("authorDoc")
                           ),
-                          Q.Select(["data", "listCount"], Q.Var("authorDoc")),
+                          q.Select(["data", "listCount"], q.Var("authorDoc")),
                           0
                         )
                       ),
@@ -61,24 +61,24 @@ export default async function incrementBookAuthorsAndCategoriesCount(
                 )
               )
             ),
-            Q.Map(
-              Q.Var("categoryRefs"),
-              Q.Lambda(
+            q.Map(
+              q.Var("categoryRefs"),
+              q.Lambda(
                 "categoryRef",
-                Q.Let(
+                q.Let(
                   {
-                    categoryDoc: Q.Get(Q.Var("categoryRef")),
+                    categoryDoc: q.Get(q.Var("categoryRef")),
                   },
-                  Q.Update(Q.Var("categoryRef"), {
+                  q.Update(q.Var("categoryRef"), {
                     data: {
                       listCount: Add(
                         increment ? 1 : -1,
-                        Q.If(
-                          Q.ContainsPath(
+                        q.If(
+                          q.ContainsPath(
                             ["data", "listCount"],
-                            Q.Var("categoryDoc")
+                            q.Var("categoryDoc")
                           ),
-                          Q.Select(["data", "listCount"], Q.Var("categoryDoc")),
+                          q.Select(["data", "listCount"], q.Var("categoryDoc")),
                           0
                         )
                       ),

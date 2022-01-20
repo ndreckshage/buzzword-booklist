@@ -1,4 +1,4 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type RemoveComponentInLayoutInput = {
@@ -19,18 +19,18 @@ export default function removeComponentInLayout(client: Client) {
 
     try {
       await client.query(
-        Q.Let(
+        q.Let(
           {
-            layoutDoc: Q.Get(Q.Ref(Q.Collection("Components"), layoutId)),
+            layoutDoc: q.Get(q.Ref(q.Collection("Components"), layoutId)),
           },
           execIfComponentOwner({
-            componentDoc: Q.Var("layoutDoc"),
+            componentDoc: q.Var("layoutDoc"),
             loggedInAs,
-            execExpr: Q.Update(Q.Select("ref", Q.Var("layoutDoc")), {
+            execExpr: q.Update(q.Select("ref", q.Var("layoutDoc")), {
               data: {
-                componentRefs: Q.Difference(
-                  Q.Select(["data", "componentRefs"], Q.Var("layoutDoc")),
-                  [Q.Ref(Q.Collection("Components"), componentId)]
+                componentRefs: q.Difference(
+                  q.Select(["data", "componentRefs"], q.Var("layoutDoc")),
+                  [q.Ref(q.Collection("Components"), componentId)]
                 ),
               },
             }),

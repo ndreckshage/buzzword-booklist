@@ -1,4 +1,4 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 
 export type CreateLayoutComponentInput = { title: string; loggedInAs: string };
 export type CreateLayoutComponentOutput = boolean;
@@ -6,7 +6,7 @@ export type CreateLayoutComponentOutput = boolean;
 export default function createLayoutComponent(client: Client) {
   return async ({ title, loggedInAs }: CreateLayoutComponentInput) => {
     const layout = await client.query(
-      Q.Create("Components", {
+      q.Create("Components", {
         data: {
           componentType: "LayoutComponent",
           title,

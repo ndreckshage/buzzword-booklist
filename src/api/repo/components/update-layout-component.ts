@@ -1,4 +1,4 @@
-import { query as Q, type Client } from "faunadb";
+import { query as q, type Client } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type UpdateLayoutComponentInput = {
@@ -18,33 +18,33 @@ export default function updateLayoutComponent(client: Client) {
     loggedInAs,
   }: UpdateLayoutComponentInput) => {
     const reorderdComponents =
-      componentIds?.map((id) => Q.Ref(Q.Collection("Components"), id)) ?? null;
+      componentIds?.map((id) => q.Ref(q.Collection("Components"), id)) ?? null;
 
     try {
       await client.query(
-        Q.Let(
+        q.Let(
           {
-            layoutDoc: Q.Get(Q.Ref(Q.Collection("Components"), layoutId)),
+            layoutDoc: q.Get(q.Ref(q.Collection("Components"), layoutId)),
           },
           execIfComponentOwner({
-            componentDoc: Q.Var("layoutDoc"),
+            componentDoc: q.Var("layoutDoc"),
             loggedInAs,
-            execExpr: Q.Let(
+            execExpr: q.Let(
               {
-                componentRefs: Q.Select(
+                componentRefs: q.Select(
                   ["data", "componentRefs"],
-                  Q.Var("layoutDoc")
+                  q.Var("layoutDoc")
                 ),
               },
-              Q.If(
-                Q.IsEmpty(
+              q.If(
+                q.IsEmpty(
                   // important! dont allow deleting or adding any components someone else owns0..
-                  Q.Difference(
-                    Q.Var("componentRefs"),
-                    reorderdComponents ?? Q.Var("componentRefs")
+                  q.Difference(
+                    q.Var("componentRefs"),
+                    reorderdComponents ?? q.Var("componentRefs")
                   )
                 ),
-                Q.Update(Q.Select("ref", Q.Var("layoutDoc")), {
+                q.Update(q.Select("ref", q.Var("layoutDoc")), {
                   data: {
                     ...(reorderdComponents
                       ? { componentRefs: reorderdComponents }
@@ -54,7 +54,7 @@ export default function updateLayoutComponent(client: Client) {
                       : {}),
                   },
                 }),
-                Q.Abort("Unexpected array difference while reordering")
+                q.Abort("Unexpected array difference while reordering")
               )
             ),
           })

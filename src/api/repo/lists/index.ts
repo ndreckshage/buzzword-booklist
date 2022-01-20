@@ -1,4 +1,4 @@
-import { query as Q } from "faunadb";
+import { query as q } from "faunadb";
 
 export type ListModel = {
   id: string;
@@ -29,8 +29,8 @@ export { default as getListsByKeys } from "./get-lists-by-keys";
 export { default as getListsByCreators } from "./get-lists-by-creators";
 
 export const selectListModel = {
-  id: Q.Select(["ref", "id"], Q.Var("listDoc")),
-  title: Q.Select(["data", "title"], Q.Var("listDoc")),
-  key: Q.Select(["data", "key"], Q.Var("listDoc")),
-  createdBy: Q.Select(["data", "createdBy"], Q.Var("listDoc")),
+  id: q.Select(["ref", "id"], q.Var("listDoc")),
+  title: q.Select(["data", "title"], q.Var("listDoc")),
+  key: q.Select(["data", "key"], q.Var("listDoc")),
+  createdBy: q.Select(["data", "createdBy"], q.Var("listDoc")),
 };

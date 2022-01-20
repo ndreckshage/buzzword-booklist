@@ -29,8 +29,8 @@ const LayoutComponentFragment = gql`
   }
 `;
 
-const BookCarouselComponentFragment = gql`
-  fragment BookCarouselComponentFragment on BookCarouselComponent {
+const CarouselComponentFragment = gql`
+  fragment CarouselComponentFragment on CarouselComponent {
     id
     title
     sourceType
@@ -38,8 +38,8 @@ const BookCarouselComponentFragment = gql`
   }
 `;
 
-const BookGridComponentFragment = gql`
-  fragment BookGridComponentFragment on BookGridComponent {
+const GridComponentFragment = gql`
+  fragment GridComponentFragment on GridComponent {
     id
     title
     sourceType
@@ -47,8 +47,8 @@ const BookGridComponentFragment = gql`
   }
 `;
 
-const BookListComponentFragment = gql`
-  fragment BookListComponentFragment on BookListComponent {
+const ListComponentFragment = gql`
+  fragment ListComponentFragment on ListComponent {
     id
     title
     sourceType
@@ -103,9 +103,9 @@ const ComponentFragment = gql`
   fragment ComponentFragment on Component {
     __typename
     ...LayoutComponentFragment
-    ...BookCarouselComponentFragment
-    ...BookGridComponentFragment
-    ...BookListComponentFragment
+    ...CarouselComponentFragment
+    ...GridComponentFragment
+    ...ListComponentFragment
     ...BookImageComponentFragment
     ...BookActionComponentFragment
     ...BookTitleComponentFragment
@@ -146,9 +146,9 @@ const LAYOUT_QUERY = gql`
 
   ${LayoutComponentFragment}
   ${ComponentFragment}
-  ${BookCarouselComponentFragment}
-  ${BookGridComponentFragment}
-  ${BookListComponentFragment}
+  ${CarouselComponentFragment}
+  ${GridComponentFragment}
+  ${ListComponentFragment}
   ${BookImageComponentFragment}
   ${BookActionComponentFragment}
   ${BookTitleComponentFragment}
@@ -235,9 +235,9 @@ const getReorderedIds = (
 
 const COMPONENT_MAP = {
   LayoutComponent: Layout,
-  BookCarouselComponent: BookList,
-  BookGridComponent: BookList,
-  BookListComponent: BookList,
+  CarouselComponent: BookList,
+  GridComponent: BookList,
+  ListComponent: BookList,
   BookImageComponent: BookComponent,
   BookTitleComponent: BookComponent,
   BookActionComponent: BookComponent,
@@ -249,9 +249,9 @@ const COMPONENT_MAP = {
 
 enum ComponentTypes {
   LayoutComponent = "LayoutComponent",
-  BookCarouselComponent = "BookCarouselComponent",
-  BookGridComponent = "BookGridComponent",
-  BookListComponent = "BookListComponent",
+  CarouselComponent = "CarouselComponent",
+  GridComponent = "GridComponent",
+  ListComponent = "ListComponent",
   BookImageComponent = "BookImageComponent",
   BookTitleComponent = "BookTitleComponent",
   BookActionComponent = "BookActionComponent",
@@ -274,9 +274,9 @@ function Layout(props: LayoutComponent) {
 
   const validOpts = [
     ComponentTypes.LayoutComponent,
-    ComponentTypes.BookCarouselComponent,
-    ComponentTypes.BookGridComponent,
-    ComponentTypes.BookListComponent,
+    ComponentTypes.CarouselComponent,
+    ComponentTypes.GridComponent,
+    ComponentTypes.ListComponent,
     ComponentTypes.BookImageComponent,
     ComponentTypes.BookTitleComponent,
     ComponentTypes.BookActionComponent,

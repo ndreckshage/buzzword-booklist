@@ -1,4 +1,4 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import createDocumentIfUnique from "api/repo/fql-helpers/create-document-if-unique";
 import appendConnectionToDocumentIfUnique from "api/repo/fql-helpers/append-connection-to-document-if-unique";
 import createConnectionIfUnique from "api/repo/fql-helpers/create-connection-if-unique";
@@ -76,9 +76,9 @@ export default async function createBookAuthorsAndCategories(
 ) {
   if (
     await client.query(
-      Q.Exists(
-        Q.Match(
-          Q.Index("unique_books_by_googleBooksVolumeId"),
+      q.Exists(
+        q.Match(
+          q.Index("unique_books_by_googleBooksVolumeId"),
           googleBooksVolumeId
         )
       )
@@ -94,7 +94,7 @@ export default async function createBookAuthorsAndCategories(
   );
 
   return await client.query(
-    Q.Do(
+    q.Do(
       ...authors.map((author) =>
         createDocumentIfUnique({
           index: "unique_authors_by_key",
@@ -118,15 +118,15 @@ export default async function createBookAuthorsAndCategories(
         documentData: {
           ...book,
           authorRefs: authors.map((author) =>
-            Q.Select(
+            q.Select(
               "ref",
-              Q.Get(Q.Match(Q.Index("unique_authors_by_key"), author.key))
+              q.Get(q.Match(q.Index("unique_authors_by_key"), author.key))
             )
           ),
           categoryRefs: categories.map((category) =>
-            Q.Select(
+            q.Select(
               "ref",
-              Q.Get(Q.Match(Q.Index("unique_categories_by_key"), category.key))
+              q.Get(q.Match(q.Index("unique_categories_by_key"), category.key))
             )
           ),
         },

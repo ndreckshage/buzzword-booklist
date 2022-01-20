@@ -1,26 +1,26 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import { type ListModel, selectListModel } from ".";
 
 export default function getListsByCreators(client: Client) {
   return async (creators: readonly string[]) => {
     const result = await client.query(
-      Q.Map(
+      q.Map(
         creators,
-        Q.Lambda(
+        q.Lambda(
           "createdBy",
-          Q.Map(
+          q.Map(
             // @NOTE not supporting pagination to reduce complexity
-            Q.Select(
+            q.Select(
               "data",
-              Q.Paginate(
-                Q.Match(Q.Index("lists_by_createdBy"), Q.Var("createdBy"))
+              q.Paginate(
+                q.Match(q.Index("lists_by_createdBy"), q.Var("createdBy"))
               )
             ),
-            Q.Lambda(
+            q.Lambda(
               "listRef",
-              Q.Let(
+              q.Let(
                 {
-                  listDoc: Q.Get(Q.Var("listRef")),
+                  listDoc: q.Get(q.Var("listRef")),
                 },
                 selectListModel
               )

@@ -1,5 +1,5 @@
 import {
-  type BookCardComponent,
+  type CardComponent,
   ComponentContextType,
   LinkComponent,
 } from "api/__generated__/resolvers-types";
@@ -15,7 +15,7 @@ export type RootLayoutComponentModel = RootComponentModel & {
   componentRefs: string[];
 };
 
-export type RootBookListComponentModel = RootComponentModel & {
+export type RootListComponentModel = RootComponentModel & {
   sourceType: ComponentContextType | null;
   sourceKey: string | null;
 };
@@ -24,13 +24,12 @@ export type RootBookComponentModel = RootComponentModel & {
   sourceKey: string | null;
 };
 
-export type BookListComponentModel = {
-  id: string;
+export type ListComponentModel = {
   title: string;
-  key: string;
-  totalBookCards: number;
-  bookCards: BookCardComponent[];
-  bookListCreatedBy: string;
+  link: LinkComponent | null;
+  totalCards: number;
+  cards: CardComponent[];
+  createdBy: string;
 };
 
 export type BookComponentModel = {
@@ -45,8 +44,7 @@ export type BookComponentModel = {
 
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
-export { default as getBookListComponents } from "./get-book-list-components";
-export { default as getBookListLinksComponents } from "./get-book-list-links-components";
+export { default as getListComponents } from "./get-book-list-components";
 export { default as getBookComponents } from "./get-book-components";
 
 export {

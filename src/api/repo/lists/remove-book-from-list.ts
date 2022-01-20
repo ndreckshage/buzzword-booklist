@@ -1,4 +1,4 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import execIfListOwner from "api/repo/fql-helpers/exec-if-list-owner";
 import removeConnectionFromDocument from "api/repo/fql-helpers/remove-connection-from-document";
 import incrementBookAuthorsAndCategoriesCount from "api/repo/books/increment-book-authors-and-categories-count";

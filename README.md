@@ -33,11 +33,11 @@ Replace "nicks-test-list" with your own in the various links.
 - https://buzzword-booklist.vercel.app/manage/layouts/create >> create a layout! (example: "nicks-test-layout")
 - https://buzzword-booklist.vercel.app/manage/layouts >> click edit on your layout (refresh if needed ... still working on bugs)
 - https://buzzword-booklist.vercel.app/manage/layouts/edit?layout=320377732958519360 >>
-  -- add a BookCarouselComponent to your layout. specify a list and "nicks-test-list"
+  -- add a CarouselComponent to your layout. specify a list and "nicks-test-list"
   -- add a MarkdownComponent to your layout.
 - https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360 >> view your layout!
 - https://buzzword-booklist.vercel.app/manage/layouts/edit?layout=320377732958519360 >> go back to editing
-  -- add a BookGridComponent, select "Use page context"
+  -- add a GridComponent, select "Use page context"
   -- View your new layout with a few different contexts!
   --- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360&contextType=CATEGORY&contextKey=fiction-literary
   --- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360&contextType=AUTHOR&contextKey=j-k-rowling

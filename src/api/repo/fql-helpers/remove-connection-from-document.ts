@@ -1,4 +1,4 @@
-import { query as Q } from "faunadb";
+import { query as q } from "faunadb";
 
 export default function removeConnectionFromDocument({
   docIndex,
@@ -13,19 +13,19 @@ export default function removeConnectionFromDocument({
   edgeIndex: string;
   edgeIndexTerms: string[];
 }) {
-  return Q.Let(
+  return q.Let(
     {
-      doc: Q.Get(Q.Match(Q.Index(docIndex), docIndexTerms)),
-      edgeRef: Q.Select(
+      doc: q.Get(q.Match(q.Index(docIndex), docIndexTerms)),
+      edgeRef: q.Select(
         "ref",
-        Q.Get(Q.Match(Q.Index(edgeIndex), edgeIndexTerms))
+        q.Get(q.Match(q.Index(edgeIndex), edgeIndexTerms))
       ),
     },
-    Q.Update(Q.Select("ref", Q.Var("doc")), {
+    q.Update(q.Select("ref", q.Var("doc")), {
       data: {
-        [docEdgeRefName]: Q.Difference(
-          Q.Select(["data", docEdgeRefName], Q.Var("doc")),
-          [Q.Var("edgeRef")]
+        [docEdgeRefName]: q.Difference(
+          q.Select(["data", docEdgeRefName], q.Var("doc")),
+          [q.Var("edgeRef")]
         ),
       },
     })

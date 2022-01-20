@@ -1,4 +1,4 @@
-import { query as Q } from "faunadb";
+import { query as q } from "faunadb";
 
 export default function createDocumentIfUnique({
   index,
@@ -11,12 +11,12 @@ export default function createDocumentIfUnique({
   collectionName: string;
   documentData: Object;
 }) {
-  return Q.Let(
-    { sourceMatch: Q.Match(Q.Index(index), indexTerms) },
-    Q.If(
-      Q.Exists(Q.Var("sourceMatch")),
+  return q.Let(
+    { sourceMatch: q.Match(q.Index(index), indexTerms) },
+    q.If(
+      q.Exists(q.Var("sourceMatch")),
       null,
-      Q.Create(collectionName, { data: documentData })
+      q.Create(collectionName, { data: documentData })
     )
   );
 }

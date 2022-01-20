@@ -1,4 +1,4 @@
-import { Client, query as Q } from "faunadb";
+import { Client, query as q } from "faunadb";
 import { selectLayoutModelData } from "./get-components-by-ids";
 import { RootComponentModel } from ".";
 
@@ -6,45 +6,45 @@ export default function getLayoutComponentsByCreators(client: Client) {
   return async (creators: readonly string[]) => {
     try {
       const result = await client.query(
-        Q.Map(
+        q.Map(
           creators,
-          Q.Lambda(
+          q.Lambda(
             "createdBy",
-            Q.Filter(
-              Q.Map(
+            q.Filter(
+              q.Map(
                 // @NOTE not supporting pagination to reduce complexity
-                Q.Select(
+                q.Select(
                   "data",
-                  Q.Paginate(
-                    Q.Match(
-                      Q.Index("components_by_createdBy"),
-                      Q.Var("createdBy")
+                  q.Paginate(
+                    q.Match(
+                      q.Index("components_by_createdBy"),
+                      q.Var("createdBy")
                     )
                   )
                 ),
-                Q.Lambda(
+                q.Lambda(
                   "componentRef",
-                  Q.Let(
+                  q.Let(
                     {
-                      componentDoc: Q.Get(Q.Var("componentRef")),
+                      componentDoc: q.Get(q.Var("componentRef")),
                     },
-                    Q.Let(
+                    q.Let(
                       {
-                        componentType: Q.Select(
+                        componentType: q.Select(
                           ["data", "componentType"],
-                          Q.Var("componentDoc")
+                          q.Var("componentDoc")
                         ),
                       },
-                      Q.If(
-                        Q.Equals(Q.Var("componentType"), "LayoutComponent"),
-                        selectLayoutModelData(Q.Var("componentDoc")),
+                      q.If(
+                        q.Equals(q.Var("componentType"), "LayoutComponent"),
+                        selectLayoutModelData(q.Var("componentDoc")),
                         null
                       )
                     )
                   )
                 )
               ),
-              Q.Lambda("layoutData", Q.IsObject(Q.Var("layoutData")))
+              q.Lambda("layoutData", q.IsObject(q.Var("layoutData")))
             )
           )
         )

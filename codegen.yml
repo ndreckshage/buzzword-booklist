@@ -5,9 +5,9 @@ generates:
       contextType: ../context#ResolverContext
       mappers:
         Book: ../repo/books#BookModel
-        BookCarouselComponent: ../repo/components#RootBookListComponentModel
-        BookGridComponent: ../repo/components#RootBookListComponentModel
-        BookListComponent: ../repo/components#RootBookListComponentModel
+        CarouselComponent: ../repo/components#RootListComponentModel
+        GridComponent: ../repo/components#RootListComponentModel
+        ListComponent: ../repo/components#RootListComponentModel
         BookActionComponent: ../repo/components#RootBookComponentModel
         BookAuthorsComponent: ../repo/components#RootBookComponentModel
         BookCategoriesComponent: ../repo/components#RootBookComponentModel

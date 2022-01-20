@@ -1,4 +1,4 @@
-import { query as Q, type Expr } from "faunadb";
+import { query as q, type Expr } from "faunadb";
 
 export default function execIfListOwner({
   listKey,
@@ -9,15 +9,15 @@ export default function execIfListOwner({
   loggedInAs: string;
   execExpr: Expr;
 }) {
-  return Q.If(
-    Q.Equals(
-      Q.Select(
+  return q.If(
+    q.Equals(
+      q.Select(
         ["data", "createdBy"],
-        Q.Get(Q.Match(Q.Index("unique_lists_by_key"), listKey))
+        q.Get(q.Match(q.Index("unique_lists_by_key"), listKey))
       ),
       loggedInAs
     ),
     execExpr,
-    Q.Abort("Not Authorized")
+    q.Abort("Not Authorized")
   );
 }

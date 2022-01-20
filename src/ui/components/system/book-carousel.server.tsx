@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 import BookCarousel from "./book-carousel.client";
-import { type BookCarouselComponent } from "api/__generated__/resolvers-types";
+import { type CarouselComponent } from "api/__generated__/resolvers-types";
 
-export default function BookCarouselServer(props: BookCarouselComponent) {
+export default function BookCarouselServer(props: CarouselComponent) {
   return (
     <div className="container mx-auto">
       <BookCarousel {...props} />
@@ -10,8 +10,8 @@ export default function BookCarouselServer(props: BookCarouselComponent) {
   );
 }
 
-export const BookCarouselComponentFragment = gql`
-  fragment BookCarouselComponentFragment on BookCarouselComponent {
+export const CarouselComponentFragment = gql`
+  fragment CarouselComponentFragment on CarouselComponent {
     id
     title
     link {
@@ -19,8 +19,8 @@ export const BookCarouselComponentFragment = gql`
       href
       variant
     }
-    bookListCreatedBy
-    bookCards {
+    createdBy
+    cards {
       id
       href
       image

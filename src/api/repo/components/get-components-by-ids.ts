@@ -1,29 +1,29 @@
-import { Client, type ExprArg, type Expr, query as Q } from "faunadb";
+import { Client, type ExprArg, type Expr, query as q } from "faunadb";
 import { type RootComponentModel } from ".";
 
 export const selectLayoutModelData = (componentDoc: Expr) => ({
-  id: Q.Select(["ref", "id"], componentDoc),
-  componentType: Q.Select(["data", "componentType"], componentDoc),
-  createdBy: Q.Select(["data", "createdBy"], componentDoc),
-  title: Q.Select(["data", "title"], componentDoc),
-  flexDirection: Q.Select(["data", "flexDirection"], componentDoc),
-  componentRefs: Q.Map(
-    Q.Select(["data", "componentRefs"], componentDoc),
-    Q.Lambda("componentRef", Q.Select("id", Q.Var("componentRef")))
+  id: q.Select(["ref", "id"], componentDoc),
+  componentType: q.Select(["data", "componentType"], componentDoc),
+  createdBy: q.Select(["data", "createdBy"], componentDoc),
+  title: q.Select(["data", "title"], componentDoc),
+  flexDirection: q.Select(["data", "flexDirection"], componentDoc),
+  componentRefs: q.Map(
+    q.Select(["data", "componentRefs"], componentDoc),
+    q.Lambda("componentRef", q.Select("id", q.Var("componentRef")))
   ),
 });
 
 const selectBookListModelData = (componentDoc: Expr) => ({
-  id: Q.Select(["ref", "id"], componentDoc),
-  componentType: Q.Select(["data", "componentType"], componentDoc),
-  sourceType: Q.If(
-    Q.ContainsPath(["data", "sourceType"], componentDoc),
-    Q.Select(["data", "sourceType"], componentDoc),
+  id: q.Select(["ref", "id"], componentDoc),
+  componentType: q.Select(["data", "componentType"], componentDoc),
+  sourceType: q.If(
+    q.ContainsPath(["data", "sourceType"], componentDoc),
+    q.Select(["data", "sourceType"], componentDoc),
     null
   ),
-  sourceKey: Q.If(
-    Q.ContainsPath(["data", "sourceKey"], componentDoc),
-    Q.Select(["data", "sourceKey"], componentDoc),
+  sourceKey: q.If(
+    q.ContainsPath(["data", "sourceKey"], componentDoc),
+    q.Select(["data", "sourceKey"], componentDoc),
     null
   ),
 });
@@ -32,60 +32,56 @@ const ifComponentType = (
   componentType: string,
   doIf: ExprArg,
   elseIf: ExprArg
-) => Q.If(Q.Equals(Q.Var("componentType"), componentType), doIf, elseIf);
+) => q.If(q.Equals(q.Var("componentType"), componentType), doIf, elseIf);
 
 const ifOneOfComponentType = (
   componentTypes: string[],
   doIf: ExprArg,
   elseIf: ExprArg
 ) =>
-  Q.If(Q.ContainsValue(Q.Var("componentType"), componentTypes), doIf, elseIf);
+  q.If(q.ContainsValue(q.Var("componentType"), componentTypes), doIf, elseIf);
 
 export default function getComponentsByIds(client: Client) {
   return async (idAndContextArrs: readonly string[]) => {
     try {
       const result = await client.query(
-        Q.Map(
+        q.Map(
           idAndContextArrs,
-          Q.Lambda(
+          q.Lambda(
             "idAndContext",
-            Q.Let(
+            q.Let(
               {
-                id: Q.Select("id", Q.Var("idAndContext")),
-                contextType: Q.Select("contextType", Q.Var("idAndContext")),
-                contextKey: Q.Select("contextKey", Q.Var("idAndContext")),
+                id: q.Select("id", q.Var("idAndContext")),
+                contextType: q.Select("contextType", q.Var("idAndContext")),
+                contextKey: q.Select("contextKey", q.Var("idAndContext")),
               },
-              Q.Let(
+              q.Let(
                 {
-                  componentDoc: Q.Get(
-                    Q.Ref(Q.Collection("Components"), Q.Var("id"))
+                  componentDoc: q.Get(
+                    q.Ref(q.Collection("Components"), q.Var("id"))
                   ),
                 },
-                Q.Let(
+                q.Let(
                   {
-                    componentType: Q.Select(
+                    componentType: q.Select(
                       ["data", "componentType"],
-                      Q.Var("componentDoc")
+                      q.Var("componentDoc")
                     ),
                   },
-                  Q.Merge(
+                  q.Merge(
                     {
-                      id: Q.Select(["ref", "id"], Q.Var("componentDoc")),
-                      componentType: Q.Var("componentType"),
-                      contextType: Q.Var("contextType"),
-                      contextKey: Q.Var("contextKey"),
+                      id: q.Select(["ref", "id"], q.Var("componentDoc")),
+                      componentType: q.Var("componentType"),
+                      contextType: q.Var("contextType"),
+                      contextKey: q.Var("contextKey"),
                     },
                     ifComponentType(
                       "LayoutComponent",
-                      selectLayoutModelData(Q.Var("componentDoc")),
+                      selectLayoutModelData(q.Var("componentDoc")),
                       ifOneOfComponentType(
-                        [
-                          "BookCarouselComponent",
-                          "BookGridComponent",
-                          "BookListComponent",
-                        ],
-                        selectBookListModelData(Q.Var("componentDoc")),
-                        Q.Select("data", Q.Var("componentDoc"))
+                        ["CarouselComponent", "GridComponent", "ListComponent"],
+                        selectBookListModelData(q.Var("componentDoc")),
+                        q.Select("data", q.Var("componentDoc"))
                       )
                     )
                   )

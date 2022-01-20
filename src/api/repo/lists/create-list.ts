@@ -1,4 +1,4 @@
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import slugify from "slugify";
 
 export type CreateListInput = { title: string; loggedInAs: string };
@@ -9,16 +9,16 @@ export default function createList(client: Client) {
     const key = slugify(title, { lower: true, strict: true });
 
     const list = await client.query(
-      Q.Let(
+      q.Let(
         {
-          listMatch: Q.Match(Q.Index("unique_lists_by_key"), key),
+          listMatch: q.Match(q.Index("unique_lists_by_key"), key),
         },
-        Q.If(
-          Q.Exists(Q.Var("listMatch")),
+        q.If(
+          q.Exists(q.Var("listMatch")),
           null,
-          Q.Select(
+          q.Select(
             "ref",
-            Q.Create("Lists", {
+            q.Create("Lists", {
               data: { title, key, createdBy: loggedInAs, bookRefs: [] },
             })
           )

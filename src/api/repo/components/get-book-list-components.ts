@@ -1,60 +1,400 @@
-import { Client, query as Q, type Expr } from "faunadb";
+import { Client, query as q, type Expr } from "faunadb";
+import { type ListComponentModel } from ".";
+import { LinkComponentVariant } from "api/__generated__/resolvers-types";
 
-const selectBookRefs = ({
-  sourceDoc,
-  sourceType,
-}: {
-  sourceDoc: Expr;
-  sourceType: Expr;
-}) =>
-  Q.If(
-    Q.Equals(sourceType, "CATEGORY"),
-    Q.Map(
-      Q.Select(
-        "data",
-        Q.Paginate(
-          Q.Match(
-            Q.Index("category_book_connections_by_categoryRef"),
-            Q.Select("ref", sourceDoc)
-          )
-        )
-      ),
-      Q.Lambda(
-        "bookConnectionRef",
-        Q.Select(["data", "bookRef"], Q.Get(Q.Var("bookConnectionRef")))
-      )
-    ),
-    Q.Select(["data", "bookRefs"], sourceDoc)
+const authorLink = (authorDoc: Expr) =>
+  q.Concat(
+    [
+      "/collections/authors/show?sourceKey=",
+      q.Select(["data", "key"], authorDoc),
+    ],
+    ""
   );
 
-const selectTitle = ({
-  sourceDoc,
-  sourceType,
-}: {
-  sourceDoc: Expr;
-  sourceType: Expr;
-}) =>
-  Q.If(
-    Q.Equals(sourceType, "LIST"),
-    Q.Select(["data", "title"], sourceDoc),
-    Q.Select(["data", "name"], sourceDoc)
+const bookLink = (bookDoc: Expr) =>
+  q.Concat(
+    [
+      "/books/show?googleBooksVolumeId=",
+      q.Select(["data", "googleBooksVolumeId"], bookDoc),
+    ],
+    ""
   );
 
-const selectIndex = ({ sourceType }: { sourceType: Expr }) =>
-  Q.If(
-    Q.Equals(sourceType, "LIST"),
-    Q.Index("unique_lists_by_key"),
-    Q.If(
-      Q.Equals(sourceType, "CATEGORY"),
-      Q.Index("unique_categories_by_key"),
-      Q.Index("unique_authors_by_key")
-    )
+const categoryLink = (categoryDoc: Expr) =>
+  q.Concat(
+    [
+      "/collections/categories/show?sourceKey=",
+      q.Select(["data", "key"], categoryDoc),
+    ],
+    ""
+  );
+
+const listLink = (listDoc: Expr) =>
+  q.Concat(
+    ["/collections/lists/show?sourceKey=", q.Select(["data", "key"], listDoc)],
+    ""
   );
 
 const selectNumberWanted = ({ componentType }: { componentType: Expr }) =>
-  Q.If(Q.Equals(componentType, "BookCarouselComponent"), 10, 64);
+  q.If(q.Equals(componentType, "CarouselComponent"), 10, 64);
 
-export default function getBookListComponents(client: Client) {
+const selectTopAuthors = q.Let(
+  {
+    totalCards: q.Count(q.Match(q.Index("authors_by_listCount"))),
+    cards: q.Select(
+      "data",
+      q.Map(
+        q.Paginate(q.Match(q.Index("authors_by_listCount"))),
+        q.Lambda(
+          "authorIndexMatch",
+          q.Let(
+            {
+              inLists: q.Select(0, q.Var("authorIndexMatch")),
+              authorDoc: q.Get(q.Select(1, q.Var("authorIndexMatch"))),
+            },
+            {
+              id: q.Select(["ref", "id"], q.Var("authorDoc")),
+              href: authorLink(q.Var("authorDoc")),
+              image: q.Select(
+                ["data", "image"],
+                q.Get(q.Select(["data", "bookRefs", 0], q.Var("authorDoc")))
+              ),
+              title: q.Concat(
+                [
+                  q.Select(["data", "name"], q.Var("authorDoc")),
+                  q.Concat(["(Lists: ", q.ToString(q.Var("inLists")), ")"], ""),
+                ],
+                " "
+              ),
+              createdBy: "",
+            }
+          )
+        )
+      )
+    ),
+  },
+  {
+    title: "Top Authors",
+    link: null,
+    totalCards: q.Var("totalCards"),
+    cards: q.Var("cards"),
+    createdBy: "",
+  }
+);
+
+const selectTopBooks = q.Let(
+  {
+    totalCards: q.Count(q.Match(q.Index("books_by_listCount"))),
+    cards: q.Select(
+      "data",
+      q.Map(
+        q.Paginate(q.Match(q.Index("books_by_listCount"))),
+        q.Lambda(
+          "bookIndexMatch",
+          q.Let(
+            {
+              inLists: q.Select(0, q.Var("bookIndexMatch")),
+              bookDoc: q.Get(q.Select(1, q.Var("bookIndexMatch"))),
+            },
+            {
+              id: q.Select(["ref", "id"], q.Var("bookDoc")),
+              href: bookLink(q.Var("bookDoc")),
+              image: q.Select(["data", "image"], q.Var("bookDoc")),
+              title: q.Concat(
+                [
+                  q.Select(["data", "title"], q.Var("bookDoc")),
+                  q.Concat(["(Lists: ", q.ToString(q.Var("inLists")), ")"], ""),
+                ],
+                " "
+              ),
+              createdBy: "",
+            }
+          )
+        )
+      )
+    ),
+  },
+  {
+    title: "Top Books",
+    link: null,
+    totalCards: q.Var("totalCards"),
+    cards: q.Var("cards"),
+    createdBy: "",
+  }
+);
+
+const selectTopCategories = q.Let(
+  {
+    totalCards: q.Count(q.Match(q.Index("categories_by_listCount"))),
+    cards: q.Select(
+      "data",
+      q.Map(
+        q.Paginate(q.Match(q.Index("categories_by_listCount"))),
+        q.Lambda(
+          "categoryIndexMatch",
+          q.Let(
+            {
+              inLists: q.Select(0, q.Var("categoryIndexMatch")),
+              categoryDoc: q.Get(q.Select(1, q.Var("categoryIndexMatch"))),
+            },
+            q.Let(
+              {
+                bookDoc: q.Get(
+                  q.Select(
+                    ["data", "bookRef"],
+                    q.Get(
+                      q.Select(
+                        0,
+                        q.Paginate(
+                          q.Match(
+                            q.Index("category_book_connections_by_categoryRef"),
+                            q.Select("ref", q.Var("categoryDoc"))
+                          ),
+                          { size: 1 }
+                        )
+                      )
+                    )
+                  )
+                ),
+              },
+              {
+                id: q.Select(["ref", "id"], q.Var("categoryDoc")),
+                href: categoryLink(q.Var("categoryDoc")),
+                image: q.Select(["data", "image"], q.Var("bookDoc")),
+                title: q.Concat(
+                  [
+                    q.Select(["data", "name"], q.Var("categoryDoc")),
+                    q.Concat(
+                      ["(Lists: ", q.ToString(q.Var("inLists")), ")"],
+                      ""
+                    ),
+                  ],
+                  " "
+                ),
+                createdBy: "",
+              }
+            )
+          )
+        )
+      )
+    ),
+  },
+  {
+    title: "Top Categories",
+    link: null,
+    totalCards: q.Var("totalCards"),
+    cards: q.Var("cards"),
+    createdBy: "",
+  }
+);
+
+const selectRecentLists = q.Let(
+  {
+    totalCards: q.Count(q.Documents(q.Collection("Lists"))),
+    cards: q.Select(
+      "data",
+      q.Map(
+        q.Paginate(q.Reverse(q.Documents(q.Collection("Lists")))),
+        q.Lambda(
+          "listRef",
+          q.Let(
+            {
+              listDoc: q.Get(q.Var("listRef")),
+            },
+            {
+              id: q.Select(["ref", "id"], q.Var("listDoc")),
+              href: listLink(q.Var("listDoc")),
+              image: q.If(
+                q.ContainsPath(["data", "bookRefs", 0], q.Var("listDoc")),
+                q.Select(
+                  ["data", "image"],
+                  q.Get(q.Select(["data", "bookRefs", 0], q.Var("listDoc")))
+                ),
+                ""
+              ),
+              title: q.Select(["data", "title"], q.Var("listDoc")),
+              createdBy: q.Select(["data", "createdBy"], q.Var("listDoc")),
+            }
+          )
+        )
+      )
+    ),
+  },
+  {
+    title: "Recent Lists",
+    link: null,
+    totalCards: q.Var("totalCards"),
+    cards: q.Var("cards"),
+    createdBy: "",
+  }
+);
+
+const mapBooks = (bookRefs: Expr) =>
+  q.Map(
+    q.Var("bookRefs"),
+    q.Lambda(
+      "bookRef",
+      q.Let(
+        {
+          bookDoc: q.Get(q.Var("bookRef")),
+        },
+        {
+          id: q.Select(["ref", "id"], q.Var("bookDoc")),
+          href: bookLink(q.Var("bookDoc")),
+          image: q.Select(["data", "image"], q.Var("bookDoc")),
+          title: q.Select(["data", "title"], q.Var("bookDoc")),
+          createdBy: "",
+        }
+      )
+    )
+  );
+
+const selectList = ({
+  sourceKey,
+  componentType,
+}: {
+  sourceKey: Expr;
+  componentType: Expr;
+}) =>
+  q.Let(
+    {
+      listDoc: q.Get(q.Match(q.Index("unique_lists_by_key"), sourceKey)),
+    },
+    q.Let(
+      {
+        bookRefs: q.Select(["data", "bookRefs"], q.Var("listDoc")),
+      },
+      q.Let(
+        {
+          totalCards: q.Count(q.Var("bookRefs")),
+        },
+        {
+          title: q.Select(["data", "title"], q.Var("listDoc")),
+          link: {
+            title: q.Concat(
+              ["See all", q.ToString(q.Var("totalCards")), "books"],
+              " "
+            ),
+            href: listLink(q.Var("listDoc")),
+            variant: LinkComponentVariant.Default,
+          },
+          totalCards: q.Var("totalCards"),
+          cards: q.Take(
+            selectNumberWanted({ componentType }),
+            mapBooks(q.Var("bookRefs"))
+          ),
+          createdBy: q.Select(["data", "createdBy"], q.Var("listDoc")),
+        }
+      )
+    )
+  );
+
+const selectAuthor = ({
+  sourceKey,
+  componentType,
+}: {
+  sourceKey: Expr;
+  componentType: Expr;
+}) =>
+  q.Let(
+    {
+      authorDoc: q.Get(q.Match(q.Index("unique_authors_by_key"), sourceKey)),
+    },
+    q.Let(
+      {
+        bookRefs: q.Select(["data", "bookRefs"], q.Var("authorDoc")),
+      },
+      q.Let(
+        {
+          totalCards: q.Count(q.Var("bookRefs")),
+        },
+        {
+          title: q.Select(["data", "name"], q.Var("authorDoc")),
+          link: {
+            title: q.Concat(
+              ["See all", q.ToString(q.Var("totalCards")), "books"],
+              " "
+            ),
+            href: authorLink(q.Var("authorDoc")),
+            variant: LinkComponentVariant.Default,
+          },
+          totalCards: q.Var("totalCards"),
+          cards: q.Take(
+            selectNumberWanted({ componentType }),
+            mapBooks(q.Var("bookRefs"))
+          ),
+          createdBy: "",
+        }
+      )
+    )
+  );
+
+const selectCategory = ({
+  sourceKey,
+  componentType,
+}: {
+  sourceKey: Expr;
+  componentType: Expr;
+}) =>
+  q.Let(
+    {
+      categoryDoc: q.Get(
+        q.Match(q.Index("unique_categories_by_key"), sourceKey)
+      ),
+    },
+    q.Let(
+      {
+        bookRefs: q.Map(
+          q.Select(
+            "data",
+            q.Paginate(
+              q.Match(
+                q.Index("category_book_connections_by_categoryRef"),
+                q.Select("ref", q.Var("categoryDoc"))
+              )
+            )
+          ),
+          q.Lambda(
+            "bookConnectionRef",
+            q.Select(["data", "bookRef"], q.Get(q.Var("bookConnectionRef")))
+          )
+        ),
+      },
+      q.Let(
+        { totalCards: q.Count(q.Var("bookRefs")) },
+        {
+          title: q.Select(["data", "name"], q.Var("categoryDoc")),
+          link: {
+            title: q.Concat(
+              ["See all", q.ToString(q.Var("totalCards")), "books"],
+              " "
+            ),
+            href: authorLink(q.Var("categoryDoc")),
+            variant: LinkComponentVariant.Default,
+          },
+          totalCards: q.Var("totalCards"),
+          cards: q.Take(
+            selectNumberWanted({ componentType }),
+            mapBooks(q.Var("bookRefs"))
+          ),
+          createdBy: "",
+        }
+      )
+    )
+  );
+
+const selectDefault = q.Let(
+  {},
+  {
+    title: "Data source not found. Ensure valid context / source entered.",
+    href: "",
+    totalCards: 0,
+    cards: [],
+    createdBy: "",
+  }
+);
+
+export default function getListComponents(client: Client) {
   return async (
     sourceArr: readonly {
       componentType: string;
@@ -62,116 +402,64 @@ export default function getBookListComponents(client: Client) {
       sourceKey: string | null;
     }[]
   ) => {
+    console.log("getbooklist", sourceArr);
+
     try {
       const result = (await client.query(
-        Q.Map(
+        q.Map(
           sourceArr,
-          Q.Lambda(
+          q.Lambda(
             "sourceData",
-            Q.Let(
+            q.Let(
               {
-                componentType: Q.Select("componentType", Q.Var("sourceData")),
-                sourceType: Q.Select("sourceType", Q.Var("sourceData")),
-                sourceKey: Q.Select("sourceKey", Q.Var("sourceData")),
+                componentType: q.Select("componentType", q.Var("sourceData")),
+                sourceType: q.Select("sourceType", q.Var("sourceData")),
+                sourceKey: q.Select("sourceKey", q.Var("sourceData")),
               },
-              Q.Let(
-                {
-                  sourceMatch: Q.Match(
-                    selectIndex({ sourceType: Q.Var("sourceType") }),
-                    Q.Var("sourceKey")
-                  ),
-                },
-                Q.If(
-                  Q.Exists(Q.Var("sourceMatch")),
-                  Q.Let(
-                    {
-                      sourceDoc: Q.Get(Q.Var("sourceMatch")),
-                    },
-                    Q.Let(
-                      {
-                        bookRefs: selectBookRefs({
-                          sourceDoc: Q.Var("sourceDoc"),
-                          sourceType: Q.Var("sourceType"),
+              q.If(
+                q.Equals(q.Var("sourceType"), "LISTS"),
+                selectRecentLists,
+                q.If(
+                  q.Equals(q.Var("sourceType"), "BOOKS"),
+                  selectTopBooks,
+                  q.If(
+                    q.Equals(q.Var("sourceType"), "AUTHORS"),
+                    selectTopAuthors,
+                    q.If(
+                      q.Equals(q.Var("sourceType"), "CATEGORIES"),
+                      selectTopCategories,
+                      q.If(
+                        q.Equals(q.Var("sourceType"), "LIST"),
+                        selectList({
+                          sourceKey: q.Var("sourceKey"),
+                          componentType: q.Var("componentType"),
                         }),
-                      },
-                      {
-                        title: selectTitle({
-                          sourceDoc: Q.Var("sourceDoc"),
-                          sourceType: Q.Var("sourceType"),
-                        }),
-                        totalBookCards: Q.Count(Q.Var("bookRefs")),
-                        bookCards: Q.Take(
-                          selectNumberWanted({
-                            componentType: Q.Var("componentType"),
+                        q.If(
+                          q.Equals(q.Var("sourceType"), "AUTHOR"),
+                          selectAuthor({
+                            sourceKey: q.Var("sourceKey"),
+                            componentType: q.Var("componentType"),
                           }),
-                          Q.Map(
-                            Q.Var("bookRefs"),
-                            Q.Lambda(
-                              "bookRef",
-                              Q.Let(
-                                {
-                                  bookDoc: Q.Get(Q.Var("bookRef")),
-                                },
-                                {
-                                  id: Q.Select(["ref", "id"], Q.Var("bookDoc")),
-                                  googleBooksVolumeId: Q.Select(
-                                    ["data", "googleBooksVolumeId"],
-                                    Q.Var("bookDoc")
-                                  ),
-                                  image: Q.Select(
-                                    ["data", "image"],
-                                    Q.Var("bookDoc")
-                                  ),
-                                  title: Q.Select(
-                                    ["data", "title"],
-                                    Q.Var("bookDoc")
-                                  ),
-                                }
-                              )
-                            )
+                          q.If(
+                            q.Equals(q.Var("sourceType"), "CATEGORY"),
+                            selectCategory({
+                              sourceKey: q.Var("sourceKey"),
+                              componentType: q.Var("componentType"),
+                            }),
+                            selectDefault
                           )
-                        ),
-                        bookListCreatedBy: Q.If(
-                          Q.Equals(Q.Var("sourceType"), "LIST"),
-                          Q.Select(["data", "createdBy"], Q.Var("sourceDoc")),
-                          ""
-                        ),
-                      }
+                        )
+                      )
                     )
-                  ),
-                  Q.Let(
-                    {},
-                    {
-                      title:
-                        "Data source not found. Ensure valid context / source entered.",
-                      totalBookCards: 0,
-                      bookCards: [],
-                      bookListCreatedBy: "",
-                    }
                   )
                 )
               )
             )
           )
         )
-      )) as {
-        title: string;
-        totalBookCards: number;
-        bookCards: {
-          id: string;
-          googleBooksVolumeId: string;
-          image: string;
-        }[];
-        bookListCreatedBy: string;
-      }[];
+      )) as ListComponentModel[];
 
-      return result.map((bookListComponent) => ({
-        ...bookListComponent,
-        bookCards: bookListComponent.bookCards.map((bookCard) => ({
-          ...bookCard,
-          href: `/books/show?googleBooksVolumeId=${bookCard.googleBooksVolumeId}`,
-        })),
-      }));
+      return result;
     } catch (e) {
       console.error("get-book-list-components", e);
 

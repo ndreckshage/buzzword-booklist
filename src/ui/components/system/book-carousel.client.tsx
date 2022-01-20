@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "./link.client";
 import NextLink from "next/link";
 import cx from "classnames";
-import { type BookCarouselComponent } from "api/__generated__/resolvers-types";
+import { type CarouselComponent } from "api/__generated__/resolvers-types";
 import CreatedBy from "../common/created-by";
 
 const Arrow = ({
@@ -40,7 +40,7 @@ const Arrow = ({
   </button>
 );
 
-export default function BookCarousel(props: BookCarouselComponent) {
+export default function BookCarousel(props: CarouselComponent) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const advance = (forward: boolean) => () => {
@@ -64,14 +64,14 @@ export default function BookCarousel(props: BookCarouselComponent) {
             </span>
           )}
         </p>
-        <CreatedBy createdByType="List" createdBy={props.bookListCreatedBy} />
+        <CreatedBy createdByType="List" createdBy={props.createdBy} />
       </div>
       <div className="relative">
         <div
           className="relative w-full flex gap-6 overflow-x-auto scroll-smooth snap-x snap-always snap-mandatory p-5"
           ref={containerRef}
         >
-          {props.bookCards.map((bookCard) => (
+          {props.cards.map((bookCard) => (
             <div
               key={bookCard.id}
               className="snap-start shrink-0 drop-shadow-lg"
@@ -90,7 +90,7 @@ export default function BookCarousel(props: BookCarouselComponent) {
             </div>
           ))}
         </div>
-        {props.bookCards.length > 0 && (
+        {props.cards.length > 0 && (
           <>
             <Arrow direction="left" onClick={advance(false)} />
             <Arrow direction="right" onClick={advance(true)} />

@@ -1,4 +1,4 @@
-import { query as Q, type Client } from "faunadb";
+import { query as q, type Client } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type UpdateMarkdownComponentInput = {
@@ -21,14 +21,14 @@ export default function updateMarkdownComponent(client: Client) {
 
     try {
       await client.query(
-        Q.Let(
+        q.Let(
           {
-            componentDoc: Q.Get(Q.Ref(Q.Collection("Components"), componentId)),
+            componentDoc: q.Get(q.Ref(q.Collection("Components"), componentId)),
           },
           execIfComponentOwner({
-            componentDoc: Q.Var("componentDoc"),
+            componentDoc: q.Var("componentDoc"),
             loggedInAs,
-            execExpr: Q.Update(Q.Select("ref", Q.Var("componentDoc")), {
+            execExpr: q.Update(q.Select("ref", q.Var("componentDoc")), {
               data: {
                 text,
                 backgroundColor,

@@ -1,27 +1,28 @@
-type BookCardComponent {
+type CardComponent {
   id: ID!
   href: String!
   image: String!
   title: String!
+  createdBy: String
 }
 
-type BookCarouselComponent {
+type CarouselComponent {
   id: ID!
   title: String!
   link: LinkComponent
-  bookCards: [BookCardComponent!]!
-  bookListCreatedBy: String
+  cards: [CardComponent!]!
   sourceType: ComponentContextType
   sourceKey: String
+  createdBy: String
 }
 
-type BookGridComponent {
+type GridComponent {
   id: ID!
   title: String!
-  bookCards: [BookCardComponent!]!
-  bookListCreatedBy: String
+  cards: [CardComponent!]!
   sourceType: ComponentContextType
   sourceKey: String
+  createdBy: String
 }
 
 type BookImageComponent {
@@ -54,13 +55,13 @@ type BookDetailsComponent {
   text: String!
 }
 
-type BookListComponent {
+type ListComponent {
   id: ID!
   title: String!
-  bookCards: [BookCardComponent!]!
-  bookListCreatedBy: String
+  cards: [CardComponent!]!
   sourceType: ComponentContextType
   sourceKey: String
+  createdBy: String
 }
 
 type MarkdownComponent {
@@ -90,16 +91,16 @@ type LayoutComponent {
 
 union Component =
     LayoutComponent
-  | BookCardComponent
-  | BookCarouselComponent
-  | BookGridComponent
-  | BookListComponent
   | BookImageComponent
   | BookTitleComponent
   | BookActionComponent
   | BookAuthorsComponent
   | BookCategoriesComponent
   | BookDetailsComponent
+  | CardComponent
+  | CarouselComponent
+  | GridComponent
+  | ListComponent
   | MarkdownComponent
 
 type Book {

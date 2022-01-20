@@ -23,12 +23,11 @@ import { type BookModel, getBooksByListIds } from "api/repo/books";
 import {
   type RootComponentModel,
   type RootLayoutComponentModel,
-  type BookListComponentModel,
+  type ListComponentModel,
   type BookComponentModel,
   getLayoutComponentsByCreators,
   getComponentsByIds,
-  getBookListComponents,
-  getBookListLinksComponents,
+  getListComponents,
   getBookComponents,
   createLayoutComponent,
   type CreateLayoutComponentInput,
@@ -84,10 +83,9 @@ export type ResolverContext = {
         sourceType: ComponentContextType | null;
         sourceKey: string | null;
       },
-      BookListComponentModel,
+      ListComponentModel,
       string
     >;
-    bookListLinksComponentsLoader: DataLoader<string, null, string>;
     bookComponentsByKeysLoader: DataLoader<string, BookComponentModel, string>;
   };
   mutations: {
@@ -135,12 +133,9 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       ),
       listsByKeysLoader: new DataLoader(getListsByKeys(client)),
       listsByCreatorsLoader: new DataLoader(getListsByCreators(client)),
-      bookListComponentsLoader: new DataLoader(getBookListComponents(client), {
+      bookListComponentsLoader: new DataLoader(getListComponents(client), {
         cacheKeyFn: JSON.stringify,
       }),
-      bookListLinksComponentsLoader: new DataLoader(
-        getBookListLinksComponents(client)
-      ),
       bookComponentsByKeysLoader: new DataLoader(getBookComponents(client)),
     },
     mutations: {

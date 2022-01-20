@@ -1,5 +1,5 @@
 require("dotenv").config({ path: "./.env.local" });
-const { Client, query: Q } = require("faunadb");
+const { Client, query: q } = require("faunadb");
 
 const FAUNA_KEY = process.env.FAUNA_KEY;
 if (!FAUNA_KEY) {
@@ -13,20 +13,20 @@ const client = new Client({
 
 const createBooks = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(["ref"], Q.CreateCollection({ name: "Books" })),
+        collectionRef: q.Select(["ref"], q.CreateCollection({ name: "Books" })),
       },
-      Q.Do(
-        Q.CreateIndex({
+      q.Do(
+        q.CreateIndex({
           name: "unique_books_by_googleBooksVolumeId",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "googleBooksVolumeId"] }],
           unique: true,
         }),
-        Q.CreateIndex({
+        q.CreateIndex({
           name: "books_by_listCount",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           values: [
             { field: ["data", "listCount"], reverse: true },
             { field: ["ref"] },
@@ -38,23 +38,23 @@ const createBooks = () =>
 
 const createAuthors = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(
+        collectionRef: q.Select(
           ["ref"],
-          Q.CreateCollection({ name: "Authors" })
+          q.CreateCollection({ name: "Authors" })
         ),
       },
-      Q.Do(
-        Q.CreateIndex({
+      q.Do(
+        q.CreateIndex({
           name: "unique_authors_by_key",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "key"] }],
           unique: true,
         }),
-        Q.CreateIndex({
+        q.CreateIndex({
           name: "authors_by_listCount",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           values: [
             { field: ["data", "listCount"], reverse: true },
             { field: ["ref"] },
@@ -66,23 +66,23 @@ const createAuthors = () =>
 
 const createCategories = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(
+        collectionRef: q.Select(
           ["ref"],
-          Q.CreateCollection({ name: "Categories" })
+          q.CreateCollection({ name: "Categories" })
         ),
       },
-      Q.Do(
-        Q.CreateIndex({
+      q.Do(
+        q.CreateIndex({
           name: "unique_categories_by_key",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "key"] }],
           unique: true,
         }),
-        Q.CreateIndex({
+        q.CreateIndex({
           name: "categories_by_listCount",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           values: [
             { field: ["data", "listCount"], reverse: true },
             { field: ["ref"] },
@@ -94,26 +94,26 @@ const createCategories = () =>
 
 const createCategoryBookConnections = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(
+        collectionRef: q.Select(
           ["ref"],
-          Q.CreateCollection({ name: "CategoryBookConnections" })
+          q.CreateCollection({ name: "CategoryBookConnections" })
         ),
       },
-      Q.Do(
-        Q.CreateIndex({
+      q.Do(
+        q.CreateIndex({
           name: "unique_category_book_connections_by_refs",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [
             { field: ["data", "categoryRef"] },
             { field: ["data", "bookRef"] },
           ],
           unique: true,
         }),
-        Q.CreateIndex({
+        q.CreateIndex({
           name: "category_book_connections_by_categoryRef",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "categoryRef"] }],
         })
       )
@@ -122,20 +122,20 @@ const createCategoryBookConnections = () =>
 
 const createLists = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(["ref"], Q.CreateCollection({ name: "Lists" })),
+        collectionRef: q.Select(["ref"], q.CreateCollection({ name: "Lists" })),
       },
-      Q.Do(
-        Q.CreateIndex({
+      q.Do(
+        q.CreateIndex({
           name: "unique_lists_by_key",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "key"] }],
           unique: true,
         }),
-        Q.CreateIndex({
+        q.CreateIndex({
           name: "lists_by_createdBy",
-          source: Q.Var("collectionRef"),
+          source: q.Var("collectionRef"),
           terms: [{ field: ["data", "createdBy"] }],
         })
       )
@@ -144,16 +144,16 @@ const createLists = () =>
 
 const createComponents = () =>
   client.query(
-    Q.Let(
+    q.Let(
       {
-        collectionRef: Q.Select(
+        collectionRef: q.Select(
           ["ref"],
-          Q.CreateCollection({ name: "Components" })
+          q.CreateCollection({ name: "Components" })
         ),
       },
-      Q.CreateIndex({
+      q.CreateIndex({
         name: "components_by_createdBy",
-        source: Q.Var("collectionRef"),
+        source: q.Var("collectionRef"),
         terms: [{ field: ["data", "createdBy"] }],
       })
     )

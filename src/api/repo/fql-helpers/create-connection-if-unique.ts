@@ -1,4 +1,4 @@
-import { query as Q } from "faunadb";
+import { query as q } from "faunadb";
 
 export default function createConnectionIfUnique({
   edgeAName,
@@ -19,31 +19,31 @@ export default function createConnectionIfUnique({
   connectionRefIndex: string;
   connectionCollectionName: string;
 }) {
-  return Q.Let(
+  return q.Let(
     {
-      edgeARef: Q.Select(
+      edgeARef: q.Select(
         ["ref"],
-        Q.Get(Q.Match(Q.Index(edgeAIndex), edgeAIndexTerms))
+        q.Get(q.Match(q.Index(edgeAIndex), edgeAIndexTerms))
       ),
-      edgeBRef: Q.Select(
+      edgeBRef: q.Select(
         ["ref"],
-        Q.Get(Q.Match(Q.Index(edgeBIndex), edgeBIndexTerms))
+        q.Get(q.Match(q.Index(edgeBIndex), edgeBIndexTerms))
       ),
     },
-    Q.Let(
+    q.Let(
       {
-        connectionMatch: Q.Match(Q.Index(connectionRefIndex), [
-          Q.Var("edgeARef"),
-          Q.Var("edgeBRef"),
+        connectionMatch: q.Match(q.Index(connectionRefIndex), [
+          q.Var("edgeARef"),
+          q.Var("edgeBRef"),
         ]),
       },
-      Q.If(
-        Q.Exists(Q.Var("connectionMatch")),
+      q.If(
+        q.Exists(q.Var("connectionMatch")),
         null,
-        Q.Create(connectionCollectionName, {
+        q.Create(connectionCollectionName, {
           data: {
-            [edgeAName]: Q.Var("edgeARef"),
-            [edgeBName]: Q.Var("edgeBRef"),
+            [edgeAName]: q.Var("edgeARef"),
+            [edgeBName]: q.Var("edgeBRef"),
           },
         })
       )

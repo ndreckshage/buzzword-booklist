@@ -1,24 +1,21 @@
 import Image from "next/image";
 import NextLink from "next/link";
-import { type BookListComponent } from "api/__generated__/resolvers-types";
+import { type ListComponent } from "api/__generated__/resolvers-types";
 import CreatedBy from "../common/created-by";
 
-export default function BookList(props: BookListComponent) {
+export default function BookList(props: ListComponent) {
   return (
     <>
       <div className="flex mb-6 space-x-2">
         <h1>{props.title}</h1>
-        {props.bookListCreatedBy && (
+        {props.createdBy && (
           <>
             <span>&mdash;</span>
-            <CreatedBy
-              createdByType="List"
-              createdBy={props.bookListCreatedBy}
-            />
+            <CreatedBy createdByType="List" createdBy={props.createdBy} />
           </>
         )}
       </div>
-      {props.bookCards.map((bookCard) => (
+      {props.cards.map((bookCard) => (
         <div key={bookCard.id} className="border-b border-slate-100 pb-5 mb-5">
           <NextLink href={bookCard.href}>
             <a className="flex text-inherit text-xl no-underline items-center space-x-5">

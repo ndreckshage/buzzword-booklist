@@ -1,5 +1,5 @@
 import { ComponentContextType } from "api/__generated__/resolvers-types";
-import { type Client, query as Q } from "faunadb";
+import { type Client, query as q } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
 export type CreateComponentInLayoutInput = {
@@ -40,9 +40,9 @@ export default function createComponentInLayout(client: Client) {
             createdBy: loggedInAs,
           };
 
-        case "BookCarouselComponent":
-        case "BookGridComponent":
-        case "BookListComponent":
+        case "CarouselComponent":
+        case "GridComponent":
+        case "ListComponent":
           return {
             componentType,
             createdBy: loggedInAs,
@@ -63,22 +63,22 @@ export default function createComponentInLayout(client: Client) {
 
     try {
       await client.query(
-        Q.Let(
+        q.Let(
           {
-            layoutDoc: Q.Get(Q.Ref(Q.Collection("Components"), layoutId)),
+            layoutDoc: q.Get(q.Ref(q.Collection("Components"), layoutId)),
           },
           execIfComponentOwner({
-            componentDoc: Q.Var("layoutDoc"),
+            componentDoc: q.Var("layoutDoc"),
             loggedInAs,
-            execExpr: Q.Let(
+            execExpr: q.Let(
               {
-                componentDoc: Q.Create("Components", { data: componentData }),
+                componentDoc: q.Create("Components", { data: componentData }),
               },
-              Q.Update(Q.Select("ref", Q.Var("layoutDoc")), {
+              q.Update(q.Select("ref", q.Var("layoutDoc")), {
                 data: {
-                  componentRefs: Q.Append(
-                    Q.Select("ref", Q.Var("componentDoc")),
-                    Q.Select(["data", "componentRefs"], Q.Var("layoutDoc"))
+                  componentRefs: q.Append(
+                    q.Select("ref", q.Var("componentDoc")),
+                    q.Select(["data", "componentRefs"], q.Var("layoutDoc"))
                   ),
                 },
               })

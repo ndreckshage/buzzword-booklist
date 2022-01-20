@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
-import { type BookGridComponent } from "api/__generated__/resolvers-types";
+import { type GridComponent } from "api/__generated__/resolvers-types";
 import BookGrid from "./book-grid.client";
 
-export default function BookGridServer(props: BookGridComponent) {
+export default function BookGridServer(props: GridComponent) {
   return (
     <div className="container mx-auto my-10">
       <BookGrid {...props} />
@@ -10,12 +10,12 @@ export default function BookGridServer(props: BookGridComponent) {
   );
 }
 
-export const BookGridComponentFragment = gql`
-  fragment BookGridComponentFragment on BookGridComponent {
+export const GridComponentFragment = gql`
+  fragment GridComponentFragment on GridComponent {
     id
     title
-    bookListCreatedBy
-    bookCards {
+    createdBy
+    cards {
       id
       href
       image

@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { BookModel } from '../repo/books';
-import { RootBookListComponentModel, RootBookComponentModel, RootComponentModel, RootLayoutComponentModel } from '../repo/components';
+import { RootListComponentModel, RootBookComponentModel, RootComponentModel, RootLayoutComponentModel } from '../repo/components';
 import { ListModel } from '../repo/lists';
 import { ResolverContext } from '../context';
 export type Maybe<T> = T | null;
@@ -39,25 +39,6 @@ export type BookAuthorsComponent = {
   links: Array<LinkComponent>;
 };
 
-export type BookCardComponent = {
-  __typename?: 'BookCardComponent';
-  href: Scalars['String'];
-  id: Scalars['ID'];
-  image: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type BookCarouselComponent = {
-  __typename?: 'BookCarouselComponent';
-  bookCards: Array<BookCardComponent>;
-  bookListCreatedBy?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  link?: Maybe<LinkComponent>;
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
-  title: Scalars['String'];
-};
-
 export type BookCategoriesComponent = {
   __typename?: 'BookCategoriesComponent';
   id: Scalars['ID'];
@@ -70,30 +51,10 @@ export type BookDetailsComponent = {
   text: Scalars['String'];
 };
 
-export type BookGridComponent = {
-  __typename?: 'BookGridComponent';
-  bookCards: Array<BookCardComponent>;
-  bookListCreatedBy?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
-  title: Scalars['String'];
-};
-
 export type BookImageComponent = {
   __typename?: 'BookImageComponent';
   id: Scalars['ID'];
   image: Scalars['String'];
-};
-
-export type BookListComponent = {
-  __typename?: 'BookListComponent';
-  bookCards: Array<BookCardComponent>;
-  bookListCreatedBy?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
-  title: Scalars['String'];
 };
 
 export type BookTitleComponent = {
@@ -102,7 +63,27 @@ export type BookTitleComponent = {
   title: Scalars['String'];
 };
 
-export type Component = BookActionComponent | BookAuthorsComponent | BookCardComponent | BookCarouselComponent | BookCategoriesComponent | BookDetailsComponent | BookGridComponent | BookImageComponent | BookListComponent | BookTitleComponent | LayoutComponent | MarkdownComponent;
+export type CardComponent = {
+  __typename?: 'CardComponent';
+  createdBy?: Maybe<Scalars['String']>;
+  href: Scalars['String'];
+  id: Scalars['ID'];
+  image: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type CarouselComponent = {
+  __typename?: 'CarouselComponent';
+  cards: Array<CardComponent>;
+  createdBy?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  link?: Maybe<LinkComponent>;
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
+  title: Scalars['String'];
+};
+
+export type Component = BookActionComponent | BookAuthorsComponent | BookCategoriesComponent | BookDetailsComponent | BookImageComponent | BookTitleComponent | CardComponent | CarouselComponent | GridComponent | LayoutComponent | ListComponent | MarkdownComponent;
 
 export enum ComponentContextType {
   Author = 'AUTHOR',
@@ -121,6 +102,16 @@ export type CurrentUser = {
   layoutComponents: Array<LayoutComponent>;
   lists: Array<List>;
   name: Scalars['String'];
+};
+
+export type GridComponent = {
+  __typename?: 'GridComponent';
+  cards: Array<CardComponent>;
+  createdBy?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
+  title: Scalars['String'];
 };
 
 export type LayoutComponent = {
@@ -150,6 +141,16 @@ export type List = {
   createdBy: Scalars['String'];
   id: Scalars['ID'];
   key: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type ListComponent = {
+  __typename?: 'ListComponent';
+  cards: Array<CardComponent>;
+  createdBy?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  sourceKey?: Maybe<Scalars['String']>;
+  sourceType?: Maybe<ComponentContextType>;
   title: Scalars['String'];
 };
 
@@ -325,23 +326,23 @@ export type ResolversTypes = {
   Book: ResolverTypeWrapper<BookModel>;
   BookActionComponent: ResolverTypeWrapper<RootBookComponentModel>;
   BookAuthorsComponent: ResolverTypeWrapper<RootBookComponentModel>;
-  BookCardComponent: ResolverTypeWrapper<BookCardComponent>;
-  BookCarouselComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookCategoriesComponent: ResolverTypeWrapper<RootBookComponentModel>;
   BookDetailsComponent: ResolverTypeWrapper<RootBookComponentModel>;
-  BookGridComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookImageComponent: ResolverTypeWrapper<RootBookComponentModel>;
-  BookListComponent: ResolverTypeWrapper<RootBookListComponentModel>;
   BookTitleComponent: ResolverTypeWrapper<RootBookComponentModel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CardComponent: ResolverTypeWrapper<CardComponent>;
+  CarouselComponent: ResolverTypeWrapper<RootListComponentModel>;
   Component: ResolverTypeWrapper<RootComponentModel>;
   ComponentContextType: ComponentContextType;
   CurrentUser: ResolverTypeWrapper<Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversTypes['LayoutComponent']>, lists: Array<ResolversTypes['List']> }>;
+  GridComponent: ResolverTypeWrapper<RootListComponentModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   LayoutComponent: ResolverTypeWrapper<RootLayoutComponentModel>;
   LinkComponent: ResolverTypeWrapper<LinkComponent>;
   LinkComponentVariant: LinkComponentVariant;
   List: ResolverTypeWrapper<ListModel>;
+  ListComponent: ResolverTypeWrapper<RootListComponentModel>;
   MarkdownComponent: ResolverTypeWrapper<RootComponentModel>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -353,21 +354,21 @@ export type ResolversParentTypes = {
   Book: BookModel;
   BookActionComponent: RootBookComponentModel;
   BookAuthorsComponent: RootBookComponentModel;
-  BookCardComponent: BookCardComponent;
-  BookCarouselComponent: RootBookListComponentModel;
   BookCategoriesComponent: RootBookComponentModel;
   BookDetailsComponent: RootBookComponentModel;
-  BookGridComponent: RootBookListComponentModel;
   BookImageComponent: RootBookComponentModel;
-  BookListComponent: RootBookListComponentModel;
   BookTitleComponent: RootBookComponentModel;
   Boolean: Scalars['Boolean'];
+  CardComponent: CardComponent;
+  CarouselComponent: RootListComponentModel;
   Component: RootComponentModel;
   CurrentUser: Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversParentTypes['LayoutComponent']>, lists: Array<ResolversParentTypes['List']> };
+  GridComponent: RootListComponentModel;
   ID: Scalars['ID'];
   LayoutComponent: RootLayoutComponentModel;
   LinkComponent: LinkComponent;
   List: ListModel;
+  ListComponent: RootListComponentModel;
   MarkdownComponent: RootComponentModel;
   Mutation: {};
   Query: {};
@@ -394,25 +395,6 @@ export type BookAuthorsComponentResolvers<ContextType = ResolverContext, ParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BookCardComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCardComponent'] = ResolversParentTypes['BookCardComponent']> = {
-  href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BookCarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCarouselComponent'] = ResolversParentTypes['BookCarouselComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
-  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type BookCategoriesComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookCategoriesComponent'] = ResolversParentTypes['BookCategoriesComponent']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   links?: Resolver<Array<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
@@ -425,29 +407,9 @@ export type BookDetailsComponentResolvers<ContextType = ResolverContext, ParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BookGridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookGridComponent'] = ResolversParentTypes['BookGridComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
-  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type BookImageComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookImageComponent'] = ResolversParentTypes['BookImageComponent']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BookListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['BookListComponent'] = ResolversParentTypes['BookListComponent']> = {
-  bookCards?: Resolver<Array<ResolversTypes['BookCardComponent']>, ParentType, ContextType>;
-  bookListCreatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -457,14 +419,44 @@ export type BookTitleComponentResolvers<ContextType = ResolverContext, ParentTyp
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CardComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['CardComponent'] = ResolversParentTypes['CardComponent']> = {
+  createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  href?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CarouselComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['CarouselComponent'] = ResolversParentTypes['CarouselComponent']> = {
+  cards?: Resolver<Array<ResolversTypes['CardComponent']>, ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Component'] = ResolversParentTypes['Component']> = {
-  __resolveType: TypeResolveFn<'BookActionComponent' | 'BookAuthorsComponent' | 'BookCardComponent' | 'BookCarouselComponent' | 'BookCategoriesComponent' | 'BookDetailsComponent' | 'BookGridComponent' | 'BookImageComponent' | 'BookListComponent' | 'BookTitleComponent' | 'LayoutComponent' | 'MarkdownComponent', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BookActionComponent' | 'BookAuthorsComponent' | 'BookCategoriesComponent' | 'BookDetailsComponent' | 'BookImageComponent' | 'BookTitleComponent' | 'CardComponent' | 'CarouselComponent' | 'GridComponent' | 'LayoutComponent' | 'ListComponent' | 'MarkdownComponent', ParentType, ContextType>;
 };
 
 export type CurrentUserResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['CurrentUser'] = ResolversParentTypes['CurrentUser']> = {
   layoutComponents?: Resolver<Array<ResolversTypes['LayoutComponent']>, ParentType, ContextType>;
   lists?: Resolver<Array<ResolversTypes['List']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GridComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['GridComponent'] = ResolversParentTypes['GridComponent']> = {
+  cards?: Resolver<Array<ResolversTypes['CardComponent']>, ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -489,6 +481,16 @@ export type ListResolvers<ContextType = ResolverContext, ParentType extends Reso
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ListComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['ListComponent'] = ResolversParentTypes['ListComponent']> = {
+  cards?: Resolver<Array<ResolversTypes['CardComponent']>, ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -523,19 +525,19 @@ export type Resolvers<ContextType = ResolverContext> = {
   Book?: BookResolvers<ContextType>;
   BookActionComponent?: BookActionComponentResolvers<ContextType>;
   BookAuthorsComponent?: BookAuthorsComponentResolvers<ContextType>;
-  BookCardComponent?: BookCardComponentResolvers<ContextType>;
-  BookCarouselComponent?: BookCarouselComponentResolvers<ContextType>;
   BookCategoriesComponent?: BookCategoriesComponentResolvers<ContextType>;
   BookDetailsComponent?: BookDetailsComponentResolvers<ContextType>;
-  BookGridComponent?: BookGridComponentResolvers<ContextType>;
   BookImageComponent?: BookImageComponentResolvers<ContextType>;
-  BookListComponent?: BookListComponentResolvers<ContextType>;
   BookTitleComponent?: BookTitleComponentResolvers<ContextType>;
+  CardComponent?: CardComponentResolvers<ContextType>;
+  CarouselComponent?: CarouselComponentResolvers<ContextType>;
   Component?: ComponentResolvers<ContextType>;
   CurrentUser?: CurrentUserResolvers<ContextType>;
+  GridComponent?: GridComponentResolvers<ContextType>;
   LayoutComponent?: LayoutComponentResolvers<ContextType>;
   LinkComponent?: LinkComponentResolvers<ContextType>;
   List?: ListResolvers<ContextType>;
+  ListComponent?: ListComponentResolvers<ContextType>;
   MarkdownComponent?: MarkdownComponentResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
