@@ -1,42 +1,39 @@
-import { ComponentContextType } from "api/__generated__/resolvers-types";
+import { ListSourceType } from "api/__generated__/resolvers-types";
 import { query as q, type Client } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
-export type UpdateBooklistComponentInput = {
+export type updateListComponentInput = {
   componentId: string;
-  sourceType?: ComponentContextType;
+  pageSize: number;
+  sourceType?: ListSourceType;
   sourceKey?: string;
   loggedInAs: string;
 };
 
-export type UpdateBooklistComponentOutput = boolean;
+export type updateListComponentOutput = boolean;
 
-export default function updateBooklistComponent(client: Client) {
+export default function updateListComponent(client: Client) {
   return async ({
     componentId,
     sourceType,
     sourceKey,
+    pageSize,
     loggedInAs,
-  }: UpdateBooklistComponentInput) => {
+  }: updateListComponentInput) => {
     console.log(
-      "updateBooklistComponent",
+      "updateListComponent",
       componentId,
       sourceType,
       sourceKey,
+      pageSize,
       loggedInAs
     );
 
-    const data =
-      sourceKey &&
-      sourceType &&
-      [
-        ComponentContextType.Author,
-        ComponentContextType.Category,
-        ComponentContextType.List,
-      ].includes(sourceType)
+    const sourceData =
+      sourceType && Object.values(ListSourceType).includes(sourceType)
         ? {
             sourceType,
-            sourceKey,
+            sourceKey: sourceKey ?? "",
           }
         : {};
 
@@ -59,7 +56,8 @@ export default function updateBooklistComponent(client: Client) {
                   ["data", "createdBy"],
                   q.Var("componentDoc")
                 ),
-                ...data,
+                ...sourceData,
+                ...(pageSize && pageSize < 64 ? { pageSize } : {}),
               },
             }),
           })

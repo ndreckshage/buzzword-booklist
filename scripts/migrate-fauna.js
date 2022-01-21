@@ -151,11 +151,18 @@ const createComponents = () =>
           q.CreateCollection({ name: "Components" })
         ),
       },
-      q.CreateIndex({
-        name: "components_by_createdBy",
-        source: q.Var("collectionRef"),
-        terms: [{ field: ["data", "createdBy"] }],
-      })
+      q.Do(
+        q.CreateIndex({
+          name: "components_by_createdBy",
+          source: q.Var("collectionRef"),
+          terms: [{ field: ["data", "createdBy"] }],
+        }),
+        q.CreateIndex({
+          name: "components_by_componentType",
+          source: q.Var("collectionRef"),
+          terms: [{ field: ["data", "componentType"], reverse: true }],
+        })
+      )
     )
   );
 

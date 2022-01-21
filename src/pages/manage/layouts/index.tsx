@@ -38,7 +38,7 @@ function ManageLayouts() {
               <a>Edit {layoutComponents.title}</a>
             </Link>{" "}
             |
-            <Link href={`/manage/layouts/show?layout=${layoutComponents.id}`}>
+            <Link href={`/layouts/show?layout=${layoutComponents.id}`}>
               <a>View {layoutComponents.title}</a>
             </Link>
           </li>

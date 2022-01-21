@@ -1,5 +1,5 @@
 import Layout from "ui/components/system/layout.server";
-import { ComponentContextType } from "api/__generated__/resolvers-types";
+import { LayoutContextType } from "api/__generated__/resolvers-types";
 
 type Props = {
   router: {
@@ -26,7 +26,7 @@ export default function BookShow(props: Props) {
   return (
     <Layout
       id="320326508822396997"
-      contextType={ComponentContextType.Book}
+      contextType={LayoutContextType.Book}
       contextKey={googleBooksVolumeId}
       className="container mx-auto my-10 px-60"
     />

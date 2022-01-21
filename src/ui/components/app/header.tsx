@@ -62,6 +62,7 @@ export default function Header() {
         </div>
         <div className="space-x-2">
           <Link href="/lists">Recent Lists</Link>
+          <Link href="/layouts">Recent Layouts</Link>
           <Link href="/books">Top Books</Link>
           <Link href="/authors">Top Authors</Link>
           <Link href="/categories">Top Categories</Link>

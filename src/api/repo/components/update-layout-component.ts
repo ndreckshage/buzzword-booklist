@@ -5,6 +5,7 @@ export type UpdateLayoutComponentInput = {
   layoutId: string;
   componentIds: string[] | null;
   flexDirection: string | null;
+  container: boolean | null;
   loggedInAs: string;
 };
 
@@ -15,10 +16,13 @@ export default function updateLayoutComponent(client: Client) {
     layoutId,
     componentIds,
     flexDirection,
+    container,
     loggedInAs,
   }: UpdateLayoutComponentInput) => {
     const reorderdComponents =
       componentIds?.map((id) => q.Ref(q.Collection("Components"), id)) ?? null;
+
+    console.log("update", container);
 
     try {
       await client.query(
@@ -52,6 +56,7 @@ export default function updateLayoutComponent(client: Client) {
                     ...(flexDirection && ["row", "col"].includes(flexDirection)
                       ? { flexDirection }
                       : {}),
+                    container: !!container,
                   },
                 }),
                 q.Abort("Unexpected array difference while reordering")

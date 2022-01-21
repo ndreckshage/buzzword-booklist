@@ -1,13 +1,14 @@
 import {
   type CardComponent,
-  ComponentContextType,
+  LayoutContextType,
+  ListSourceType,
   LinkComponent,
 } from "api/__generated__/resolvers-types";
 
 export type RootComponentModel = {
   id: string;
   componentType: string;
-  contextType: ComponentContextType;
+  contextType: LayoutContextType;
   contextKey: string;
 };
 
@@ -16,8 +17,9 @@ export type RootLayoutComponentModel = RootComponentModel & {
 };
 
 export type RootListComponentModel = RootComponentModel & {
-  sourceType: ComponentContextType | null;
+  sourceType: ListSourceType | null;
   sourceKey: string | null;
+  pageSize: number;
 };
 
 export type RootBookComponentModel = RootComponentModel & {
@@ -44,7 +46,7 @@ export type BookComponentModel = {
 
 export { default as getComponentsByIds } from "./get-components-by-ids";
 export { default as getLayoutComponentsByCreators } from "./get-layout-components-by-creators";
-export { default as getListComponents } from "./get-book-list-components";
+export { default as getListComponents } from "./get-list-components";
 export { default as getBookComponents } from "./get-book-components";
 
 export {
@@ -78,7 +80,7 @@ export {
 } from "./update-markdown-component";
 
 export {
-  default as updateBooklistComponent,
-  type UpdateBooklistComponentInput,
-  type UpdateBooklistComponentOutput,
-} from "./update-booklist-component";
+  default as updateListComponent,
+  type updateListComponentInput,
+  type updateListComponentOutput,
+} from "./update-list-component";

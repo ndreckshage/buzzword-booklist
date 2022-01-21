@@ -78,24 +78,13 @@ export type CarouselComponent = {
   createdBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   link?: Maybe<LinkComponent>;
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
+  pageSize: Scalars['Int'];
+  sourceKey: Scalars['String'];
+  sourceType: ListSourceType;
   title: Scalars['String'];
 };
 
 export type Component = BookActionComponent | BookAuthorsComponent | BookCategoriesComponent | BookDetailsComponent | BookImageComponent | BookTitleComponent | CardComponent | CarouselComponent | GridComponent | LayoutComponent | ListComponent | MarkdownComponent;
-
-export enum ComponentContextType {
-  Author = 'AUTHOR',
-  Authors = 'AUTHORS',
-  Book = 'BOOK',
-  Books = 'BOOKS',
-  Categories = 'CATEGORIES',
-  Category = 'CATEGORY',
-  List = 'LIST',
-  Lists = 'LISTS',
-  None = 'NONE'
-}
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
@@ -109,19 +98,29 @@ export type GridComponent = {
   cards: Array<CardComponent>;
   createdBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
+  pageSize: Scalars['Int'];
+  sourceKey: Scalars['String'];
+  sourceType: ListSourceType;
   title: Scalars['String'];
 };
 
 export type LayoutComponent = {
   __typename?: 'LayoutComponent';
   components: Array<Component>;
+  container: Scalars['Boolean'];
   createdBy: Scalars['String'];
   flexDirection: Scalars['String'];
   id: Scalars['ID'];
   title: Scalars['String'];
 };
+
+export enum LayoutContextType {
+  Author = 'AUTHOR',
+  Book = 'BOOK',
+  Category = 'CATEGORY',
+  List = 'LIST',
+  None = 'NONE'
+}
 
 export type LinkComponent = {
   __typename?: 'LinkComponent';
@@ -149,10 +148,23 @@ export type ListComponent = {
   cards: Array<CardComponent>;
   createdBy?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  sourceKey?: Maybe<Scalars['String']>;
-  sourceType?: Maybe<ComponentContextType>;
+  pageSize: Scalars['Int'];
+  sourceKey: Scalars['String'];
+  sourceType: ListSourceType;
   title: Scalars['String'];
 };
+
+export enum ListSourceType {
+  Author = 'AUTHOR',
+  Category = 'CATEGORY',
+  List = 'LIST',
+  None = 'NONE',
+  RecentLayouts = 'RECENT_LAYOUTS',
+  RecentLists = 'RECENT_LISTS',
+  TopAuthors = 'TOP_AUTHORS',
+  TopBooks = 'TOP_BOOKS',
+  TopCategories = 'TOP_CATEGORIES'
+}
 
 export type MarkdownComponent = {
   __typename?: 'MarkdownComponent';
@@ -169,8 +181,8 @@ export type Mutation = {
   createList?: Maybe<Scalars['Boolean']>;
   removeBookFromList: Scalars['Boolean'];
   removeComponentInLayout: Scalars['Boolean'];
-  updateBooklistComponent: Scalars['Boolean'];
   updateLayoutComponent: Scalars['Boolean'];
+  updateListComponent: Scalars['Boolean'];
   updateMarkdownComponent: Scalars['Boolean'];
 };
 
@@ -209,17 +221,19 @@ export type MutationRemoveComponentInLayoutArgs = {
 };
 
 
-export type MutationUpdateBooklistComponentArgs = {
-  componentId: Scalars['ID'];
-  sourceKey: Scalars['String'];
-  sourceType: ComponentContextType;
+export type MutationUpdateLayoutComponentArgs = {
+  componentOrder?: InputMaybe<Array<Scalars['ID']>>;
+  container?: InputMaybe<Scalars['Boolean']>;
+  flexDirection?: InputMaybe<Scalars['String']>;
+  layoutId: Scalars['ID'];
 };
 
 
-export type MutationUpdateLayoutComponentArgs = {
-  componentOrder?: InputMaybe<Array<Scalars['ID']>>;
-  flexDirection?: InputMaybe<Scalars['String']>;
-  layoutId: Scalars['ID'];
+export type MutationUpdateListComponentArgs = {
+  componentId: Scalars['ID'];
+  pageSize: Scalars['Int'];
+  sourceKey: Scalars['String'];
+  sourceType: ListSourceType;
 };
 
 
@@ -245,7 +259,7 @@ export type QueryComponentArgs = {
 
 export type QueryLayoutArgs = {
   contextKey: Scalars['String'];
-  contextType: ComponentContextType;
+  contextType: LayoutContextType;
   id: Scalars['ID'];
 };
 
@@ -334,15 +348,17 @@ export type ResolversTypes = {
   CardComponent: ResolverTypeWrapper<CardComponent>;
   CarouselComponent: ResolverTypeWrapper<RootListComponentModel>;
   Component: ResolverTypeWrapper<RootComponentModel>;
-  ComponentContextType: ComponentContextType;
   CurrentUser: ResolverTypeWrapper<Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversTypes['LayoutComponent']>, lists: Array<ResolversTypes['List']> }>;
   GridComponent: ResolverTypeWrapper<RootListComponentModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   LayoutComponent: ResolverTypeWrapper<RootLayoutComponentModel>;
+  LayoutContextType: LayoutContextType;
   LinkComponent: ResolverTypeWrapper<LinkComponent>;
   LinkComponentVariant: LinkComponentVariant;
   List: ResolverTypeWrapper<ListModel>;
   ListComponent: ResolverTypeWrapper<RootListComponentModel>;
+  ListSourceType: ListSourceType;
   MarkdownComponent: ResolverTypeWrapper<RootComponentModel>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -365,6 +381,7 @@ export type ResolversParentTypes = {
   CurrentUser: Omit<CurrentUser, 'layoutComponents' | 'lists'> & { layoutComponents: Array<ResolversParentTypes['LayoutComponent']>, lists: Array<ResolversParentTypes['List']> };
   GridComponent: RootListComponentModel;
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   LayoutComponent: RootLayoutComponentModel;
   LinkComponent: LinkComponent;
   List: ListModel;
@@ -433,8 +450,9 @@ export type CarouselComponentResolvers<ContextType = ResolverContext, ParentType
   createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   link?: Resolver<Maybe<ResolversTypes['LinkComponent']>, ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
+  pageSize?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  sourceKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceType?: Resolver<ResolversTypes['ListSourceType'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -454,14 +472,16 @@ export type GridComponentResolvers<ContextType = ResolverContext, ParentType ext
   cards?: Resolver<Array<ResolversTypes['CardComponent']>, ParentType, ContextType>;
   createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
+  pageSize?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  sourceKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceType?: Resolver<ResolversTypes['ListSourceType'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LayoutComponentResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['LayoutComponent'] = ResolversParentTypes['LayoutComponent']> = {
   components?: Resolver<Array<ResolversTypes['Component']>, ParentType, ContextType>;
+  container?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   flexDirection?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -489,8 +509,9 @@ export type ListComponentResolvers<ContextType = ResolverContext, ParentType ext
   cards?: Resolver<Array<ResolversTypes['CardComponent']>, ParentType, ContextType>;
   createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceType?: Resolver<Maybe<ResolversTypes['ComponentContextType']>, ParentType, ContextType>;
+  pageSize?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  sourceKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceType?: Resolver<ResolversTypes['ListSourceType'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -509,8 +530,8 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
   createList?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateListArgs, 'title'>>;
   removeBookFromList?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveBookFromListArgs, 'googleBooksVolumeId' | 'listKey'>>;
   removeComponentInLayout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRemoveComponentInLayoutArgs, 'componentId' | 'layoutId'>>;
-  updateBooklistComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateBooklistComponentArgs, 'componentId' | 'sourceKey' | 'sourceType'>>;
   updateLayoutComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateLayoutComponentArgs, 'layoutId'>>;
+  updateListComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateListComponentArgs, 'componentId' | 'pageSize' | 'sourceKey' | 'sourceType'>>;
   updateMarkdownComponent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateMarkdownComponentArgs, 'backgroundColor' | 'componentId' | 'text'>>;
 };
 

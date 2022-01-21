@@ -1,5 +1,5 @@
 import Layout from "ui/components/system/layout.server";
-import { ComponentContextType } from "api/__generated__/resolvers-types";
+import { LayoutContextType } from "api/__generated__/resolvers-types";
 
 type Props = {
   router: {
@@ -27,7 +27,7 @@ export default function CollectionsAuthorsShow(props: Props) {
   return (
     <Layout
       id="319636692388544577"
-      contextType={ComponentContextType.Author}
+      contextType={LayoutContextType.Author}
       contextKey={sourceKey}
     />
   );

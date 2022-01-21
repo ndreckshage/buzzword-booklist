@@ -11,18 +11,20 @@ type CarouselComponent {
   title: String!
   link: LinkComponent
   cards: [CardComponent!]!
-  sourceType: ComponentContextType
-  sourceKey: String
+  sourceType: ListSourceType!
+  sourceKey: String!
   createdBy: String
+  pageSize: Int!
 }
 
 type GridComponent {
   id: ID!
   title: String!
   cards: [CardComponent!]!
-  sourceType: ComponentContextType
-  sourceKey: String
+  sourceType: ListSourceType!
+  sourceKey: String!
   createdBy: String
+  pageSize: Int!
 }
 
 type BookImageComponent {
@@ -59,9 +61,10 @@ type ListComponent {
   id: ID!
   title: String!
   cards: [CardComponent!]!
-  sourceType: ComponentContextType
-  sourceKey: String
+  sourceType: ListSourceType!
+  sourceKey: String!
   createdBy: String
+  pageSize: Int!
 }
 
 type MarkdownComponent {
@@ -86,6 +89,7 @@ type LayoutComponent {
   title: String!
   createdBy: String!
   flexDirection: String!
+  container: Boolean!
   components: [Component!]!
 }
 
@@ -124,14 +128,22 @@ type CurrentUser {
   lists: [List!]!
 }
 
-enum ComponentContextType {
-  AUTHORS
-  AUTHOR
-  BOOKS
-  BOOK
-  CATEGORIES
+enum LayoutContextType {
   CATEGORY
-  LISTS
+  AUTHOR
+  LIST
+  BOOK
+  NONE
+}
+
+enum ListSourceType {
+  RECENT_LISTS
+  RECENT_LAYOUTS
+  TOP_AUTHORS
+  TOP_CATEGORIES
+  TOP_BOOKS
+  CATEGORY
+  AUTHOR
   LIST
   NONE
 }
@@ -140,7 +152,7 @@ type Query {
   currentUser: CurrentUser
   layout(
     id: ID!
-    contextType: ComponentContextType!
+    contextType: LayoutContextType!
     contextKey: String!
   ): LayoutComponent
   component(id: ID!): Component
@@ -158,6 +170,7 @@ type Mutation {
     layoutId: ID!
     componentOrder: [ID!]
     flexDirection: String
+    container: Boolean
   ): Boolean!
   createComponentInLayout(layoutId: ID!, componentType: String!): Boolean!
   removeComponentInLayout(layoutId: ID!, componentId: ID!): Boolean!
@@ -166,9 +179,10 @@ type Mutation {
     text: String!
     backgroundColor: String!
   ): Boolean!
-  updateBooklistComponent(
+  updateListComponent(
     componentId: ID!
-    sourceType: ComponentContextType!
+    sourceType: ListSourceType!
     sourceKey: String!
+    pageSize: Int!
   ): Boolean!
 }

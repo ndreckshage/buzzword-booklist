@@ -6,6 +6,7 @@ import NextApp, {
 import { Suspense, createContext } from "react";
 import CurrentUserProvider from "ui/components/app/current-user-provider";
 import Header from "ui/components/app/header";
+import Footer from "ui/components/app/footer";
 import "ui/styles/global.css";
 
 export const AppContext = createContext({ cookieHeader: "" });
@@ -34,6 +35,7 @@ function App({ Component, pageProps, cookieHeader, router }: AppProps) {
             <Component {...pageProps} cookieHeader={cookieHeader} />
           )}
         </Suspense>
+        <Footer />
       </AppContext.Provider>
     </div>
   );

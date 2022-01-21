@@ -1,7 +1,7 @@
 import { useQuery, gql } from "ui/lib/use-data.server";
 import {
   type LayoutComponent,
-  type ComponentContextType,
+  LayoutContextType,
 } from "api/__generated__/resolvers-types";
 import cx from "classnames";
 
@@ -28,6 +28,7 @@ const LayoutComponentFragment = gql`
     id
     layoutCreatedBy: createdBy
     flexDirection
+    container
   }
 `;
 
@@ -52,7 +53,7 @@ const ComponentFragment = gql`
 const LAYOUT_QUERY = gql`
   query GetLayout(
     $id: ID!
-    $contextType: ComponentContextType!
+    $contextType: LayoutContextType!
     $contextKey: String!
   ) {
     layout(id: $id, contextType: $contextType, contextKey: $contextKey) {
@@ -118,6 +119,7 @@ function Layout({
   layoutCreatedBy,
   root,
   flexDirection,
+  container,
   components,
   className,
 }: LayoutProps & { layoutCreatedBy: string }) {
@@ -132,7 +134,8 @@ function Layout({
       )}
       <div
         className={cx("flex", className, {
-          "flex-row": flexDirection === "row",
+          "container mx-auto": container,
+          "flex-row space-x-5": flexDirection === "row",
           "flex-col": flexDirection === "col",
         })}
       >
@@ -164,13 +167,17 @@ export default function LayoutContainer({
   className,
 }: {
   id: string;
-  contextType: ComponentContextType;
-  contextKey: string;
+  contextType?: LayoutContextType;
+  contextKey?: string;
   className?: string;
 }) {
   const data = useQuery<{
     layout: LayoutComponent & { layoutCreatedBy: string };
-  }>(`Component::${id}`, LAYOUT_QUERY, { id, contextType, contextKey });
+  }>(`Component::${id}`, LAYOUT_QUERY, {
+    id,
+    contextType: contextType ?? LayoutContextType.None,
+    contextKey: contextKey ?? "",
+  });
 
   return <Layout {...data.layout} className={className ?? ""} root />;
 }

@@ -35,13 +35,13 @@ Replace "nicks-test-list" with your own in the various links.
 - https://buzzword-booklist.vercel.app/manage/layouts/edit?layout=320377732958519360 >>
   -- add a CarouselComponent to your layout. specify a list and "nicks-test-list"
   -- add a MarkdownComponent to your layout.
-- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360 >> view your layout!
+- https://buzzword-booklist.vercel.app/layouts/show?layout=320377732958519360 >> view your layout!
 - https://buzzword-booklist.vercel.app/manage/layouts/edit?layout=320377732958519360 >> go back to editing
   -- add a GridComponent, select "Use page context"
   -- View your new layout with a few different contexts!
-  --- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360&contextType=CATEGORY&contextKey=fiction-literary
-  --- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360&contextType=AUTHOR&contextKey=j-k-rowling
-  --- https://buzzword-booklist.vercel.app/manage/layouts/show?layout=320377732958519360&contextType=LIST&contextKey=bookshoporg-top-50-bestsellers-2021
+  --- https://buzzword-booklist.vercel.app/layouts/show?layout=320377732958519360&contextType=CATEGORY&contextKey=fiction-literary
+  --- https://buzzword-booklist.vercel.app/layouts/show?layout=320377732958519360&contextType=AUTHOR&contextKey=j-k-rowling
+  --- https://buzzword-booklist.vercel.app/layouts/show?layout=320377732958519360&contextType=LIST&contextKey=bookshoporg-top-50-bestsellers-2021
 
 These layouts are then how all the above user page are powered.
 

@@ -1,4 +1,3 @@
-import { ComponentContextType } from "api/__generated__/resolvers-types";
 import { type Client, query as q } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 

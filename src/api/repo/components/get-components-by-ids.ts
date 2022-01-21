@@ -1,33 +1,6 @@
 import { Client, type ExprArg, type Expr, query as q } from "faunadb";
 import { type RootComponentModel } from ".";
 
-export const selectLayoutModelData = (componentDoc: Expr) => ({
-  id: q.Select(["ref", "id"], componentDoc),
-  componentType: q.Select(["data", "componentType"], componentDoc),
-  createdBy: q.Select(["data", "createdBy"], componentDoc),
-  title: q.Select(["data", "title"], componentDoc),
-  flexDirection: q.Select(["data", "flexDirection"], componentDoc),
-  componentRefs: q.Map(
-    q.Select(["data", "componentRefs"], componentDoc),
-    q.Lambda("componentRef", q.Select("id", q.Var("componentRef")))
-  ),
-});
-
-const selectBookListModelData = (componentDoc: Expr) => ({
-  id: q.Select(["ref", "id"], componentDoc),
-  componentType: q.Select(["data", "componentType"], componentDoc),
-  sourceType: q.If(
-    q.ContainsPath(["data", "sourceType"], componentDoc),
-    q.Select(["data", "sourceType"], componentDoc),
-    null
-  ),
-  sourceKey: q.If(
-    q.ContainsPath(["data", "sourceKey"], componentDoc),
-    q.Select(["data", "sourceKey"], componentDoc),
-    null
-  ),
-});
-
 const ifComponentType = (
   componentType: string,
   doIf: ExprArg,
@@ -40,6 +13,43 @@ const ifOneOfComponentType = (
   elseIf: ExprArg
 ) =>
   q.If(q.ContainsValue(q.Var("componentType"), componentTypes), doIf, elseIf);
+
+export const selectLayoutModelData = (componentDoc: Expr) => ({
+  id: q.Select(["ref", "id"], componentDoc),
+  componentType: q.Select(["data", "componentType"], componentDoc),
+  createdBy: q.Select(["data", "createdBy"], componentDoc),
+  title: q.Select(["data", "title"], componentDoc),
+  flexDirection: q.Select(["data", "flexDirection"], componentDoc),
+  container: q.If(
+    q.ContainsPath(["data", "container"], componentDoc),
+    q.Select(["data", "container"], componentDoc),
+    false
+  ),
+  componentRefs: q.Map(
+    q.Select(["data", "componentRefs"], componentDoc),
+    q.Lambda("componentRef", q.Select("id", q.Var("componentRef")))
+  ),
+});
+
+const selectListModelData = (componentDoc: Expr) => ({
+  id: q.Select(["ref", "id"], componentDoc),
+  componentType: q.Select(["data", "componentType"], componentDoc),
+  sourceType: q.If(
+    q.ContainsPath(["data", "sourceType"], componentDoc),
+    q.Select(["data", "sourceType"], componentDoc),
+    null
+  ),
+  sourceKey: q.If(
+    q.ContainsPath(["data", "sourceKey"], componentDoc),
+    q.Select(["data", "sourceKey"], componentDoc),
+    null
+  ),
+  pageSize: q.If(
+    q.ContainsPath(["data", "pageSize"], componentDoc),
+    q.Select(["data", "pageSize"], componentDoc),
+    ifOneOfComponentType(["CarouselComponent", "BookCarouselComponent"], 10, 64)
+  ),
+});
 
 export default function getComponentsByIds(client: Client) {
   return async (idAndContextArrs: readonly string[]) => {
@@ -79,8 +89,16 @@ export default function getComponentsByIds(client: Client) {
                       "LayoutComponent",
                       selectLayoutModelData(q.Var("componentDoc")),
                       ifOneOfComponentType(
-                        ["CarouselComponent", "GridComponent", "ListComponent"],
-                        selectBookListModelData(q.Var("componentDoc")),
+                        [
+                          // temp
+                          "BookCarouselComponent",
+                          "BookGridComponent",
+                          "BookListComponent",
+                          "CarouselComponent",
+                          "GridComponent",
+                          "ListComponent",
+                        ],
+                        selectListModelData(q.Var("componentDoc")),
                         q.Select("data", q.Var("componentDoc"))
                       )
                     )

@@ -1,11 +1,11 @@
 import Layout from "ui/components/system/layout.server";
-import { ComponentContextType } from "api/__generated__/resolvers-types";
+import { LayoutContextType } from "api/__generated__/resolvers-types";
 
 type Props = {
   router: {
     query: {
       layout: string;
-      contextType: ComponentContextType;
+      contextType: LayoutContextType;
       contextKey: string;
     };
   };
@@ -28,7 +28,7 @@ export default function ShowLayout(props: Props) {
   return (
     <Layout
       id={layoutId}
-      contextType={contextType ?? ComponentContextType.None}
+      contextType={contextType ?? LayoutContextType.None}
       contextKey={contextKey ?? ""}
     />
   );

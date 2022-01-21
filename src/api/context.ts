@@ -16,7 +16,10 @@ import {
   getListsByCreators,
 } from "api/repo/lists";
 
-import { ComponentContextType } from "./__generated__/resolvers-types";
+import {
+  LayoutContextType,
+  ListSourceType,
+} from "./__generated__/resolvers-types";
 
 import { type BookModel, getBooksByListIds } from "api/repo/books";
 
@@ -44,9 +47,9 @@ import {
   updateMarkdownComponent,
   type UpdateMarkdownComponentInput,
   type UpdateMarkdownComponentOutput,
-  updateBooklistComponent,
-  type UpdateBooklistComponentInput,
-  type UpdateBooklistComponentOutput,
+  updateListComponent,
+  type updateListComponentInput,
+  type updateListComponentOutput,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -66,7 +69,7 @@ export type ResolverContext = {
   loaders: {
     booksByListIdsLoader: DataLoader<string, BookModel[], string>;
     componentsByIdsAndContextLoader: DataLoader<
-      { id: string; contextType: ComponentContextType; contextKey: string },
+      { id: string; contextType: LayoutContextType; contextKey: string },
       RootComponentModel,
       string
     >;
@@ -77,11 +80,12 @@ export type ResolverContext = {
     >;
     listsByKeysLoader: DataLoader<string, ListModel, string>;
     listsByCreatorsLoader: DataLoader<string, ListModel[], string>;
-    bookListComponentsLoader: DataLoader<
+    listComponentsLoader: DataLoader<
       {
         componentType: string;
-        sourceType: ComponentContextType | null;
+        sourceType: ListSourceType | LayoutContextType | null;
         sourceKey: string | null;
+        pageSize: number;
       },
       ListComponentModel,
       string
@@ -109,9 +113,9 @@ export type ResolverContext = {
     updateMarkdownComponent: (
       input: UpdateMarkdownComponentInput
     ) => Promise<UpdateMarkdownComponentOutput>;
-    updateBooklistComponent: (
-      input: UpdateBooklistComponentInput
-    ) => Promise<UpdateBooklistComponentOutput>;
+    updateListComponent: (
+      input: updateListComponentInput
+    ) => Promise<updateListComponentOutput>;
   };
 };
 
@@ -133,7 +137,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       ),
       listsByKeysLoader: new DataLoader(getListsByKeys(client)),
       listsByCreatorsLoader: new DataLoader(getListsByCreators(client)),
-      bookListComponentsLoader: new DataLoader(getListComponents(client), {
+      listComponentsLoader: new DataLoader(getListComponents(client), {
         cacheKeyFn: JSON.stringify,
       }),
       bookComponentsByKeysLoader: new DataLoader(getBookComponents(client)),
@@ -147,7 +151,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       createComponentInLayout: createComponentInLayout(client),
       removeComponentInLayout: removeComponentInLayout(client),
       updateMarkdownComponent: updateMarkdownComponent(client),
-      updateBooklistComponent: updateBooklistComponent(client),
+      updateListComponent: updateListComponent(client),
     },
   };
 }

@@ -11,12 +11,12 @@ import { useQuery, useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
 import {
   MarkdownComponent,
-  ComponentContextType,
+  ListSourceType,
   type LayoutComponent,
   type MutationUpdateLayoutComponentArgs,
   type MutationRemoveComponentInLayoutArgs,
   type MutationUpdateMarkdownComponentArgs,
-  MutationUpdateBooklistComponentArgs,
+  MutationUpdateListComponentArgs,
   MutationCreateComponentInLayoutArgs,
 } from "api/__generated__/resolvers-types";
 
@@ -26,6 +26,7 @@ const LayoutComponentFragment = gql`
     title
     createdBy
     flexDirection
+    container
   }
 `;
 
@@ -35,6 +36,7 @@ const CarouselComponentFragment = gql`
     title
     sourceType
     sourceKey
+    pageSize
   }
 `;
 
@@ -44,6 +46,7 @@ const GridComponentFragment = gql`
     title
     sourceType
     sourceKey
+    pageSize
   }
 `;
 
@@ -53,6 +56,7 @@ const ListComponentFragment = gql`
     title
     sourceType
     sourceKey
+    pageSize
   }
 `;
 
@@ -169,11 +173,13 @@ const UPDATE_LAYOUT_COMPONENT_MUTATION = gql`
     $layoutId: ID!
     $componentOrder: [ID!]
     $flexDirection: String
+    $container: Boolean
   ) {
     updateLayoutComponent(
       layoutId: $layoutId
       componentOrder: $componentOrder
       flexDirection: $flexDirection
+      container: $container
     )
   }
 `;
@@ -199,15 +205,17 @@ const UPDATE_MARKDOWN_MUTATION = gql`
 `;
 
 const UPDATE_BOOKLIST_COMPONENT_MUTATION = gql`
-  mutation UpdateBooklistComponent(
+  mutation updateListComponent(
     $componentId: ID!
-    $sourceType: ComponentContextType!
+    $sourceType: ListSourceType!
     $sourceKey: String!
+    $pageSize: Int!
   ) {
-    updateBooklistComponent(
+    updateListComponent(
       componentId: $componentId
       sourceType: $sourceType
       sourceKey: $sourceKey
+      pageSize: $pageSize
     )
   }
 `;
@@ -272,25 +280,13 @@ function Layout(props: LayoutComponent) {
     ComponentTypes.LayoutComponent
   );
 
-  const validOpts = [
-    ComponentTypes.LayoutComponent,
-    ComponentTypes.CarouselComponent,
-    ComponentTypes.GridComponent,
-    ComponentTypes.ListComponent,
-    ComponentTypes.BookImageComponent,
-    ComponentTypes.BookTitleComponent,
-    ComponentTypes.BookActionComponent,
-    ComponentTypes.BookAuthorsComponent,
-    ComponentTypes.BookCategoriesComponent,
-    ComponentTypes.BookDetailsComponent,
-    ComponentTypes.MarkdownComponent,
-  ];
+  const validOpts = Object.values(ComponentTypes);
 
   return (
     <div className="border border-red-500 m-2 p-2">
       <p>Layout Component: {props.title}</p>
       <a
-        href={`/manage/layouts/show?layout=${props.id}`}
+        href={`/layouts/show?layout=${props.id}`}
         target="_blank"
         rel="noreferrer"
       >
@@ -339,6 +335,19 @@ function Layout(props: LayoutComponent) {
             </option>
           ))}
         </select>
+      </div>
+      <div className="border border-purple-500 m-2 p-2">
+        <p>Component Container:</p>
+        <input
+          type="checkbox"
+          checked={props.container}
+          onChange={(e) => {
+            updateLayoutMutation({
+              layoutId: props.id,
+              container: e.target.checked,
+            });
+          }}
+        />
       </div>
       <p>Components:</p>
       <div
@@ -412,28 +421,23 @@ function Layout(props: LayoutComponent) {
 function BookList(props: {
   __typename: string;
   id: string;
-  sourceType: ComponentContextType | null;
-  sourceKey: string | null;
+  sourceType: ListSourceType;
+  sourceKey: string;
+  pageSize: number;
 }) {
-  const { updateBooklistComponent } = useContext(LayoutContext);
-  const [sourceTypeState, setSourceType] = useState(
-    props.sourceType ?? ComponentContextType.None
-  );
-  const [sourceKeyState, setSourceKey] = useState(props.sourceKey ?? "");
+  const { updateListComponent } = useContext(LayoutContext);
+  const [sourceTypeState, setSourceType] = useState(props.sourceType);
+  const [sourceKeyState, setSourceKey] = useState(props.sourceKey);
+  const [pageSizeState, setPageSize] = useState(props.pageSize);
 
-  const validOpts = [
-    ComponentContextType.Author,
-    ComponentContextType.Category,
-    ComponentContextType.List,
-    ComponentContextType.None,
-  ];
+  const validOpts = Object.values(ListSourceType);
 
   useEffect(() => {
-    setSourceType(props.sourceType ?? ComponentContextType.None);
+    setSourceType(props.sourceType);
   }, [props.sourceType]);
 
   useEffect(() => {
-    setSourceKey(props.sourceKey ?? "");
+    setSourceKey(props.sourceKey);
   }, [props.sourceKey]);
 
   return (
@@ -443,16 +447,20 @@ function BookList(props: {
         value={sourceTypeState}
         onChange={(e) => {
           const opt = validOpts.find((o) => o === e.target.value);
-          setSourceType(opt ?? ComponentContextType.None);
+          setSourceType(opt ?? ListSourceType.None);
         }}
       >
         {validOpts.map((opt) => (
           <option key={opt} value={opt}>
-            {opt === ComponentContextType.None ? "USE PAGE CONTEXT" : opt}
+            {opt === ListSourceType.None ? "USE_PAGE_CONTEXT" : opt}
           </option>
         ))}
       </select>
-      {sourceTypeState !== ComponentContextType.None && (
+      {[
+        ListSourceType.Author,
+        ListSourceType.Category,
+        ListSourceType.List,
+      ].includes(sourceTypeState) && (
         <input
           value={sourceKeyState}
           placeholder="Source Key"
@@ -461,12 +469,18 @@ function BookList(props: {
           }}
         />
       )}
+      <input
+        type="number"
+        value={pageSizeState}
+        onChange={(e) => setPageSize(parseInt(e.target.value, 10))}
+      />
       <button
         onClick={() => {
-          updateBooklistComponent({
+          updateListComponent({
             componentId: props.id,
             sourceType: sourceTypeState,
             sourceKey: sourceKeyState,
+            pageSize: pageSizeState,
           });
         }}
       >
@@ -550,7 +564,7 @@ const LayoutContext = createContext<{
   updateLayoutMutation: (args: MutationUpdateLayoutComponentArgs) => void;
   removeComponentMutation: (args: MutationRemoveComponentInLayoutArgs) => void;
   updateMarkdownComponent: (args: MutationUpdateMarkdownComponentArgs) => void;
-  updateBooklistComponent: (args: MutationUpdateBooklistComponentArgs) => void;
+  updateListComponent: (args: MutationUpdateListComponentArgs) => void;
 }>(
   // @ts-ignore
   null
@@ -578,7 +592,7 @@ const EditLayout = ({ id }: { id: string }) => {
   const [updateMarkdownComponent, { isPending: updateMarkdownPending }] =
     useMutation<boolean>(UPDATE_MARKDOWN_MUTATION);
 
-  const [updateBooklistComponent, { isPending: updateBooklistPending }] =
+  const [updateListComponent, { isPending: updateBooklistPending }] =
     useMutation<boolean>(UPDATE_BOOKLIST_COMPONENT_MUTATION);
 
   const isPending =
@@ -607,8 +621,8 @@ const EditLayout = ({ id }: { id: string }) => {
               removeComponentMutation(arg).then(refresh),
             updateMarkdownComponent: (arg) =>
               updateMarkdownComponent(arg).then(refresh),
-            updateBooklistComponent: (arg) =>
-              updateBooklistComponent(arg).then(refresh),
+            updateListComponent: (arg) =>
+              updateListComponent(arg).then(refresh),
           }}
         >
           <Layout {...data.layout} />
