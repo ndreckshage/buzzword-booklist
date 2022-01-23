@@ -130,7 +130,7 @@ export default function getListComponents(client: Client) {
           strict: true,
         })}`,
         title: "Buy on Bookshop.org!",
-        variant: LinkComponentVariant.Default,
+        variant: LinkComponentVariant.Button,
       },
       detailsMarkdown: `### ISBN
 ${result.isbn}

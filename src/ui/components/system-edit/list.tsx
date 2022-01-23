@@ -57,7 +57,7 @@ export default function List(props: {
 
   return (
     <div>
-      <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+      <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
         <b>Source Type:</b>
         <select
           value={sourceTypeState}
@@ -79,7 +79,7 @@ export default function List(props: {
         ListSourceType.Category,
         ListSourceType.List,
       ].includes(sourceTypeState) && (
-        <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+        <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
           <b>Source Key:</b>
           <input
             value={sourceKeyState}
@@ -90,7 +90,7 @@ export default function List(props: {
           />
         </div>
       )}
-      <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+      <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
         <b>Max List Size:</b>
         <input
           type="number"

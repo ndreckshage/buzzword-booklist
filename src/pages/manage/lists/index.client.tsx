@@ -48,7 +48,9 @@ function ManageLists() {
 
 export default function ManageListsPage() {
   return (
-    <Suspense fallback="Loading lists...">
+    <Suspense
+      fallback={<div className="container mx-auto my-10">Loading Lists..</div>}
+    >
       <ManageLists />
     </Suspense>
   );

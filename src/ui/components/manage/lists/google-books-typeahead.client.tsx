@@ -107,7 +107,11 @@ const GoogleBooksTypeahead = (props: GoogleBooksTypeaheadProps) => {
         />
       </label>
       {showTypeahead && (
-        <Suspense fallback={"Loading books (slowly)..."}>
+        <Suspense
+          fallback={
+            <div className="container mx-auto my-10">Loading Books..</div>
+          }
+        >
           <Books addBook={addBook} query={inputValue} />
         </Suspense>
       )}

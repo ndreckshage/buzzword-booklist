@@ -7,7 +7,11 @@ export default function BooksActionComponent(props: BookActionComponent) {
     return null;
   }
 
-  return <Link {...props.link} />;
+  return (
+    <div className="pb-5">
+      <Link {...props.link} />
+    </div>
+  );
 }
 
 export const BookActionComponentFragment = gql`

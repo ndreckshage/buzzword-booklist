@@ -193,11 +193,17 @@ export default function EditLayoutContainer({ id }: { id: string }) {
   return (
     <>
       <div
-        className={cx("container mx-auto px-4 my-10 transition-opacity", {
-          "opacity-100": !isPending,
-          "opacity-50": isPending,
-        })}
+        className={cx(
+          "container mx-auto px-4 my-5 md:my-10 transition-opacity",
+          {
+            "opacity-100": !isPending,
+            "opacity-50": isPending,
+          }
+        )}
       >
+        <p className="md:hidden bg-red-500 text-white p-5 rounded-md text-xl mb-5">
+          Layout Editing is easier on desktop!
+        </p>
         <LayoutContext.Provider
           value={{
             createComponentMutation: (arg) =>

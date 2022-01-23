@@ -140,7 +140,9 @@ export default function EditListPage() {
   }
 
   return (
-    <Suspense fallback="Loading book list...">
+    <Suspense
+      fallback={<div className="container mx-auto my-10">Loading List..</div>}
+    >
       <EditList listKey={listKey} />
     </Suspense>
   );

@@ -8,7 +8,7 @@ export default function BookImageServer(props: BookImageComponent) {
   }
 
   return (
-    <div className="shrink-0 mx-5">
+    <div className="shrink-0 mx-auto mb-5 md:mx-5">
       <Image src={props.image} width={200} height={300} />
     </div>
   );

@@ -21,7 +21,7 @@ const allowedAttributes = Object.assign(
 export default function Markdown({ id, text }: BookDetailsComponent) {
   return (
     <>
-      <p>Book Details</p>
+      <h2>Book Details</h2>
       <div
         dangerouslySetInnerHTML={{
           __html: sanitizeHtml(marked(text || ""), {

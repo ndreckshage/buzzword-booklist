@@ -94,7 +94,7 @@ export default function Layout(props: LayoutComponent & { root?: boolean }) {
         </div>
       )}
       <div className="border border-indigo-500 p-5">
-        <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+        <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
           <b>Add Component to Layout:</b>
           <select
             value={createComponentType}
@@ -120,7 +120,7 @@ export default function Layout(props: LayoutComponent & { root?: boolean }) {
             Add Component to Layout
           </button>
         </div>
-        <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+        <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
           <b>Component Direction:</b>
           <select
             value={props.flexDirection}
@@ -154,8 +154,8 @@ export default function Layout(props: LayoutComponent & { root?: boolean }) {
         <h3>Components:</h3>
         <div
           className={cx("flex", {
-            "flex-row space-x-5": props.flexDirection === "row",
             "flex-col space-y-5": props.flexDirection === "col",
+            "flex-col md:flex-row md:space-x-5": props.flexDirection === "row",
           })}
         >
           {props.components.map((component, ndx) => {
@@ -175,7 +175,7 @@ export default function Layout(props: LayoutComponent & { root?: boolean }) {
                 className={cx("border border-green-500 p-5")}
               >
                 <h3>{component.__typename}</h3>
-                <div className="bg-gray-50 border my-4 p-4 flex items-center space-x-2">
+                <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
                   <button
                     onClick={() =>
                       updateLayoutMutation({

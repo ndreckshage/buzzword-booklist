@@ -129,7 +129,7 @@ function Layout({
     <div className={__typename}>
       {root && (
         <div className="border-b border-slate-100 py-2">
-          <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="container mx-auto px-4 flex justify-between md:items-center flex-col-reverse md:flex-row space-y-2 space-y-reverse">
             {showContextPicker && <LayoutContextPicker />}
             <CreatedBy createdByType="Layout" createdBy={layoutCreatedBy} />
           </div>

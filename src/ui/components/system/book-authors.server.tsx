@@ -6,7 +6,7 @@ import { Fragment } from "react";
 export default function BookAuthorsComponent(props: BookAuthorsComponent) {
   return (
     <p>
-      Authors:{" "}
+      <b>Authors:</b>{" "}
       {props.links.map((link, ndx) => (
         <Fragment key={link.href}>
           <Link {...link} />

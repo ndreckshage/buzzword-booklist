@@ -26,22 +26,24 @@ export default function LayoutContextPicker() {
   const contextDiff = contextTypeDiff || contextKeyDiff;
 
   return (
-    <div>
-      <b>Context Type:</b>{" "}
-      <select
-        value={contextType}
-        onChange={(e) => {
-          const value = e.target.value as LayoutContextType;
-          setContextType(value);
-          setContextKey(sampleKeyMap.get(value) ?? "");
-        }}
-      >
-        {Object.values(LayoutContextType).map((t) => (
-          <option key={t}>{t}</option>
-        ))}
-      </select>{" "}
+    <div className="flex flex-col space-y-2 md:space-x-2 md:space-y-0 md:flex-row md:items-center">
+      <div>
+        <b>Context Type:</b>{" "}
+        <select
+          value={contextType}
+          onChange={(e) => {
+            const value = e.target.value as LayoutContextType;
+            setContextType(value);
+            setContextKey(sampleKeyMap.get(value) ?? "");
+          }}
+        >
+          {Object.values(LayoutContextType).map((t) => (
+            <option key={t}>{t}</option>
+          ))}
+        </select>{" "}
+      </div>
       {contextType !== LayoutContextType.None && (
-        <>
+        <div>
           <b>Context Key:</b>{" "}
           <input
             type="text"
@@ -50,7 +52,7 @@ export default function LayoutContextPicker() {
               setContextKey(e.target.value);
             }}
           />
-        </>
+        </div>
       )}
       {contextDiff && (
         <button
