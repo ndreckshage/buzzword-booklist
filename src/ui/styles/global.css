@@ -10,15 +10,15 @@
   }
 
   h1 {
-    @apply text-2xl;
+    @apply text-2xl mb-5;
   }
 
   h2 {
-    @apply text-xl;
+    @apply text-xl mb-5;
   }
 
   h3 {
-    @apply text-lg;
+    @apply text-lg mb-2;
   }
 
   ul {
@@ -27,6 +27,26 @@
 
   a {
     @apply text-indigo-500 underline;
+  }
+
+  p {
+    @apply mb-2;
+  }
+
+  button {
+    @apply border rounded py-1 px-2 bg-white;
+  }
+
+  select {
+    @apply p-2 border;
+  }
+
+  input {
+    @apply p-2 border;
+  }
+
+  textarea {
+    @apply p-2 border w-full;
   }
 
   .MarkdownComponent h1,

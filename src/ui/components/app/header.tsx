@@ -8,7 +8,7 @@ export default function Header() {
     <div className="border-b border-slate-100">
       <div className="container mx-auto py-2">
         <div className="flex justify-between items-center pb-2">
-          <h1>
+          <h1 className="m-0">
             <Link href="/" className="no-underline text-indigo-900">
               BuzzwordBooklist
             </Link>

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Text, { TextTypes } from "ui/components/common/text";
 import TextInput from "ui/components/common/text-input";
 import { useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
@@ -23,10 +22,10 @@ export default function CreateLayout() {
   };
 
   return (
-    <div className="container mx-auto px-4">
-      <Text as={TextTypes.h1}>Create Layout</Text>
+    <div className="container mx-auto my-10">
+      <h1>Create Layout</h1>
       <label>
-        Layout Title:
+        <p>Layout Title:</p>
         <TextInput
           name="layout_title"
           placeholder="Layout title"
@@ -34,23 +33,22 @@ export default function CreateLayout() {
           onChange={handleChange}
         />
       </label>
-      <button
-        className={cx(
-          "block bg-blue-500 text-white p-5 rounded-md transition-opacity",
-          {
+      <div className="my-5">
+        <button
+          className={cx({
             "opacity-100": !isPending,
             "opacity-50": isPending,
-          }
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          createLayoutMutation({ title: layoutTitle }).then((data) => {
-            if (data.createLayoutComponent) router.push("/manage/layouts");
-          });
-        }}
-      >
-        Create layout and get started editing...
-      </button>
+          })}
+          onClick={(e) => {
+            e.preventDefault();
+            createLayoutMutation({ title: layoutTitle }).then((data) => {
+              if (data.createLayoutComponent) router.push("/manage/layouts");
+            });
+          }}
+        >
+          Create layout and get started editing...
+        </button>
+      </div>
     </div>
   );
 }

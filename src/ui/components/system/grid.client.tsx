@@ -7,7 +7,7 @@ export default function BookGrid(props: GridComponent) {
   return (
     <>
       <div className="flex mb-12 justify-center items-center space-x-2">
-        <h1 className="text-3xl">{props.title}</h1>
+        <h1 className="text-3xl m-0">{props.title}</h1>
         {props.createdBy && (
           <>
             <span>&mdash;</span>
@@ -28,7 +28,9 @@ export default function BookGrid(props: GridComponent) {
                     height={300}
                   />
                 )}
-                <p>{card.title}</p>
+                <p>
+                  <b>{card.title}</b>
+                </p>
               </a>
             </NextLink>
           </div>

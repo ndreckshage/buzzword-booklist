@@ -18,32 +18,43 @@ const Books = ({ query, addBook }: BooksProps) => {
 
   return (
     <div
-      className={cx("transition-opacity", {
-        "opacity-100": !isPending,
-        "opacity-50": isPending,
-      })}
+      className={cx(
+        "transition-opacity absolute border w-full bg-white z-10 drop-shadow-md rounded",
+        {
+          "opacity-100": !isPending,
+          "opacity-50": isPending,
+        }
+      )}
     >
       {data && data.length > 0 && (
-        <div className="flex">
+        <>
           {data.map((book, index) => (
             <div
               key={index}
-              className="m-5 cursor-pointer"
+              className={cx("p-2 cursor-pointer flex space-x-2 items-center", {
+                "border-b": index < data.length - 1,
+              })}
               onClick={() => addBook(book)}
             >
               {book.image ? (
                 <Image
                   src={book.image}
                   alt={book.title}
-                  width={100}
-                  height={150}
+                  width={50}
+                  height={75}
                 />
               ) : (
-                "Missing Image"
+                <div style={{ width: 50, height: 75 }} className="bg-gray-50" />
               )}
+              <div>
+                <b>{book.title}</b>
+                <p className="text-gray-400">
+                  {book.authors.map((a, n) => `${n !== 0 ? ", " : ""}${a}`)}
+                </p>
+              </div>
             </div>
           ))}
-        </div>
+        </>
       )}
       {hydrateClient}
     </div>
@@ -56,6 +67,8 @@ type GoogleBooksTypeaheadProps = {
 
 const GoogleBooksTypeahead = (props: GoogleBooksTypeaheadProps) => {
   const [inputValue, setInputValue] = useState("");
+  const [showTypeahead, setShowTypeahead] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -81,13 +94,23 @@ const GoogleBooksTypeahead = (props: GoogleBooksTypeaheadProps) => {
           placeholder="Search for a book..."
           name="search"
           onChange={handleChange}
+          onFocus={() => {
+            setShowTypeahead(true);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setShowTypeahead(false);
+            }, 100);
+          }}
           overrideClassNames="pl-9"
           value={inputValue}
         />
       </label>
-      <Suspense fallback={"Loading books (slowly)..."}>
-        <Books addBook={addBook} query={inputValue} />
-      </Suspense>
+      {showTypeahead && (
+        <Suspense fallback={"Loading books (slowly)..."}>
+          <Books addBook={addBook} query={inputValue} />
+        </Suspense>
+      )}
     </>
   );
 };

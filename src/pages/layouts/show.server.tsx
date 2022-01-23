@@ -30,6 +30,7 @@ export default function ShowLayout(props: Props) {
       id={layoutId}
       contextType={contextType ?? LayoutContextType.None}
       contextKey={contextKey ?? ""}
+      showContextPicker
     />
   );
 }

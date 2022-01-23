@@ -7,7 +7,7 @@ export default function BookList(props: ListComponent) {
   return (
     <>
       <div className="flex mb-6 space-x-2">
-        <h1>{props.title}</h1>
+        <h1 className="m-0">{props.title}</h1>
         {props.createdBy && (
           <>
             <span>&mdash;</span>
@@ -34,7 +34,7 @@ export default function BookList(props: ListComponent) {
               ) : (
                 <div style={{ height: 100, width: 1 }} />
               )}
-              <p>{card.title}</p>
+              <p className="m-0">{card.title}</p>
             </a>
           </NextLink>
           {card.createdBy && (

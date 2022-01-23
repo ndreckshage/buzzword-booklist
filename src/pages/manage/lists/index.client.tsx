@@ -26,8 +26,8 @@ function ManageLists() {
   }>("currentUser::getLists", GET_LISTS_QUERY);
 
   return (
-    <>
-      <p>Manage Lists</p>
+    <div className="container mx-auto my-10">
+      <h1>Manage Lists</h1>
       <Link href="/manage/lists/create">
         <a>Create List</a>
       </Link>
@@ -42,7 +42,7 @@ function ManageLists() {
         ))}
       </ul>
       {hydrateClient}
-    </>
+    </div>
   );
 }
 

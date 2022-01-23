@@ -22,6 +22,7 @@ import BookImage, { BookImageComponentFragment } from "./book-image.server";
 import BookTitle, { BookTitleComponentFragment } from "./book-title.server";
 import BookAction, { BookActionComponentFragment } from "./book-action.server";
 import CreatedBy from "../common/created-by";
+import LayoutContextPicker from "./layout-context-picker.client";
 
 const LayoutComponentFragment = gql`
   fragment LayoutComponentFragment on LayoutComponent {
@@ -122,12 +123,14 @@ function Layout({
   container,
   components,
   className,
-}: LayoutProps & { layoutCreatedBy: string }) {
+  showContextPicker,
+}: LayoutProps & { layoutCreatedBy: string; showContextPicker: boolean }) {
   return (
     <div className={__typename}>
       {root && (
         <div className="border-b border-slate-100 py-2">
-          <div className="container mx-auto flex justify-end">
+          <div className="container mx-auto flex justify-between items-center">
+            {showContextPicker && <LayoutContextPicker />}
             <CreatedBy createdByType="Layout" createdBy={layoutCreatedBy} />
           </div>
         </div>
@@ -165,11 +168,13 @@ export default function LayoutContainer({
   contextType,
   contextKey,
   className,
+  showContextPicker,
 }: {
   id: string;
   contextType?: LayoutContextType;
   contextKey?: string;
   className?: string;
+  showContextPicker?: boolean;
 }) {
   const data = useQuery<{
     layout: LayoutComponent & { layoutCreatedBy: string };
@@ -179,5 +184,12 @@ export default function LayoutContainer({
     contextKey: contextKey ?? "",
   });
 
-  return <Layout {...data.layout} className={className ?? ""} root />;
+  return (
+    <Layout
+      {...data.layout}
+      className={className ?? ""}
+      showContextPicker={showContextPicker}
+      root
+    />
+  );
 }

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Text, { TextTypes } from "ui/components/common/text";
 import TextInput from "ui/components/common/text-input";
 import { useMutation, gql } from "ui/lib/use-data.client";
 import cx from "classnames";
@@ -29,13 +28,10 @@ export default function CreateList() {
   const manageUrl = `/manage/lists/edit?list=${listKey}`;
 
   return (
-    <div className="container mx-auto px-4">
-      <Text as={TextTypes.h1}>Create Book List</Text>
-      <Text as={TextTypes.h3}>
-        List title and URL cannot be changed once created!
-      </Text>
+    <div className="container mx-auto my-10">
+      <h1>Create Book List</h1>
       <label>
-        List Title:
+        <p>List Title:</p>
         <TextInput
           name="list_title"
           placeholder="List title"
@@ -43,24 +39,23 @@ export default function CreateList() {
           onChange={handleChange}
         />
       </label>
-      {listKey && <Text as={TextTypes.p}>List URL: {expectedUrl}</Text>}
-      <button
-        className={cx(
-          "block bg-blue-500 text-white p-5 rounded-md transition-opacity",
-          {
+      {listKey && <p>List URL: {expectedUrl}</p>}
+      <div className="my-5">
+        <button
+          className={cx("transition-opacity", {
             "opacity-100": !isPending,
             "opacity-50": isPending,
-          }
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          createListMutation({ title: listTitle }).then((data) => {
-            if (data.createList) router.push(manageUrl);
-          });
-        }}
-      >
-        Create list and get started adding books...
-      </button>
+          })}
+          onClick={(e) => {
+            e.preventDefault();
+            createListMutation({ title: listTitle }).then((data) => {
+              if (data.createList) router.push(manageUrl);
+            });
+          }}
+        >
+          Create list and get started adding books...
+        </button>
+      </div>
     </div>
   );
 }

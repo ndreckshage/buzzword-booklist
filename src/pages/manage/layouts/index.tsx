@@ -25,8 +25,8 @@ function ManageLayouts() {
   }>("currentUser::getLayouts", GET_LAYOUTS_QUERY);
 
   return (
-    <>
-      <p>Manage Layouts</p>
+    <div className="mx-auto container my-10">
+      <h1>Manage Layouts</h1>
       <Link href="/manage/layouts/create">
         <a>Create Layout</a>
       </Link>
@@ -45,7 +45,7 @@ function ManageLayouts() {
         ))}
       </ul>
       {hydrateClient}
-    </>
+    </div>
   );
 }
 

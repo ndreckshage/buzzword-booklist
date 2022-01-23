@@ -79,10 +79,9 @@ const EditList = ({ listKey }: { listKey: string }) => {
     return <p>Not Authorized</p>;
   }
 
-  console.log(data.list);
-
   return (
-    <>
+    <div className="container mx-auto my-10">
+      <h1>Add books to your list...</h1>
       <>
         <div
           className={cx("transition-opacity", {
@@ -91,11 +90,11 @@ const EditList = ({ listKey }: { listKey: string }) => {
           })}
         >
           {data.list.books.map(({ googleBooksVolumeId, image, title }) => (
-            <div key={googleBooksVolumeId} className="flex">
+            <div key={googleBooksVolumeId} className="flex my-5">
               <Image src={image} alt={title} width={100} height={150} />
-              <div>
+              <div className="ml-5">
                 <p>{title}</p>
-                <p
+                <button
                   className="cursor-pointer"
                   onClick={() => {
                     removeBookMutation({
@@ -105,23 +104,21 @@ const EditList = ({ listKey }: { listKey: string }) => {
                   }}
                 >
                   Remove
-                </p>
+                </button>
               </div>
             </div>
           ))}
         </div>
         {hydrateClient}
       </>
-      <>
-        <div>
-          <GoogleBooksTypeahead
-            addBook={({ googleBooksVolumeId }) => {
-              addBookMutation({ googleBooksVolumeId, listKey }).then(refresh);
-            }}
-          />
-        </div>
-      </>
-    </>
+      <div className="my-10 relative">
+        <GoogleBooksTypeahead
+          addBook={({ googleBooksVolumeId }) => {
+            addBookMutation({ googleBooksVolumeId, listKey }).then(refresh);
+          }}
+        />
+      </div>
+    </div>
   );
 };
 
