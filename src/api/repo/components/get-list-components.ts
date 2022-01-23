@@ -1,9 +1,16 @@
-import { Client, query as q, type Expr } from "faunadb";
+import { Client, query as q, type Expr, type ExprArg } from "faunadb";
 import { type ListComponentModel } from ".";
 import {
   LinkComponentVariant,
   ListSourceType,
 } from "api/__generated__/resolvers-types";
+
+const ifOneOfComponentType = (
+  componentTypes: string[],
+  doIf: ExprArg,
+  elseIf: ExprArg
+) =>
+  q.If(q.ContainsValue(q.Var("componentType"), componentTypes), doIf, elseIf);
 
 const authorLink = (authorDoc: Expr) =>
   q.Concat(
@@ -343,9 +350,11 @@ const selectList = ({
   );
 
 const selectAuthor = ({
+  componentType,
   sourceKey,
   pageSize,
 }: {
+  componentType: Expr;
   sourceKey: Expr;
   pageSize: Expr;
 }) =>
@@ -362,7 +371,17 @@ const selectAuthor = ({
           totalCards: q.Count(q.Var("bookRefs")),
         },
         {
-          title: q.Select(["data", "name"], q.Var("authorDoc")),
+          title: q.Concat(
+            [
+              ifOneOfComponentType(
+                ["CarouselComponent", "BookCarouselComponent"],
+                "Author: ",
+                ""
+              ),
+              q.Select(["data", "name"], q.Var("authorDoc")),
+            ],
+            ""
+          ),
           link: {
             title: q.Concat(
               ["See all", q.ToString(q.Var("totalCards")), "books"],
@@ -380,9 +399,11 @@ const selectAuthor = ({
   );
 
 const selectCategory = ({
+  componentType,
   sourceKey,
   pageSize,
 }: {
+  componentType: Expr;
   sourceKey: Expr;
   pageSize: Expr;
 }) =>
@@ -413,7 +434,17 @@ const selectCategory = ({
       q.Let(
         { totalCards: q.Count(q.Var("bookRefs")) },
         {
-          title: q.Select(["data", "name"], q.Var("categoryDoc")),
+          title: q.Concat(
+            [
+              ifOneOfComponentType(
+                ["CarouselComponent", "BookCarouselComponent"],
+                "Category: ",
+                ""
+              ),
+              q.Select(["data", "name"], q.Var("categoryDoc")),
+            ],
+            ""
+          ),
           link: {
             title: q.Concat(
               ["See all", q.ToString(q.Var("totalCards")), "books"],
@@ -495,6 +526,7 @@ export default function getListComponents(client: Client) {
                               ListSourceType.Author
                             ),
                             selectAuthor({
+                              componentType: q.Var("componentType"),
                               sourceKey: q.Var("sourceKey"),
                               pageSize: q.Var("pageSize"),
                             }),
@@ -504,6 +536,7 @@ export default function getListComponents(client: Client) {
                                 ListSourceType.Category
                               ),
                               selectCategory({
+                                componentType: q.Var("componentType"),
                                 sourceKey: q.Var("sourceKey"),
                                 pageSize: q.Var("pageSize"),
                               }),
