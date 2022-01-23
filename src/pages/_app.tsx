@@ -3,10 +3,12 @@ import NextApp, {
   AppContext as NextAppContext,
 } from "next/app";
 
-import { Suspense, createContext } from "react";
+import { useRouter } from "next/router";
+import { Suspense, createContext, useEffect, useState } from "react";
 import CurrentUserProvider from "ui/components/app/current-user-provider";
 import Header from "ui/components/app/header";
 import Footer from "ui/components/app/footer";
+import cx from "classnames";
 import "ui/styles/global.css";
 
 export const AppContext = createContext({ cookieHeader: "" });
@@ -15,12 +17,35 @@ interface AppProps extends NextAppProps {
   cookieHeader: "";
 }
 
-function App({ Component, pageProps, cookieHeader, router }: AppProps) {
+function App({ Component, pageProps, cookieHeader }: AppProps) {
+  const router = useRouter();
+  const [routeTransition, setRouteTransition] = useState(false);
+
+  useEffect(() => {
+    const routeTransitionOn = () => setRouteTransition(true);
+    const routeTransitionOff = () => setRouteTransition(false);
+
+    router.events.on("routeChangeStart", routeTransitionOn);
+    router.events.on("routeChangeComplete", routeTransitionOff);
+
+    return () => {
+      router.events.off("routeChangeStart", routeTransitionOn);
+      router.events.off("routeChangeComplete", routeTransitionOff);
+    };
+  }, []);
+
   return (
-    <div className="">
-      <AppContext.Provider value={{ cookieHeader }}>
-        <Header />
-        <Suspense fallback="Loading...">
+    <AppContext.Provider value={{ cookieHeader }}>
+      <Header />
+      <div
+        className={cx("transition-opacity", {
+          "opacity-100": !routeTransition,
+          "opacity-50": routeTransition,
+        })}
+      >
+        <Suspense
+          fallback={<div className="container mx-auto my-10">Loading..</div>}
+        >
           {router.asPath.startsWith("/manage") ? (
             <CurrentUserProvider>
               {(currentUser) =>
@@ -36,8 +61,8 @@ function App({ Component, pageProps, cookieHeader, router }: AppProps) {
           )}
         </Suspense>
         <Footer />
-      </AppContext.Provider>
-    </div>
+      </div>
+    </AppContext.Provider>
   );
 }
 

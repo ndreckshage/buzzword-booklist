@@ -1,3 +1,5 @@
+import cx from "classnames";
+
 export default function CreatedBy({
   createdByType,
   createdBy,
@@ -6,14 +8,14 @@ export default function CreatedBy({
   createdBy: string;
 }) {
   return (
-    <div className="flex space-x-1 items-center">
-      <span>
-        {createdByType}
-        {createdByType && " "}created by:
-      </span>
+    <div className="flex space-x-1 items-center overflow-hidden text-ellipsis">
+      {createdByType && <span>{createdByType} created by:</span>}
       <a
         href={`https://github.com/${createdBy}`}
-        className="no-underline items-center flex border py-1 px-2 mx-2 rounded-lg space-x-1"
+        className={cx(
+          "no-underline items-center flex border py-1 px-2 rounded-lg space-x-1",
+          { "mx-2": createdByType }
+        )}
         target="_blank"
       >
         <img

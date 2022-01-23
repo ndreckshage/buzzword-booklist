@@ -3,10 +3,10 @@ import NextLink from "next/link";
 import { type ListComponent } from "api/__generated__/resolvers-types";
 import CreatedBy from "../common/created-by";
 
-export default function BookList(props: ListComponent) {
+export default function List(props: ListComponent) {
   return (
-    <>
-      <div className="flex mb-6 space-x-2">
+    <div className="w-full">
+      <div className="flex mb-3 md:mb-6 space-x-2">
         <h1 className="m-0">{props.title}</h1>
         {props.createdBy && (
           <>
@@ -18,33 +18,37 @@ export default function BookList(props: ListComponent) {
       {props.cards.map((card) => (
         <div
           key={card.id}
-          className="flex border-b border-slate-100 pb-5 mb-5 space-x-5"
+          className="flex border-b border-slate-100 pb-5 mb-5 space-x-5 justify-between no-underline"
         >
-          <NextLink href={card.href}>
-            <a className="flex text-inherit text-xl no-underline items-center">
-              {card.image ? (
-                <div className="flex mr-5">
+          <div className="flex items-center">
+            {card.image ? (
+              <NextLink href={card.href}>
+                <a className="flex mr-5">
                   <Image
                     alt="demo image"
                     src={card.image}
                     width={75}
                     height={100}
                   />
-                </div>
-              ) : (
-                <div style={{ height: 100, width: 1 }} />
-              )}
-              <p className="m-0">{card.title}</p>
-            </a>
-          </NextLink>
-          {card.createdBy && (
-            <div className="flex items-center space-x-5">
-              <span>&mdash;</span>
-              <CreatedBy createdBy={card.createdBy} />
+                </a>
+              </NextLink>
+            ) : (
+              <div
+                style={{ height: 100, width: 75 }}
+                className="bg-gray-50 mr-5"
+              />
+            )}
+            <div>
+              <NextLink href={card.href}>
+                <a className="no-underline text-inherit">
+                  <p className="m-0 text-xl mb-2">{card.title}</p>
+                </a>
+              </NextLink>
+              {card.createdBy && <CreatedBy createdBy={card.createdBy} />}
             </div>
-          )}
+          </div>
         </div>
       ))}
-    </>
+    </div>
   );
 }

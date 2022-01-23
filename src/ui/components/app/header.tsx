@@ -1,29 +1,66 @@
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Link from "ui/components/common/link.client";
 import Image from "next/image";
 import CurrentUserProvider from "./current-user-provider";
+import cx from "classnames";
+
+const navLinkClass =
+  "block md:inline border-b md:border-none w-full p-5 md:p-0";
 
 export default function Header() {
+  const router = useRouter();
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  useEffect(() => {
+    const routeTransitionOn = () => setShowMobileMenu(false);
+    router.events.on("routeChangeStart", routeTransitionOn);
+
+    return () => {
+      router.events.off("routeChangeStart", routeTransitionOn);
+    };
+  }, []);
+
   return (
     <div className="border-b border-slate-100">
-      <div className="container mx-auto py-2">
-        <div className="flex justify-between items-center pb-2">
-          <h1 className="m-0">
-            <Link href="/" className="no-underline text-indigo-900">
-              BuzzwordBooklist
-            </Link>
-          </h1>
+      <div className="container mx-auto pr-4 md:px-4 py-2">
+        <div className="flex justify-between items-center md:pb-2">
+          <div className="flex items-center">
+            <div
+              className="pointer py-2 px-3 md:hidden"
+              onClick={() => {
+                setShowMobileMenu((c) => !c);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 0 24 24"
+                width="24px"
+                className="fill-indigo-900"
+              >
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+              </svg>
+            </div>
+            <h1 className="m-0">
+              <Link href="/" className="no-underline text-indigo-900">
+                BuzzwordBooklist
+              </Link>
+            </h1>
+          </div>
           <div className="flex items-center space-x-2">
             <Suspense fallback={null}>
               <CurrentUserProvider>
                 {(currentUser) => (
                   <>
-                    {currentUser && (
-                      <>
-                        <Link href="/manage/layouts">Manage Layouts</Link>
-                        <Link href="/manage/lists">Manage Lists</Link>
-                      </>
-                    )}
+                    <div className="hidden md:block md:space-x-2">
+                      {currentUser && (
+                        <>
+                          <Link href="/manage/layouts">Manage Layouts</Link>
+                          <Link href="/manage/lists">Manage Lists</Link>
+                        </>
+                      )}
+                    </div>
                     <a
                       href={currentUser ? "/api/auth?logout=true" : "/api/auth"}
                       className="no-underline items-center flex border py-1 px-2 mx-2 rounded-lg space-x-1"
@@ -60,13 +97,52 @@ export default function Header() {
             </Suspense>
           </div>
         </div>
-        <div className="space-x-2">
-          <Link href="/lists">Recent Lists</Link>
-          <Link href="/layouts">Recent Layouts</Link>
-          <Link href="/books">Top Books</Link>
-          <Link href="/authors">Top Authors</Link>
-          <Link href="/categories">Top Categories</Link>
-          <Link href="/react-18-demos">React 18 Demos</Link>
+        <div
+          className={cx(
+            "md:space-x-2 md:block absolute md:relative bg-white w-full z-50 drop-shadow-xl md:drop-shadow-none",
+            {
+              hidden: !showMobileMenu,
+            }
+          )}
+        >
+          <Link href="/lists" className={navLinkClass}>
+            Recent Lists
+          </Link>
+          <Link href="/layouts" className={navLinkClass}>
+            Recent Layouts
+          </Link>
+          <Link href="/books" className={navLinkClass}>
+            Top Books
+          </Link>
+          <Link href="/authors" className={navLinkClass}>
+            Top Authors
+          </Link>
+          <Link href="/categories" className={navLinkClass}>
+            Top Categories
+          </Link>
+          <Link href="/react-18-demos" className={navLinkClass}>
+            React 18 Demos
+          </Link>
+          <div className="md:hidden">
+            <Suspense fallback={null}>
+              <CurrentUserProvider>
+                {(currentUser) => (
+                  <>
+                    {currentUser && (
+                      <>
+                        <Link href="/manage/layouts" className={navLinkClass}>
+                          Manage Layouts
+                        </Link>
+                        <Link href="/manage/lists" className={navLinkClass}>
+                          Manage Lists
+                        </Link>
+                      </>
+                    )}
+                  </>
+                )}
+              </CurrentUserProvider>
+            </Suspense>
+          </div>
         </div>
       </div>
     </div>

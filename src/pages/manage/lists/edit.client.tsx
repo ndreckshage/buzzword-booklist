@@ -80,7 +80,7 @@ const EditList = ({ listKey }: { listKey: string }) => {
   }
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto px-4 my-5 md:my-10">
       <h1>Add books to your list...</h1>
       <>
         <div
@@ -93,7 +93,9 @@ const EditList = ({ listKey }: { listKey: string }) => {
             <div key={googleBooksVolumeId} className="flex my-5">
               <Image src={image} alt={title} width={100} height={150} />
               <div className="ml-5">
-                <p>{title}</p>
+                <p>
+                  <b>{title}</b>
+                </p>
                 <button
                   className="cursor-pointer"
                   onClick={() => {

@@ -34,7 +34,7 @@ export default function Markdown({
       })}
     >
       <div
-        className="container mx-auto"
+        className="container mx-auto px-4"
         dangerouslySetInnerHTML={{
           __html: sanitizeHtml(marked(text || ""), {
             allowedTags,

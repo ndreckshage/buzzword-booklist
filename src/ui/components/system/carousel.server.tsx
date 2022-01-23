@@ -4,7 +4,7 @@ import { type CarouselComponent } from "api/__generated__/resolvers-types";
 
 export default function CarouselServer(props: CarouselComponent) {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4">
       <Carousel {...props} />
     </div>
   );

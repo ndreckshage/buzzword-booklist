@@ -71,7 +71,7 @@ const SuspenseDemo = () => {
   });
 
   return (
-    <div className="container mx-auto my-10 space-x-4">
+    <div className="container mx-auto px-4 my-10 space-x-4">
       <h1>Suspense demo without server components .... </h1>
       <div className="flex">
         <Suspense fallback="Loading a1...">

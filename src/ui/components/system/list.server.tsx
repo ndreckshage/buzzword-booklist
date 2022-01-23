@@ -3,11 +3,7 @@ import { type ListComponent } from "api/__generated__/resolvers-types";
 import List from "./list.client";
 
 export default function ListServer(props: ListComponent) {
-  return (
-    <div className="container mx-auto my-10">
-      <List {...props} />
-    </div>
-  );
+  return <List {...props} />;
 }
 
 export const ListComponentFragment = gql`

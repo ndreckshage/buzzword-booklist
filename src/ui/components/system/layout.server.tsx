@@ -129,7 +129,7 @@ function Layout({
     <div className={__typename}>
       {root && (
         <div className="border-b border-slate-100 py-2">
-          <div className="container mx-auto flex justify-between items-center">
+          <div className="container mx-auto px-4 flex justify-between items-center">
             {showContextPicker && <LayoutContextPicker />}
             <CreatedBy createdByType="Layout" createdBy={layoutCreatedBy} />
           </div>
@@ -137,9 +137,10 @@ function Layout({
       )}
       <div
         className={cx("flex", className, {
-          "container mx-auto": container,
-          "flex-row space-x-5": flexDirection === "row",
-          "flex-col": flexDirection === "col",
+          "container mx-auto px-4 overflow-hidden": container,
+          "my-5 md:my-10": container && root,
+          "flex-col space-y-5": flexDirection === "col",
+          "flex-col md:flex-row md:space-x-5": flexDirection === "row",
         })}
       >
         {components.map((component) => {
@@ -149,7 +150,7 @@ function Layout({
             return (
               <div
                 key={component.__typename}
-                className="container mx-auto my-5"
+                className="container mx-auto px-4 space-y-5 md:space-y-10"
               >
                 <p>Component for {component.__typename} not found</p>
               </div>
@@ -188,7 +189,7 @@ export default function LayoutContainer({
     <Layout
       {...data.layout}
       className={className ?? ""}
-      showContextPicker={showContextPicker}
+      showContextPicker={showContextPicker!!}
       root
     />
   );

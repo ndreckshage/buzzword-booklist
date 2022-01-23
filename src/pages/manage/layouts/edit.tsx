@@ -18,7 +18,9 @@ export default function EditLayoutPage() {
   }
 
   return (
-    <Suspense fallback="Loading layout...">
+    <Suspense
+      fallback={<div className="container mx-auto my-5">Loading Layout..</div>}
+    >
       <EditLayoutContainer id={layoutId} />
     </Suspense>
   );

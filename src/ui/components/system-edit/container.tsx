@@ -193,7 +193,7 @@ export default function EditLayoutContainer({ id }: { id: string }) {
   return (
     <>
       <div
-        className={cx("transition-opacity container mx-auto my-10", {
+        className={cx("container mx-auto px-4 my-10 transition-opacity", {
           "opacity-100": !isPending,
           "opacity-50": isPending,
         })}

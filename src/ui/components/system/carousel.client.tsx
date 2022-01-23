@@ -17,8 +17,10 @@ const Arrow = ({
     className={cx(
       "absolute top-1/2 transform -translate-y-1/2 bg-white rounded-md drop-shadow-xl",
       {
-        "-left-8": direction === "left",
-        "-right-8": direction === "right",
+        "-left-6": direction === "left",
+        "-right-6": direction === "right",
+        "md:-left-8": direction === "left",
+        "md:-right-8": direction === "right",
       }
     )}
     onClick={onClick}
@@ -54,12 +56,12 @@ export default function BookCarousel(props: CarouselComponent) {
   };
 
   return (
-    <div className="container my-4">
-      <div className="flex justify-between">
+    <div className="container mx-auto px-4 my-4">
+      <div className="flex justify-between flex-col md:flex-row">
         <p className="text-2xl">
           {props.title}{" "}
           {props.link && (
-            <span className="text-lg">
+            <span className="text-lg block md:inline">
               <Link {...props.link} />
             </span>
           )}

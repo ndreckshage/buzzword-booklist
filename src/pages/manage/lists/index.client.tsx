@@ -26,7 +26,7 @@ function ManageLists() {
   }>("currentUser::getLists", GET_LISTS_QUERY);
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto px-4 my-5 md:my-10">
       <h1>Manage Lists</h1>
       <Link href="/manage/lists/create">
         <a>Create List</a>

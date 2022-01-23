@@ -25,7 +25,7 @@ function ManageLayouts() {
   }>("currentUser::getLayouts", GET_LAYOUTS_QUERY);
 
   return (
-    <div className="mx-auto container my-10">
+    <div className="container mx-auto px-4 my-10">
       <h1>Manage Layouts</h1>
       <Link href="/manage/layouts/create">
         <a>Create Layout</a>
@@ -51,7 +51,11 @@ function ManageLayouts() {
 
 export default function ManageLayoutsPage() {
   return (
-    <Suspense fallback="Loading layouts...">
+    <Suspense
+      fallback={
+        <div className="container mx-auto my-10">Loading Layouts..</div>
+      }
+    >
       <ManageLayouts />
     </Suspense>
   );

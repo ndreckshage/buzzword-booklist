@@ -50,7 +50,7 @@ const SuspenseDemo = (props: Props) => {
   const refreshCount = props.refreshCount || 0;
 
   return (
-    <div className="container mx-auto my-10 space-x-4">
+    <div className="container mx-auto px-4 my-10 space-x-4">
       <h1>Suspense demo with server components .... </h1>
       <Refresher>
         <Suspense fallback="suspending a1...">

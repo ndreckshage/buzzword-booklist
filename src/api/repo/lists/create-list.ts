@@ -8,6 +8,10 @@ export default function createList(client: Client) {
   return async ({ title, loggedInAs }: CreateListInput) => {
     const key = slugify(title, { lower: true, strict: true });
 
+    if (!title) {
+      throw new Error("missing title");
+    }
+
     const list = await client.query(
       q.Let(
         {

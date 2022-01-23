@@ -4,7 +4,7 @@ import Grid from "./grid.client";
 
 export default function GridServer(props: GridComponent) {
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto px-4 my-10">
       <Grid {...props} />
     </div>
   );

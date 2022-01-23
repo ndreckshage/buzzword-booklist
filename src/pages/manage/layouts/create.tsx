@@ -22,7 +22,7 @@ export default function CreateLayout() {
   };
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto px-4 my-10">
       <h1>Create Layout</h1>
       <label>
         <p>Layout Title:</p>
