@@ -146,15 +146,7 @@ export default {
         .then(({ detailsMarkdown }) => detailsMarkdown),
   },
   Component: {
-    // __resolveType: (obj) => obj.componentType,
-    __resolveType: (obj) => {
-      if (obj.componentType === "BookListComponent") return "ListComponent";
-      if (obj.componentType === "BookGridComponent") return "GridComponent";
-      if (obj.componentType === "BookCarouselComponent")
-        return "CarouselComponent";
-
-      return obj.componentType;
-    },
+    __resolveType: (obj) => obj.componentType,
   },
   CurrentUser: {
     layoutComponents: async ({ name }, args, { loaders }) =>

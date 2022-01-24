@@ -47,7 +47,7 @@ const selectListModelData = (componentDoc: Expr) => ({
   pageSize: q.If(
     q.ContainsPath(["data", "pageSize"], componentDoc),
     q.Select(["data", "pageSize"], componentDoc),
-    ifOneOfComponentType(["CarouselComponent", "BookCarouselComponent"], 10, 64)
+    ifOneOfComponentType(["CarouselComponent"], 10, 64)
   ),
 });
 
@@ -89,15 +89,7 @@ export default function getComponentsByIds(client: Client) {
                       "LayoutComponent",
                       selectLayoutModelData(q.Var("componentDoc")),
                       ifOneOfComponentType(
-                        [
-                          // temp
-                          "BookCarouselComponent",
-                          "BookGridComponent",
-                          "BookListComponent",
-                          "CarouselComponent",
-                          "GridComponent",
-                          "ListComponent",
-                        ],
+                        ["CarouselComponent", "GridComponent", "ListComponent"],
                         selectListModelData(q.Var("componentDoc")),
                         q.Select("data", q.Var("componentDoc"))
                       )

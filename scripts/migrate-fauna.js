@@ -137,6 +137,21 @@ const createLists = () =>
           name: "lists_by_createdBy",
           source: q.Var("collectionRef"),
           terms: [{ field: ["data", "createdBy"] }],
+        }),
+        q.CreateIndex({
+          name: "lists_with_books",
+          source: {
+            collection: q.Var("collectionRef"),
+            fields: {
+              hasBooks: q.Query(
+                q.Lambda(
+                  "doc",
+                  q.IsNonEmpty(q.Select(["data", "bookRefs"], q.Var("doc")))
+                )
+              ),
+            },
+          },
+          terms: [{ binding: "hasBooks" }],
         })
       )
     )
@@ -160,7 +175,22 @@ const createComponents = () =>
         q.CreateIndex({
           name: "components_by_componentType",
           source: q.Var("collectionRef"),
-          terms: [{ field: ["data", "componentType"], reverse: true }],
+          terms: [{ field: ["data", "componentType"] }],
+        }),
+        q.CreateIndex({
+          name: "components_by_isRoot_and_componentType",
+          source: {
+            collection: q.Collection("Components"),
+            fields: {
+              isRoot: q.Query(
+                q.Lambda(
+                  "doc",
+                  q.Equals(q.Select(["data", "nested"], q.Var("doc")), false)
+                )
+              ),
+            },
+          },
+          terms: [{ binding: "isRoot" }, { field: ["data", "componentType"] }],
         })
       )
     )

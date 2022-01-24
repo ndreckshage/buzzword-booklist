@@ -209,11 +209,11 @@ const selectTopCategories = ({ pageSize }: { pageSize: Expr }) =>
 const selectRecentLists = ({ pageSize }: { pageSize: Expr }) =>
   q.Let(
     {
-      totalCards: q.Count(q.Documents(q.Collection("Lists"))),
+      totalCards: q.Count(q.Match(q.Index("lists_with_books"), true)),
       cards: q.Select(
         "data",
         q.Map(
-          q.Paginate(q.Reverse(q.Documents(q.Collection("Lists"))), {
+          q.Paginate(q.Reverse(q.Match(q.Index("lists_with_books"), true)), {
             size: pageSize,
           }),
           q.Lambda(
@@ -254,14 +254,20 @@ const selectRecentLayouts = ({ pageSize }: { pageSize: Expr }) =>
   q.Let(
     {
       totalCards: q.Count(
-        q.Match(q.Index("components_by_componentType"), "LayoutComponent")
+        q.Match(q.Index("components_by_isRoot_and_componentType"), [
+          true,
+          "LayoutComponent",
+        ])
       ),
       cards: q.Select(
         "data",
         q.Map(
           q.Paginate(
             q.Reverse(
-              q.Match(q.Index("components_by_componentType"), "LayoutComponent")
+              q.Match(q.Index("components_by_isRoot_and_componentType"), [
+                true,
+                "LayoutComponent",
+              ])
             ),
             { size: pageSize }
           ),
@@ -373,11 +379,7 @@ const selectAuthor = ({
         {
           title: q.Concat(
             [
-              ifOneOfComponentType(
-                ["CarouselComponent", "BookCarouselComponent"],
-                "Author: ",
-                ""
-              ),
+              ifOneOfComponentType(["CarouselComponent"], "Author: ", ""),
               q.Select(["data", "name"], q.Var("authorDoc")),
             ],
             ""
@@ -436,11 +438,7 @@ const selectCategory = ({
         {
           title: q.Concat(
             [
-              ifOneOfComponentType(
-                ["CarouselComponent", "BookCarouselComponent"],
-                "Category: ",
-                ""
-              ),
+              ifOneOfComponentType(["CarouselComponent"], "Category: ", ""),
               q.Select(["data", "name"], q.Var("categoryDoc")),
             ],
             ""

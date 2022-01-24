@@ -33,10 +33,7 @@ export default function List(props: ListComponent) {
                 </a>
               </NextLink>
             ) : (
-              <div
-                style={{ height: 100, width: 75 }}
-                className="bg-gray-50 mr-5"
-              />
+              <div style={{ height: 100, width: 0 }} />
             )}
             <div>
               <NextLink href={card.href}>

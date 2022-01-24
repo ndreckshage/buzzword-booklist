@@ -26,6 +26,7 @@ export default function createComponentInLayout(client: Client) {
             createdBy: loggedInAs,
             flexDirection: "col",
             componentRefs: [],
+            nested: true,
           };
 
         case "BookImageComponent":

@@ -17,6 +17,7 @@ export default function createLayoutComponent(client: Client) {
           createdBy: loggedInAs,
           flexDirection: "col",
           componentRefs: [],
+          nested: false,
         },
       })
     );
