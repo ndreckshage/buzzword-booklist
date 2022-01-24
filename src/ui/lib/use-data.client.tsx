@@ -6,7 +6,14 @@ import { request, gql } from "./graphql-request";
 import { AppContext } from "pages/_app";
 
 const queryCache: any = {};
-const getResource = (cacheKey: string, fetcher: any, initialLoad = false) => {
+const getResource = (
+  cacheKeyBase: string,
+  fetcher: any,
+  initialLoad = false
+) => {
+  const fiveSecondCachebuster = Math.floor(Date.now() / 5000);
+  const cacheKey = `${cacheKeyBase}::${fiveSecondCachebuster}`;
+
   if (!queryCache[cacheKey]) {
     let fetcherPromise: any = null;
     let fetcherPromiseData: any =

@@ -1,6 +1,7 @@
 import { Client, query as q, type Expr, type ExprArg } from "faunadb";
 import { type ListComponentModel } from ".";
 import {
+  LayoutContextType,
   LinkComponentVariant,
   ListSourceType,
 } from "api/__generated__/resolvers-types";
@@ -464,6 +465,7 @@ const selectDefault = q.Let(
   {
     title: "Data source not found. Ensure valid context / source entered.",
     href: "",
+    link: null,
     totalCards: 0,
     cards: [],
     createdBy: "",
@@ -474,7 +476,7 @@ export default function getListComponents(client: Client) {
   return async (
     sourceArr: readonly {
       componentType: string;
-      listSourceType: string | null;
+      listSourceType: ListSourceType | LayoutContextType | null;
       sourceKey: string | null;
       pageSize: number;
     }[]
@@ -565,13 +567,16 @@ export default function getListComponents(client: Client) {
     } catch (e) {
       console.error("get-list-components", e);
 
-      return sourceArr.map(() => ({
+      const result = sourceArr.map(() => ({
         title: "Invalid key entered for list.",
         href: "",
+        link: null,
         totalCards: 0,
         cards: [],
         createdBy: "",
-      }));
+      })) as ListComponentModel[];
+
+      return result;
     }
   };
 }

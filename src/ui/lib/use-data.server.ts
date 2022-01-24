@@ -3,7 +3,10 @@ import { DocumentNode } from "graphql";
 
 const queryCache: any = {};
 
-const useData = <T>(cacheKey: string, fetcher: () => Promise<T>) => {
+const useData = <T>(cacheKeyBase: string, fetcher: () => Promise<T>) => {
+  const fiveSecondCachebuster = Math.floor(Date.now() / 5000);
+  const cacheKey = `${cacheKeyBase}::${fiveSecondCachebuster}`;
+
   if (!queryCache[cacheKey]) {
     let promise: any = null;
     let promiseData: any = undefined;
