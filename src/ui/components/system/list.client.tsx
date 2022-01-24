@@ -23,7 +23,7 @@ export default function List(props: ListComponent) {
           <div className="flex items-center">
             {card.image ? (
               <NextLink href={card.href}>
-                <a className="flex mr-5">
+                <a className="flex mr-5 shrink-0">
                   <Image
                     alt="demo image"
                     src={card.image}
@@ -38,7 +38,9 @@ export default function List(props: ListComponent) {
             <div>
               <NextLink href={card.href}>
                 <a className="no-underline text-inherit">
-                  <p className="m-0 text-xl mb-2">{card.title}</p>
+                  <p className="m-0 text-xl mb-2 truncate max-w-md">
+                    {card.title}
+                  </p>
                 </a>
               </NextLink>
               {card.createdBy && <CreatedBy createdBy={card.createdBy} />}

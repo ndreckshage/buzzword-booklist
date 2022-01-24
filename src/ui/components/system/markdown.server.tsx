@@ -6,7 +6,6 @@ import sanitizeHtml from "sanitize-html";
 import cx from "classnames";
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-  "img",
   "h1",
   "h2",
   "h3",
@@ -14,9 +13,7 @@ const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
 const allowedAttributes = Object.assign(
   {},
   sanitizeHtml.defaults.allowedAttributes,
-  {
-    img: ["alt", "src"],
-  }
+  {}
 );
 
 export default function Markdown({

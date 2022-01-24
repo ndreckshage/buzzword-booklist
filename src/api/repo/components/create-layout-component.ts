@@ -9,6 +9,10 @@ export default function createLayoutComponent(client: Client) {
       throw new Error("missing title");
     }
 
+    if (title.length > 100) {
+      throw new Error("title longer than 100 characters");
+    }
+
     const layout = await client.query(
       q.Create("Components", {
         data: {

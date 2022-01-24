@@ -12,6 +12,10 @@ export default function createList(client: Client) {
       throw new Error("missing title");
     }
 
+    if (title.length > 100) {
+      throw new Error("title longer than 100 characters");
+    }
+
     const list = await client.query(
       q.Let(
         {
