@@ -2,28 +2,57 @@ import {
   type Resolvers,
   LayoutContextType,
   ListSourceType,
+  BookSourceType,
 } from "api/__generated__/resolvers-types";
 import { type ResolverContext } from "api/context";
 import {
+  RootBookComponentModel,
   RootListComponentModel,
   type RootLayoutComponentModel,
 } from "api/repo/components";
 import { type GraphQLResolveInfo } from "graphql";
 
-const pickListLoaderArgs = ({
+const listComponentLoaderArgs = ({
   componentType,
-  sourceType,
+  listSourceType,
   contextType,
   sourceKey,
   contextKey,
   pageSize,
-}: RootListComponentModel) => ({
+}: RootListComponentModel) => {
+  const useContext = [
+    LayoutContextType.Author,
+    LayoutContextType.Category,
+    LayoutContextType.List,
+  ].includes(contextType);
+
+  return {
+    componentType,
+    listSourceType: useContext
+      ? contextType
+      : listSourceType ?? ListSourceType.None,
+    sourceKey: useContext ? contextKey : sourceKey ?? "",
+    pageSize,
+  };
+};
+
+const bookComponentLoaderArgs = ({
   componentType,
-  sourceType:
-    sourceType && sourceType !== ListSourceType.None ? sourceType : contextType,
-  sourceKey: sourceKey ?? contextKey,
-  pageSize,
-});
+  bookSourceType,
+  contextType,
+  sourceKey,
+  contextKey,
+}: RootBookComponentModel) => {
+  const useContext = [LayoutContextType.Book].includes(contextType);
+
+  return {
+    componentType,
+    bookSourceType: useContext
+      ? contextType
+      : bookSourceType ?? BookSourceType.None,
+    sourceKey: useContext ? contextKey : sourceKey ?? "",
+  };
+};
 
 const authenticated =
   <T, R>(
@@ -47,103 +76,121 @@ export default {
   CarouselComponent: {
     title: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ title }) => title),
 
     link: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ link }) => link),
 
     cards: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ cards }) => cards),
 
     createdBy: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ createdBy }) => createdBy),
 
     pageSize: (obj) => obj.pageSize,
-    sourceType: (obj) => pickListLoaderArgs(obj).sourceType,
-    sourceKey: (obj) => pickListLoaderArgs(obj).sourceKey,
+    listSourceType: (obj) => listComponentLoaderArgs(obj).listSourceType,
+    sourceKey: (obj) => listComponentLoaderArgs(obj).sourceKey,
   },
   GridComponent: {
     title: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ title }) => title),
 
     cards: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ cards }) => cards),
 
     createdBy: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ createdBy }) => createdBy),
 
     pageSize: (obj) => obj.pageSize,
-    sourceType: (obj) => pickListLoaderArgs(obj).sourceType,
-    sourceKey: (obj) => pickListLoaderArgs(obj).sourceKey,
+    listSourceType: (obj) => listComponentLoaderArgs(obj).listSourceType,
+    sourceKey: (obj) => listComponentLoaderArgs(obj).sourceKey,
   },
   ListComponent: {
     title: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ title }) => title),
 
     cards: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ cards }) => cards),
 
     createdBy: (obj, args, { loaders }) =>
       loaders.listComponentsLoader
-        .load(pickListLoaderArgs(obj))
+        .load(listComponentLoaderArgs(obj))
         .then(({ createdBy }) => createdBy),
 
     pageSize: (obj) => obj.pageSize,
-    sourceType: (obj) => pickListLoaderArgs(obj).sourceType,
-    sourceKey: (obj) => pickListLoaderArgs(obj).sourceKey,
+    listSourceType: (obj) => listComponentLoaderArgs(obj).listSourceType,
+    sourceKey: (obj) => listComponentLoaderArgs(obj).sourceKey,
   },
   BookImageComponent: {
-    image: ({ contextKey, sourceKey }, args, { loaders }) =>
+    image: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ image }) => image),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   BookTitleComponent: {
-    title: ({ contextKey, sourceKey }, args, { loaders }) =>
+    title: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ title }) => title),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   BookActionComponent: {
-    link: ({ contextKey, sourceKey }, args, { loaders }) =>
+    link: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ actionLink }) => actionLink),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   BookAuthorsComponent: {
-    links: ({ contextKey, sourceKey }, args, { loaders }) =>
+    links: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ authorLinks }) => authorLinks),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   BookCategoriesComponent: {
-    links: ({ contextKey, sourceKey }, args, { loaders }) =>
+    links: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ categoryLinks }) => categoryLinks),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   BookDetailsComponent: {
-    text: ({ contextKey, sourceKey }, args, { loaders }) =>
+    text: (obj, args, { loaders }) =>
       loaders.bookComponentsByKeysLoader
-        .load(sourceKey ?? contextKey)
+        .load(bookComponentLoaderArgs(obj).sourceKey)
         .then(({ detailsMarkdown }) => detailsMarkdown),
+
+    bookSourceType: (obj) => bookComponentLoaderArgs(obj).bookSourceType,
+    sourceKey: (obj) => bookComponentLoaderArgs(obj).sourceKey,
   },
   Component: {
     __resolveType: (obj) => obj.componentType,
@@ -200,15 +247,14 @@ export default {
         parent,
         { layoutId, componentOrder, flexDirection, container },
         { mutations, loggedInAs }
-      ) => {
-        return mutations.updateLayoutComponent({
+      ) =>
+        mutations.updateLayoutComponent({
           layoutId,
           componentIds: componentOrder ?? null,
           flexDirection: flexDirection ?? null,
           container: container ?? false,
           loggedInAs,
-        });
-      }
+        })
     ),
 
     createLayoutComponent: authenticated(
@@ -251,14 +297,28 @@ export default {
     updateListComponent: authenticated(
       (
         parent,
-        { componentId, sourceKey, sourceType, pageSize },
+        { componentId, sourceKey, listSourceType, pageSize },
         { mutations, loggedInAs }
       ) =>
         mutations.updateListComponent({
           componentId,
           sourceKey,
-          sourceType,
+          listSourceType,
           pageSize,
+          loggedInAs,
+        })
+    ),
+
+    updateBookComponent: authenticated(
+      (
+        parent,
+        { componentId, sourceKey, bookSourceType },
+        { mutations, loggedInAs }
+      ) =>
+        mutations.updateBookComponent({
+          componentId,
+          sourceKey,
+          bookSourceType,
           loggedInAs,
         })
     ),

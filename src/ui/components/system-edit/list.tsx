@@ -7,7 +7,7 @@ export const CarouselComponentFragment = gql`
   fragment CarouselComponentFragment on CarouselComponent {
     id
     title
-    sourceType
+    listSourceType
     sourceKey
     pageSize
   }
@@ -17,7 +17,7 @@ export const GridComponentFragment = gql`
   fragment GridComponentFragment on GridComponent {
     id
     title
-    sourceType
+    listSourceType
     sourceKey
     pageSize
   }
@@ -27,29 +27,37 @@ export const ListComponentFragment = gql`
   fragment ListComponentFragment on ListComponent {
     id
     title
-    sourceType
+    listSourceType
     sourceKey
     pageSize
   }
 `;
 
+const contextTypeSourceKeyMap = new Map([
+  [ListSourceType.Author, "Author Key"],
+  [ListSourceType.Category, "Category Key"],
+  [ListSourceType.List, "List Key"],
+]);
+
 export default function List(props: {
   __typename: string;
   id: string;
-  sourceType: ListSourceType;
+  listSourceType: ListSourceType;
   sourceKey: string;
   pageSize: number;
 }) {
   const { updateListComponent } = useContext(LayoutContext);
-  const [sourceTypeState, setSourceType] = useState(props.sourceType);
+  const [sourceTypeState, setSourceType] = useState(props.listSourceType);
   const [sourceKeyState, setSourceKey] = useState(props.sourceKey);
   const [pageSizeState, setPageSize] = useState(props.pageSize);
 
   const validOpts = Object.values(ListSourceType);
 
+  const sourceKeyName = contextTypeSourceKeyMap.get(sourceTypeState);
+
   useEffect(() => {
-    setSourceType(props.sourceType);
-  }, [props.sourceType]);
+    setSourceType(props.listSourceType);
+  }, [props.listSourceType]);
 
   useEffect(() => {
     setSourceKey(props.sourceKey);
@@ -80,7 +88,7 @@ export default function List(props: {
         ListSourceType.List,
       ].includes(sourceTypeState) && (
         <div className="bg-gray-50 border my-4 p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
-          <b>Source Key:</b>
+          <b>{sourceKeyName}:</b>
           <input
             value={sourceKeyState}
             placeholder="Source Key"
@@ -102,7 +110,7 @@ export default function List(props: {
         onClick={() => {
           updateListComponent({
             componentId: props.id,
-            sourceType: sourceTypeState,
+            listSourceType: sourceTypeState,
             sourceKey: sourceKeyState,
             pageSize: pageSizeState,
           });

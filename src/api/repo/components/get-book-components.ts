@@ -2,7 +2,7 @@ import { type Client, query as q } from "faunadb";
 import { LinkComponentVariant } from "api/__generated__/resolvers-types";
 import slugify from "slugify";
 
-export default function getListComponents(client: Client) {
+export default function getBookComponents(client: Client) {
   return async (googleBooksVolumeIds: readonly string[]) => {
     const results = (await client.query(
       q.Map(

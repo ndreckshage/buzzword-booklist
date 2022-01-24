@@ -8,6 +8,7 @@ import {
   type MutationRemoveComponentInLayoutArgs,
   type MutationUpdateMarkdownComponentArgs,
   MutationUpdateListComponentArgs,
+  MutationUpdateBookComponentArgs,
   MutationCreateComponentInLayoutArgs,
 } from "api/__generated__/resolvers-types";
 
@@ -130,18 +131,32 @@ const UPDATE_MARKDOWN_MUTATION = gql`
   }
 `;
 
-const UPDATE_BOOKLIST_COMPONENT_MUTATION = gql`
+const UPDATE_LIST_COMPONENT_MUTATION = gql`
   mutation updateListComponent(
     $componentId: ID!
-    $sourceType: ListSourceType!
+    $listSourceType: ListSourceType!
     $sourceKey: String!
     $pageSize: Int!
   ) {
     updateListComponent(
       componentId: $componentId
-      sourceType: $sourceType
+      listSourceType: $listSourceType
       sourceKey: $sourceKey
       pageSize: $pageSize
+    )
+  }
+`;
+
+const UPDATE_BOOK_COMPONENT_MUTATION = gql`
+  mutation updateBookComponent(
+    $componentId: ID!
+    $bookSourceType: BookSourceType!
+    $sourceKey: String!
+  ) {
+    updateBookComponent(
+      componentId: $componentId
+      bookSourceType: $bookSourceType
+      sourceKey: $sourceKey
     )
   }
 `;
@@ -152,6 +167,7 @@ export const LayoutContext = createContext<{
   removeComponentMutation: (args: MutationRemoveComponentInLayoutArgs) => void;
   updateMarkdownComponent: (args: MutationUpdateMarkdownComponentArgs) => void;
   updateListComponent: (args: MutationUpdateListComponentArgs) => void;
+  updateBookComponent: (args: MutationUpdateBookComponentArgs) => void;
 }>(
   // @ts-ignore
   null
@@ -179,8 +195,11 @@ export default function EditLayoutContainer({ id }: { id: string }) {
   const [updateMarkdownComponent, { isPending: updateMarkdownPending }] =
     useMutation<boolean>(UPDATE_MARKDOWN_MUTATION);
 
-  const [updateListComponent, { isPending: updateBooklistPending }] =
-    useMutation<boolean>(UPDATE_BOOKLIST_COMPONENT_MUTATION);
+  const [updateListComponent, { isPending: updateListPending }] =
+    useMutation<boolean>(UPDATE_LIST_COMPONENT_MUTATION);
+
+  const [updateBookComponent, { isPending: updateBookPending }] =
+    useMutation<boolean>(UPDATE_BOOK_COMPONENT_MUTATION);
 
   const isPending =
     getLayoutPending ||
@@ -188,7 +207,8 @@ export default function EditLayoutContainer({ id }: { id: string }) {
     updateLayoutPending ||
     removeComponentPending ||
     updateMarkdownPending ||
-    updateBooklistPending;
+    updateListPending ||
+    updateBookPending;
 
   return (
     <>
@@ -216,6 +236,8 @@ export default function EditLayoutContainer({ id }: { id: string }) {
               updateMarkdownComponent(arg).then(refresh),
             updateListComponent: (arg) =>
               updateListComponent(arg).then(refresh),
+            updateBookComponent: (arg) =>
+              updateBookComponent(arg).then(refresh),
           }}
         >
           <Layout {...data.layout} root />

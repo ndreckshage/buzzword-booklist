@@ -1,39 +1,37 @@
-import { ListSourceType } from "api/__generated__/resolvers-types";
+import { BookSourceType } from "api/__generated__/resolvers-types";
 import { query as q, type Client } from "faunadb";
 import execIfComponentOwner from "../fql-helpers/exec-if-component-owner";
 
-export type updateListComponentInput = {
+export type updateBookComponentInput = {
   componentId: string;
-  pageSize: number;
-  listSourceType?: ListSourceType;
+  bookSourceType?: BookSourceType;
   sourceKey?: string;
   loggedInAs: string;
 };
 
-export type updateListComponentOutput = boolean;
+export type updateBookComponentOutput = boolean;
 
-export default function updateListComponent(client: Client) {
+export default function updateBookComponent(client: Client) {
   return async ({
     componentId,
-    listSourceType,
+    bookSourceType,
     sourceKey,
-    pageSize,
     loggedInAs,
-  }: updateListComponentInput) => {
+  }: updateBookComponentInput) => {
     console.log(
-      "updateListComponent",
+      "updateBookComponent",
       componentId,
-      listSourceType,
+      bookSourceType,
       sourceKey,
-      pageSize,
       loggedInAs
     );
 
     const sourceData =
-      listSourceType && Object.values(ListSourceType).includes(listSourceType)
+      bookSourceType && Object.values(BookSourceType).includes(bookSourceType)
         ? {
-            listSourceType,
-            sourceKey: sourceKey ?? "",
+            bookSourceType,
+            sourceKey:
+              bookSourceType === BookSourceType.None ? "" : sourceKey ?? "",
           }
         : {};
 
@@ -57,7 +55,6 @@ export default function updateListComponent(client: Client) {
                   q.Var("componentDoc")
                 ),
                 ...sourceData,
-                ...(pageSize && pageSize < 64 ? { pageSize } : {}),
               },
             }),
           })

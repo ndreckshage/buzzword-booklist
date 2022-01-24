@@ -11,7 +11,7 @@ type CarouselComponent {
   title: String!
   link: LinkComponent
   cards: [CardComponent!]!
-  sourceType: ListSourceType!
+  listSourceType: ListSourceType!
   sourceKey: String!
   createdBy: String
   pageSize: Int!
@@ -21,7 +21,7 @@ type GridComponent {
   id: ID!
   title: String!
   cards: [CardComponent!]!
-  sourceType: ListSourceType!
+  listSourceType: ListSourceType!
   sourceKey: String!
   createdBy: String
   pageSize: Int!
@@ -30,38 +30,50 @@ type GridComponent {
 type BookImageComponent {
   id: ID!
   image: String!
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type BookTitleComponent {
   id: ID!
   title: String!
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type BookActionComponent {
   id: ID!
   link: LinkComponent
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type BookAuthorsComponent {
   id: ID!
   links: [LinkComponent!]!
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type BookCategoriesComponent {
   id: ID!
   links: [LinkComponent!]!
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type BookDetailsComponent {
   id: ID!
   text: String!
+  bookSourceType: BookSourceType!
+  sourceKey: String!
 }
 
 type ListComponent {
   id: ID!
   title: String!
   cards: [CardComponent!]!
-  sourceType: ListSourceType!
+  listSourceType: ListSourceType!
   sourceKey: String!
   createdBy: String
   pageSize: Int!
@@ -136,6 +148,11 @@ enum LayoutContextType {
   NONE
 }
 
+enum BookSourceType {
+  BOOK
+  NONE
+}
+
 enum ListSourceType {
   RECENT_LISTS
   RECENT_LAYOUTS
@@ -181,8 +198,13 @@ type Mutation {
   ): Boolean!
   updateListComponent(
     componentId: ID!
-    sourceType: ListSourceType!
+    listSourceType: ListSourceType!
     sourceKey: String!
     pageSize: Int!
+  ): Boolean!
+  updateBookComponent(
+    componentId: ID!
+    bookSourceType: BookSourceType!
+    sourceKey: String!
   ): Boolean!
 }

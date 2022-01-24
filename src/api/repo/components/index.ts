@@ -3,6 +3,7 @@ import {
   LayoutContextType,
   ListSourceType,
   LinkComponent,
+  BookSourceType,
 } from "api/__generated__/resolvers-types";
 
 export type RootComponentModel = {
@@ -17,12 +18,13 @@ export type RootLayoutComponentModel = RootComponentModel & {
 };
 
 export type RootListComponentModel = RootComponentModel & {
-  sourceType: ListSourceType | null;
+  listSourceType: ListSourceType | null;
   sourceKey: string | null;
   pageSize: number;
 };
 
 export type RootBookComponentModel = RootComponentModel & {
+  bookSourceType: BookSourceType | null;
   sourceKey: string | null;
 };
 
@@ -84,3 +86,9 @@ export {
   type updateListComponentInput,
   type updateListComponentOutput,
 } from "./update-list-component";
+
+export {
+  default as updateBookComponent,
+  type updateBookComponentInput,
+  type updateBookComponentOutput,
+} from "./update-book-component";

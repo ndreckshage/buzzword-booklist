@@ -34,9 +34,9 @@ export const selectLayoutModelData = (componentDoc: Expr) => ({
 const selectListModelData = (componentDoc: Expr) => ({
   id: q.Select(["ref", "id"], componentDoc),
   componentType: q.Select(["data", "componentType"], componentDoc),
-  sourceType: q.If(
-    q.ContainsPath(["data", "sourceType"], componentDoc),
-    q.Select(["data", "sourceType"], componentDoc),
+  listSourceType: q.If(
+    q.ContainsPath(["data", "listSourceType"], componentDoc),
+    q.Select(["data", "listSourceType"], componentDoc),
     null
   ),
   sourceKey: q.If(

@@ -50,6 +50,9 @@ import {
   updateListComponent,
   type updateListComponentInput,
   type updateListComponentOutput,
+  updateBookComponent,
+  type updateBookComponentInput,
+  type updateBookComponentOutput,
 } from "api/repo/components";
 
 export default function createClient() {
@@ -83,7 +86,7 @@ export type ResolverContext = {
     listComponentsLoader: DataLoader<
       {
         componentType: string;
-        sourceType: ListSourceType | LayoutContextType | null;
+        listSourceType: ListSourceType | LayoutContextType | null;
         sourceKey: string | null;
         pageSize: number;
       },
@@ -116,6 +119,9 @@ export type ResolverContext = {
     updateListComponent: (
       input: updateListComponentInput
     ) => Promise<updateListComponentOutput>;
+    updateBookComponent: (
+      input: updateBookComponentInput
+    ) => Promise<updateBookComponentOutput>;
   };
 };
 
@@ -152,6 +158,7 @@ export function createContext({ currentUser }: { currentUser: string | null }) {
       removeComponentInLayout: removeComponentInLayout(client),
       updateMarkdownComponent: updateMarkdownComponent(client),
       updateListComponent: updateListComponent(client),
+      updateBookComponent: updateBookComponent(client),
     },
   };
 }

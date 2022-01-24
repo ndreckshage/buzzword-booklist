@@ -474,7 +474,7 @@ export default function getListComponents(client: Client) {
   return async (
     sourceArr: readonly {
       componentType: string;
-      sourceType: string | null;
+      listSourceType: string | null;
       sourceKey: string | null;
       pageSize: number;
     }[]
@@ -490,37 +490,46 @@ export default function getListComponents(client: Client) {
             q.Let(
               {
                 componentType: q.Select("componentType", q.Var("sourceData")),
-                sourceType: q.Select("sourceType", q.Var("sourceData")),
+                listSourceType: q.Select("listSourceType", q.Var("sourceData")),
                 sourceKey: q.Select("sourceKey", q.Var("sourceData")),
                 pageSize: q.Select("pageSize", q.Var("sourceData")),
               },
               q.If(
-                q.Equals(q.Var("sourceType"), ListSourceType.RecentLists),
+                q.Equals(q.Var("listSourceType"), ListSourceType.RecentLists),
                 selectRecentLists({ pageSize: q.Var("pageSize") }),
                 q.If(
-                  q.Equals(q.Var("sourceType"), ListSourceType.RecentLayouts),
+                  q.Equals(
+                    q.Var("listSourceType"),
+                    ListSourceType.RecentLayouts
+                  ),
                   selectRecentLayouts({ pageSize: q.Var("pageSize") }),
                   q.If(
-                    q.Equals(q.Var("sourceType"), ListSourceType.TopBooks),
+                    q.Equals(q.Var("listSourceType"), ListSourceType.TopBooks),
                     selectTopBooks({ pageSize: q.Var("pageSize") }),
                     q.If(
-                      q.Equals(q.Var("sourceType"), ListSourceType.TopAuthors),
+                      q.Equals(
+                        q.Var("listSourceType"),
+                        ListSourceType.TopAuthors
+                      ),
                       selectTopAuthors({ pageSize: q.Var("pageSize") }),
                       q.If(
                         q.Equals(
-                          q.Var("sourceType"),
+                          q.Var("listSourceType"),
                           ListSourceType.TopCategories
                         ),
                         selectTopCategories({ pageSize: q.Var("pageSize") }),
                         q.If(
-                          q.Equals(q.Var("sourceType"), ListSourceType.List),
+                          q.Equals(
+                            q.Var("listSourceType"),
+                            ListSourceType.List
+                          ),
                           selectList({
                             sourceKey: q.Var("sourceKey"),
                             pageSize: q.Var("pageSize"),
                           }),
                           q.If(
                             q.Equals(
-                              q.Var("sourceType"),
+                              q.Var("listSourceType"),
                               ListSourceType.Author
                             ),
                             selectAuthor({
@@ -530,7 +539,7 @@ export default function getListComponents(client: Client) {
                             }),
                             q.If(
                               q.Equals(
-                                q.Var("sourceType"),
+                                q.Var("listSourceType"),
                                 ListSourceType.Category
                               ),
                               selectCategory({
@@ -556,12 +565,13 @@ export default function getListComponents(client: Client) {
     } catch (e) {
       console.error("get-list-components", e);
 
-      if (e instanceof Error) {
-        // @ts-ignore
-        throw new Error(e.description || e.message);
-      }
-
-      throw e;
+      return sourceArr.map(() => ({
+        title: "Invalid key entered for list.",
+        href: "",
+        totalCards: 0,
+        cards: [],
+        createdBy: "",
+      }));
     }
   };
 }

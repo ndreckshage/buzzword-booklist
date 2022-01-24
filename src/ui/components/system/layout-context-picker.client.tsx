@@ -4,17 +4,25 @@ import { useState } from "react";
 
 const sampleKeyMap = new Map([
   [LayoutContextType.Author, "haruki-murakami"],
-  [LayoutContextType.Book, "9CLDwAAQBAJ"],
+  [LayoutContextType.Book, "AJUqyrOSO38C"],
   [LayoutContextType.Category, "fiction-literary"],
   [LayoutContextType.List, "bookshoporg-top-50-bestsellers-2021"],
+  [LayoutContextType.None, ""],
+]);
+
+const contextTypeSourceKeyMap = new Map([
+  [LayoutContextType.Author, "Author Key"],
+  [LayoutContextType.Book, "Google Book ID"],
+  [LayoutContextType.Category, "Category Key"],
+  [LayoutContextType.List, "List Key"],
   [LayoutContextType.None, ""],
 ]);
 
 export default function LayoutContextPicker() {
   const router = useRouter();
 
-  const originalContextType =
-    router.query.contextType ?? LayoutContextType.None;
+  const originalContextType = (router.query.contextType ??
+    LayoutContextType.None) as LayoutContextType;
 
   const originalContextKey = router.query.contextKey ?? "";
 
@@ -24,6 +32,8 @@ export default function LayoutContextPicker() {
   const contextTypeDiff = originalContextType !== contextType;
   const contextKeyDiff = originalContextKey !== contextKey;
   const contextDiff = contextTypeDiff || contextKeyDiff;
+
+  const sourceKeyName = contextTypeSourceKeyMap.get(contextType ?? "");
 
   return (
     <div className="flex flex-col space-y-2 md:space-x-2 md:space-y-0 md:flex-row md:items-center">
@@ -44,7 +54,7 @@ export default function LayoutContextPicker() {
       </div>
       {contextType !== LayoutContextType.None && (
         <div>
-          <b>Context Key:</b>{" "}
+          <b>{sourceKeyName}:</b>{" "}
           <input
             type="text"
             value={contextKey}
