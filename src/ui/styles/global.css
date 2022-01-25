@@ -49,6 +49,10 @@
     @apply p-2 border w-full;
   }
 
+  ul {
+    @apply my-10;
+  }
+
   li {
     @apply leading-8;
   }
