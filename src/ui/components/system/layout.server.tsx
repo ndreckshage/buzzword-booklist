@@ -139,7 +139,7 @@ function Layout({
         className={cx("flex", className, {
           "container mx-auto px-4 overflow-hidden": container,
           "my-5 md:my-10": container && root,
-          "flex-col space-y-5": flexDirection === "col",
+          "flex-col space-y-5 md:space-y-10": flexDirection === "col",
           "flex-col md:flex-row md:space-x-5": flexDirection === "row",
         })}
       >

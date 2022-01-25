@@ -82,6 +82,7 @@ const EditList = ({ listKey }: { listKey: string }) => {
   return (
     <div className="container mx-auto px-4 my-5 md:my-10">
       <h1>Add books to your list...</h1>
+      <h2>{data.list.title}</h2>
       <>
         <div
           className={cx("transition-opacity", {
