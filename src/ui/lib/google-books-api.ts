@@ -17,7 +17,7 @@ export default async function fetchBooks(value: string) {
   )
     .then((r) => r.json())
     .then((json) =>
-      json.items.slice(0, 5).map(
+      json.items?.slice(0, 5).map(
         (rawBook: {
           id: string;
           volumeInfo: {

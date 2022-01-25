@@ -100,7 +100,7 @@ const GoogleBooksTypeahead = (props: GoogleBooksTypeaheadProps) => {
           onBlur={() => {
             setTimeout(() => {
               setShowTypeahead(false);
-            }, 100);
+            }, 200);
           }}
           overrideClassNames="pl-9"
           value={inputValue}

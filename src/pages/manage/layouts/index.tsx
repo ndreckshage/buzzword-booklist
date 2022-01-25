@@ -34,12 +34,13 @@ function ManageLayouts() {
       <ul>
         {data.currentUser?.layoutComponents.map((layoutComponents) => (
           <li key={layoutComponents.id}>
-            <Link href={`/manage/layouts/edit?layout=${layoutComponents.id}`}>
-              <a>Edit {layoutComponents.title}</a>
-            </Link>{" "}
-            |
+            <b>{layoutComponents.title}:</b>{" "}
             <Link href={`/layouts/show?layout=${layoutComponents.id}`}>
-              <a>View {layoutComponents.title}</a>
+              <a>View</a>
+            </Link>{" "}
+            |{" "}
+            <Link href={`/manage/layouts/edit?layout=${layoutComponents.id}`}>
+              <a>Edit</a>
             </Link>
           </li>
         ))}

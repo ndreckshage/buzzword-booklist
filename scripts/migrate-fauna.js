@@ -168,11 +168,6 @@ const createComponents = () =>
       },
       q.Do(
         q.CreateIndex({
-          name: "components_by_createdBy",
-          source: q.Var("collectionRef"),
-          terms: [{ field: ["data", "createdBy"] }],
-        }),
-        q.CreateIndex({
           name: "components_by_componentType",
           source: q.Var("collectionRef"),
           terms: [{ field: ["data", "componentType"] }],
@@ -180,7 +175,7 @@ const createComponents = () =>
         q.CreateIndex({
           name: "components_by_isRoot_and_componentType",
           source: {
-            collection: q.Collection("Components"),
+            collection: q.Var("collectionRef"),
             fields: {
               isRoot: q.Query(
                 q.Lambda(
@@ -191,6 +186,25 @@ const createComponents = () =>
             },
           },
           terms: [{ binding: "isRoot" }, { field: ["data", "componentType"] }],
+        }),
+        q.CreateIndex({
+          name: "components_by_createdBy_and_isRoot_and_componentType",
+          source: {
+            collection: q.Var("collectionRef"),
+            fields: {
+              isRoot: q.Query(
+                q.Lambda(
+                  "doc",
+                  q.Equals(q.Select(["data", "nested"], q.Var("doc")), false)
+                )
+              ),
+            },
+          },
+          terms: [
+            { field: ["data", "createdBy"] },
+            { binding: "isRoot" },
+            { field: ["data", "componentType"] },
+          ],
         })
       )
     )

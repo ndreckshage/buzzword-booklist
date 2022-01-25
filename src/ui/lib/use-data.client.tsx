@@ -4,15 +4,11 @@ import suspenseWrapPromise from "./suspense-wrap-promise";
 import { DocumentNode } from "graphql/language/ast";
 import { request, gql } from "./graphql-request";
 import { AppContext } from "pages/_app";
+import { useRouter } from "next/router";
 
-const queryCache: any = {};
-const getResource = (
-  cacheKeyBase: string,
-  fetcher: any,
-  initialLoad = false
-) => {
-  const fiveSecondCachebuster = Math.floor(Date.now() / 5000);
-  const cacheKey = `${cacheKeyBase}::${fiveSecondCachebuster}`;
+let queryCache: any = {};
+const getResource = (cacheKey: string, fetcher: any, initialLoad = false) => {
+  console.log("getResource", queryCache);
 
   if (!queryCache[cacheKey]) {
     let fetcherPromise: any = null;
@@ -49,8 +45,18 @@ const useIsMount = () => {
   return isMountRef.current;
 };
 
+const clearQueryCache = () => {
+  queryCache = {
+    ...(queryCache.currentUserAppProvider
+      ? { currentUserAppProvider: queryCache.currentUserAppProvider }
+      : {}),
+  };
+};
+
 function useData<T>(cacheKey: string, fetcher: () => Promise<T>) {
   const isMount = useIsMount();
+  const router = useRouter();
+
   const [resource, setResource] = useState(
     getResource(cacheKey, fetcher, true)
   );
@@ -65,6 +71,12 @@ function useData<T>(cacheKey: string, fetcher: () => Promise<T>) {
         setResource(getResource(cacheKey, fetcher, false));
       });
     }
+
+    router.events.on("routeChangeStart", clearQueryCache);
+
+    return () => {
+      router.events.off("routeChangeStart", clearQueryCache);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey]);
 

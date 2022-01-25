@@ -15,7 +15,7 @@ const GET_LISTS_QUERY = gql`
 `;
 
 function ManageLists() {
-  const { data, hydrateClient, isPending } = useQuery<{
+  const { data, hydrateClient } = useQuery<{
     currentUser?: {
       lists: {
         id: string;
