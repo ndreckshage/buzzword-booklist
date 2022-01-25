@@ -39,6 +39,9 @@ export default function Markdown({
           __html: sanitizeHtml(marked(text || ""), {
             allowedTags,
             allowedAttributes,
+            transformTags: {
+              a: sanitizeHtml.simpleTransform("a", { target: "_blank" }),
+            },
           }),
         }}
       />
