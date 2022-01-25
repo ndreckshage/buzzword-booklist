@@ -58,10 +58,10 @@ export default function BookCarousel(props: CarouselComponent) {
   return (
     <div className="container mx-auto my-4">
       <div className="flex justify-between flex-col md:flex-row">
-        <p className="text-2xl">
+        <p className="font-display text-2xl mb-0">
           {props.title}{" "}
           {props.link && (
-            <span className="text-lg block md:inline">
+            <span className="font-body text-lg block md:inline">
               <Link {...props.link} />
             </span>
           )}

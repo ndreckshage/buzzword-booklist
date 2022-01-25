@@ -6,8 +6,8 @@ import CreatedBy from "../common/created-by";
 export default function List(props: ListComponent) {
   return (
     <div className="w-full">
-      <div className="flex mb-3 md:mb-6 space-x-2">
-        <h1 className="m-0">{props.title}</h1>
+      <div className="flex mb-3 md:mb-6 space-x-2 items-center">
+        <p className="font-display text-2xl mb-0">{props.title}</p>
         {props.createdBy && (
           <>
             <span>&mdash;</span>

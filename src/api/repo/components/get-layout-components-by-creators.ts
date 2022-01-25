@@ -15,11 +15,13 @@ export default function getLayoutComponentsByCreators(client: Client) {
               q.Select(
                 "data",
                 q.Paginate(
-                  q.Match(
-                    q.Index(
-                      "components_by_createdBy_and_isRoot_and_componentType"
-                    ),
-                    [q.Var("createdBy"), true, "LayoutComponent"]
+                  q.Reverse(
+                    q.Match(
+                      q.Index(
+                        "components_by_createdBy_and_isRoot_and_componentType"
+                      ),
+                      [q.Var("createdBy"), true, "LayoutComponent"]
+                    )
                   )
                 )
               ),

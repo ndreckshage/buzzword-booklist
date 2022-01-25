@@ -6,6 +6,7 @@ import sanitizeHtml from "sanitize-html";
 import cx from "classnames";
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
+  "img",
   "h1",
   "h2",
   "h3",
@@ -13,7 +14,9 @@ const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
 const allowedAttributes = Object.assign(
   {},
   sanitizeHtml.defaults.allowedAttributes,
-  {}
+  {
+    img: ["alt", "src", "width", "height"],
+  }
 );
 
 export default function Markdown({
@@ -27,7 +30,7 @@ export default function Markdown({
         "bg-inherit": backgroundColor === "inherit",
         "bg-emerald-500": backgroundColor === "emerald-500",
         "bg-indigo-500": backgroundColor === "indigo-500",
-        "text-white": backgroundColor === "indigo-500" || "emerald-500",
+        "text-white": ["indigo-500", "emerald-500"].includes(backgroundColor),
       })}
     >
       <div

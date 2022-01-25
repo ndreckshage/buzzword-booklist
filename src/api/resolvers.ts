@@ -252,7 +252,7 @@ export default {
           layoutId,
           componentIds: componentOrder ?? null,
           flexDirection: flexDirection ?? null,
-          container: container ?? false,
+          container: container ?? null,
           loggedInAs,
         })
     ),

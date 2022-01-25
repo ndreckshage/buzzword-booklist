@@ -13,7 +13,9 @@ export default function getListsByCreators(client: Client) {
             q.Select(
               "data",
               q.Paginate(
-                q.Match(q.Index("lists_by_createdBy"), q.Var("createdBy"))
+                q.Reverse(
+                  q.Match(q.Index("lists_by_createdBy"), q.Var("createdBy"))
+                )
               )
             ),
             q.Lambda(

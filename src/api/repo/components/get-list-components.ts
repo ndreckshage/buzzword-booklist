@@ -422,9 +422,11 @@ const selectCategory = ({
           q.Select(
             "data",
             q.Paginate(
-              q.Match(
-                q.Index("category_book_connections_by_categoryRef"),
-                q.Select("ref", q.Var("categoryDoc"))
+              q.Reverse(
+                q.Match(
+                  q.Index("category_book_connections_by_categoryRef"),
+                  q.Select("ref", q.Var("categoryDoc"))
+                )
               )
             )
           ),

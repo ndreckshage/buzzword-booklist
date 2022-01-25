@@ -111,7 +111,7 @@ export default function BookEdit(props: {
           });
         }}
       >
-        Save List Component
+        Save Book Component
       </button>
     </div>
   );
