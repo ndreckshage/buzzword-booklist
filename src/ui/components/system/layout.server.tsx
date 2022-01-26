@@ -4,6 +4,8 @@ import {
   LayoutContextType,
 } from "api/__generated__/resolvers-types";
 import cx from "classnames";
+import { Suspense } from "react";
+import Loader from "../common/loader";
 
 import Markdown, { MarkdownComponentFragment } from "./markdown.server";
 import Carousel, { CarouselComponentFragment } from "./carousel.server";
@@ -164,19 +166,21 @@ function Layout({
   );
 }
 
-export default function LayoutContainer({
-  id,
-  contextType,
-  contextKey,
-  className,
-  showContextPicker,
-}: {
+type LayoutContainerProps = {
   id: string;
   contextType?: LayoutContextType;
   contextKey?: string;
   className?: string;
   showContextPicker?: boolean;
-}) {
+};
+
+function LayoutContainer({
+  id,
+  contextType,
+  contextKey,
+  className,
+  showContextPicker,
+}: LayoutContainerProps) {
   const data = useQuery<{
     layout: LayoutComponent & { layoutCreatedBy: string };
   }>(`Component::${id}`, LAYOUT_QUERY, {
@@ -192,5 +196,13 @@ export default function LayoutContainer({
       showContextPicker={showContextPicker!!}
       root
     />
+  );
+}
+
+export default function LayoutSuspenseWrapper(props: LayoutContainerProps) {
+  return (
+    <Suspense fallback={<Loader />}>
+      <LayoutContainer {...props} />
+    </Suspense>
   );
 }

@@ -8,8 +8,6 @@ import { useRouter } from "next/router";
 
 let queryCache: any = {};
 const getResource = (cacheKey: string, fetcher: any, initialLoad = false) => {
-  console.log("getResource", queryCache);
-
   if (!queryCache[cacheKey]) {
     let fetcherPromise: any = null;
     let fetcherPromiseData: any =

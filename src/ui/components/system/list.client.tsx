@@ -20,7 +20,7 @@ export default function List(props: ListComponent) {
           key={card.id}
           className="flex border-b border-slate-100 pb-5 mb-5 space-x-5 justify-between no-underline"
         >
-          <div className="flex items-center">
+          <div className="flex items-center overflow-hidden">
             {card.image ? (
               <NextLink href={card.href}>
                 <a className="flex mr-5 shrink-0">
@@ -35,7 +35,7 @@ export default function List(props: ListComponent) {
             ) : (
               <div style={{ height: 100, width: 0 }} />
             )}
-            <div>
+            <div className="overflow-hidden">
               <NextLink href={card.href}>
                 <a className="no-underline text-inherit">
                   <p className="m-0 text-xl mb-2 truncate max-w-md">

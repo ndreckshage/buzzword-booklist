@@ -40,7 +40,18 @@ export default function Markdown({
             allowedTags,
             allowedAttributes,
             transformTags: {
-              a: sanitizeHtml.simpleTransform("a", { target: "_blank" }),
+              a: function (tagName, attribs) {
+                console.log("a", attribs);
+                return {
+                  tagName,
+                  attribs: {
+                    ...attribs,
+                    ...(attribs.href.startsWith("/")
+                      ? {}
+                      : { target: "_blank" }),
+                  },
+                };
+              },
             },
           }),
         }}
