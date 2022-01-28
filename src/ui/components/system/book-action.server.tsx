@@ -8,7 +8,7 @@ export default function BooksActionComponent(props: BookActionComponent) {
   }
 
   return (
-    <div className="pb-5">
+    <div className="pb-2">
       <Link {...props.link} />
     </div>
   );

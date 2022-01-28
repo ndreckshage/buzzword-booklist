@@ -10,6 +10,7 @@ const useData = <T>(cacheKey: string, fetcher: () => Promise<T>) => {
     queryCache[cacheKey] = () => {
       if (promiseData !== undefined) return promiseData;
       if (!promise) promise = fetcher().then((r: any) => (promiseData = r));
+
       throw promise;
     };
   }

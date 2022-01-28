@@ -41,7 +41,6 @@ export default function Markdown({
             allowedAttributes,
             transformTags: {
               a: function (tagName, attribs) {
-                console.log("a", attribs);
                 return {
                   tagName,
                   attribs: {
