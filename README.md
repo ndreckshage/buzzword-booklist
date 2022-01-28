@@ -1,6 +1,6 @@
 # Buzzword Booklist
 
-[See the blog post for application details!]()
+[See the blog post for application details!](https://medium.com/@nickdreckshage/buzzword-booklist-207fcf9f045b)
 
 ## Install
 
